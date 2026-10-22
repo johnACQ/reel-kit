@@ -69,7 +69,7 @@ Getting set up is one more line. Make an empty folder called **Reels**, open Cla
 
 ## Straight talk
 
-- **It's not one click.** Expect your first full run to take a while: mine took about half an hour from raw clip to finished file. A rebuild after notes took about a minute and a half.
+- **It's not one click.** Expect your first full run to take a while: mine took about half an hour from raw clip to finished file, and a fresh install cutting my 3.5-minute practice take took about 50 minutes. A rebuild after notes took about a minute and a half.
 - **It's only as good as your footage.** Film tight with your forehead at the top of the frame and there's nowhere for the effects to go.
 - **Claude can't hear.** It checks the words at every cut, but it can't hear your video. Watch it once with the sound on before you post.
 - **Your first few reels will be simpler than mine.** Start with cuts and captions. Add one effect next time. Every note you save makes the next edit start closer to done.

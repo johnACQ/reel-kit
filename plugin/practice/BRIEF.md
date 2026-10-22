@@ -10,7 +10,7 @@ My raw take for a reel called "Before your first prompt": five steps for setting
 - **For:** an Instagram reel, 45 to 65 seconds.
 - **The screens behind me are blurred on purpose.** Fine to show them as they are.
 - **It's a tight selfie,** so my mouth sits close to the caption band. Punch in anchored at the bottom, the way the edit skill says. Don't move the captions up.
-- **Step two is said twice and step four has three false starts.** Keep the cleanest full read of each.
+- **Step two is read three times and step four has three false starts.** Keep the cleanest full read of each.
 - **Keep the line about a rogue batch of emails hurting your credibility.** It's the best line in the take.
 - **Cut "even built into a scorecard, it's right here".** It points at a different reel.
 

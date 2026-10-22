@@ -17,7 +17,7 @@ description: Edit a talking-head reel with HyperFrames. Transcribes the take, cu
 5. If the reel's folder has a `BRIEF.md`, read it first. It answers the usual questions (names, what goes on screen, lines to keep or cut).
 6. Write any helper scripts in Node, which is already installed for HyperFrames. Don't assume Python is there. Keep every working file inside the reel's `edit/` folder, never in a temp folder elsewhere.
 
-Tell them up front: the first full run takes about half an hour. Notes after that rebuild in a couple of minutes.
+Tell them up front: the first full run takes half an hour to an hour (a 3.5-minute raw take took about 50 minutes on a fresh install). Notes after that rebuild in a couple of minutes.
 
 ## Rules that never bend
 
@@ -54,7 +54,7 @@ Tell them up front: the first full run takes about half an hour. Notes after tha
 
 ## Stage 4: Beat sheet (stop here)
 
-Write `BEAT-SHEET.md` in the reel folder. One row per moment:
+Write `BEAT-SHEET.md` in the reel folder. Put the cut's total runtime at the top, against the target length (from `BRIEF.md`, or ask; 45 to 60 seconds if they don't say). More than 10 percent over? List the lines you'd cut to hit it, so they can pick before anything is built. Then one row per moment:
 
 | Time (cut timeline) | Their words | On screen (effect from CATALOG, real footage or graphic) | Where the text sits | Sound | Why this effect |
 

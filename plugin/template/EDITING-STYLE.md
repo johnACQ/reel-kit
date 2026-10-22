@@ -9,6 +9,7 @@ Claude reads this before every edit. Every line here applies to every reel unles
 - A new visual about every 4 seconds. Never the same kind twice in a row. At most one zoom every 5 seconds. My best line stays clean.
 - Cut the pauses, false starts and bad takes. Keep a breath at each edge. Never cut inside a word.
 - Beat sheet before anything renders.
+- On-screen text in plain words: short, no em dashes, nothing I didn't say or approve.
 - Speech first. Music only if I have the rights to it, and quiet under my voice.
 
 ## My saved defaults

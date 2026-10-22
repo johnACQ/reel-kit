@@ -70,4 +70,4 @@ Say in four lines:
 - One folder per reel. Drop the take in it.
 - Say "edit take.mov" (or whatever the file is called).
 - You'll get a beat sheet to OK before anything renders.
-- Read `FILMING-CARD.md` before filming. The first full run takes about half an hour; rebuilds after notes take a couple of minutes.
+- Read `FILMING-CARD.md` before filming. The first full run takes half an hour to an hour; rebuilds after notes take a couple of minutes.
