@@ -1,0 +1,98 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "text", "type": "string", "label": "Phrase (| = line break, each line gets its own box)", "default": "ASK FIRST"}, {"id": "font", "type": "enum", "label": "Font", "default": "Bebas Neue", "options": [{"value": "Bebas Neue", "label": "Bebas Neue"}, {"value": "Roboto", "label": "Roboto Black"}]}, {"id": "holdFor", "type": "number", "label": "Hold after the box lands, then wipe out (s; -1 = hold to the cut)", "default": 0.85, "min": -1, "max": 10, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge (px from frame top)", "default": 300, "min": 220, "max": 1380, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre (px; 496 = centre of the safe band)", "default": 496, "min": 300, "max": 700, "unit": "px"}, {"id": "size", "type": "number", "label": "Type size px (0 = auto, max 150 Bebas / 118 Roboto)", "default": 0, "min": 0, "max": 240, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: highlighter. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.hl{position:absolute;left:0;top:0;width:1000px;display:flex;flex-direction:column;align-items:center;}
+.hl-line{position:relative;display:block;}
+.hl-line + .hl-line{margin-top:14px;}
+.hl-bw{position:absolute;inset:0;filter:drop-shadow(0 12px 24px rgba(11,15,18,.35));}
+.hl-box{position:absolute;inset:0;background:#00BEFF;border-radius:12px;}
+.hl-w,.hl-k{display:block;box-sizing:border-box;white-space:nowrap;}
+.hl-w{position:relative;color:#FFFFFF;text-shadow:0 3px 14px rgba(0,0,0,.6);}
+.hl-k{position:absolute;left:0;top:0;width:100%;height:100%;color:#0B0F12;}
+.hl.bebas .hl-w,.hl.bebas .hl-k{font-family:'Bebas Neue',sans-serif;font-weight:400;line-height:.8;letter-spacing:1px;padding:.16em .2em .06em;}
+.hl.rob .hl-w,.hl.rob .hl-k{font-family:Roboto,sans-serif;font-weight:900;line-height:1;letter-spacing:-.005em;padding:.075em .22em .045em;}
+
+</style>
+<div id="root" data-composition-id="highlighter" data-width="1080" data-height="1920">
+<div class="hl"></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const D = {"text": "ASK FIRST", "font": "Bebas Neue", "holdFor": 0.85, "top": 300, "centerX": 496, "size": 0};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? (window.__hyperframes.getVariables() || {}) : {};
+const RAW = function(k){ return (VV[k] === undefined || VV[k] === null) ? D[k] : VV[k]; };
+const V = function(k){ const x = RAW(k); return String(x).trim() === '' ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const B = function(k){ const x = RAW(k); return x === true || x === 'true' || x === 1 || x === '1' || x === 'yes' || x === 'on'; };
+const Q = function(s){ return document.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+const CH = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u2019\u2018\u201c\u201d\u2026\u00b7\u2013\u00e9";
+const ADV = {"bebas":[160,210,336,412,400,589,417,188,276,276,422,400,188,270,188,389,400,400,400,400,400,400,400,400,400,400,188,188,400,400,400,363,696,401,404,383,406,363,344,391,420,192,265,414,344,538,427,400,386,400,403,372,364,402,382,557,406,394,362,276,389,276,400,300,500,401,404,383,406,363,344,391,420,192,265,414,344,538,427,400,386,400,403,372,364,402,382,557,406,394,362,276,500,276,400,188,188,336,336,500,188,300,363],"roboto900":[249,276,317,581,580,743,674,154,353,353,465,534,270,450,303,351,580,580,580,580,580,580,580,580,580,580,300,288,510,586,513,510,896,681,646,656,647,560,547,682,703,302,562,640,542,876,702,690,651,690,652,626,631,665,661,869,639,628,610,282,427,282,448,442,340,531,563,520,562,545,363,576,564,275,271,547,275,861,564,562,563,562,379,513,344,564,517,726,515,518,515,325,256,325,632,243,250,427,430,775,321,618,545]};
+// width of a string in em, from the real font's advance table (unknown glyphs count as 0.5 em)
+const textW = function(str, f){ const t = ADV[f]; let w = 0; Array.from(String(str)).forEach(function(c){ const i = CH.indexOf(c); w += i < 0 ? 500 : t[i]; }); return w / 1000; };
+const top = N('top'), cx = N('centerX');
+const half = Math.max(160, Math.min(cx - 72, 920 - cx));  // symmetric half-width inside the 72 px side / 160 px rail safe zone
+
+const lines = String(V('text')).split('|').map(function(s){ return s.trim(); }).filter(Boolean);
+if (!lines.length) lines.push('SAMPLE');
+const rob = /roboto/i.test(String(V('font')));
+const F = rob ? 'roboto900' : 'bebas', PX = rob ? 0.22 : 0.2;
+const maxA = Math.max.apply(null, lines.map(function(l){ return textW(l, F) * 1.03 + 2 * PX; }));
+let fs = N('size') > 0 ? N('size') : Math.min(rob ? 118 : 150, (half * 2) / maxA);
+fs = Math.round(fs);
+const WR = Q('.hl');
+WR.className = 'hl ' + (rob ? 'rob' : 'bebas');
+WR.style.left = Math.round(cx - 500) + 'px'; WR.style.top = Math.round(top) + 'px'; WR.style.fontSize = fs + 'px';
+WR.textContent = '';
+const L = [], BX = [], WT = [], KT = [];
+lines.forEach(function(ln){
+  const d = document.createElement('div'); d.className = 'hl-line'; d.setAttribute('data-layout-allow-overlap', '');  // white + ink copies sit on purpose
+  const bwr = document.createElement('div'); bwr.className = 'hl-bw';
+  const b = document.createElement('div'); b.className = 'hl-box'; bwr.appendChild(b);
+  const w = document.createElement('span'); w.className = 'hl-w'; w.textContent = ln;
+  const k = document.createElement('span'); k.className = 'hl-k'; k.textContent = ln; k.setAttribute('data-layout-allow-overlap', '');
+  d.appendChild(bwr); d.appendChild(w); d.appendChild(k); WR.appendChild(d);
+  L.push(d); BX.push(b); WT.push(w); KT.push(k);
+});
+// The box, the ink copy and the white copy share one geometry, so equal inset percentages keep the wipe front aligned:
+// box + ink are revealed from the left while the white copy is cut away from the left.
+const BOX0 = 'inset(0% 100% 0% 0% round 12px)', BOX1 = 'inset(0% 0% 0% 0% round 12px)';
+const INK0 = 'inset(-30% 100% -30% 0%)', INK1 = 'inset(-30% 0% -30% 0%)';
+const WHT0 = 'inset(-60% -20% -60% 0%)', WHT1 = 'inset(-60% -20% -60% 100%)';
+const LN0 = 'inset(-50% -15% -50% -15%)', LN1 = 'inset(-50% -15% -50% 115%)';
+const IN = 0.04, STEP = 0.1, WIPE = 0.32;
+L.forEach(function(d, i){
+  gsap.set(d, { y: 24, opacity: 0, scale: 1, clipPath: LN0 });
+  gsap.set(BX[i], { clipPath: BOX0 }); gsap.set(KT[i], { clipPath: INK0 }); gsap.set(WT[i], { clipPath: WHT0, opacity: 1 });
+});
+let wipeEnd = 0;
+L.forEach(function(d, i){
+  const t = IN + i * STEP, ws = t + 0.1;
+  tl.fromTo(d, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.2, ease: 'power3.out', immediateRender: false }, t);
+  tl.fromTo(BX[i], { clipPath: BOX0 }, { clipPath: BOX1, duration: WIPE, ease: 'power2.inOut', immediateRender: false }, ws);
+  tl.fromTo(KT[i], { clipPath: INK0 }, { clipPath: INK1, duration: WIPE, ease: 'power2.inOut', immediateRender: false }, ws);
+  tl.fromTo(WT[i], { clipPath: WHT0 }, { clipPath: WHT1, duration: WIPE, ease: 'power2.inOut', immediateRender: false }, ws);
+  tl.set(WT[i], { opacity: 0 }, ws + WIPE);
+  tl.fromTo(d, { scale: 1 }, { scale: 1.04, duration: 0.09, ease: 'power2.out', immediateRender: false }, ws + WIPE - 0.03);
+  tl.to(d, { scale: 1, duration: 0.22, ease: 'power2.inOut' }, ws + WIPE + 0.06);
+  wipeEnd = ws + WIPE;
+});
+// hold, then wipe out left to right (holdFor < 0 = hold to the cut)
+const hold = N('holdFor');
+if (hold >= 0) L.forEach(function(d, i){
+  const o = wipeEnd + hold + i * 0.05;
+  tl.fromTo(d, { clipPath: LN0 }, { clipPath: LN1, duration: 0.26, ease: 'power2.in', immediateRender: false }, o);
+  tl.to(d, { x: 16, duration: 0.26, ease: 'power2.in' }, o);
+});
+
+window.__timelines["highlighter"] = tl;
+</script>
+</template>
+</body>
+</html>

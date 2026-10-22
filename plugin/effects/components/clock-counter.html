@@ -1,0 +1,138 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "from", "type": "string", "label": "Start time HH:MM (a real recorded time)", "default": "0:00"}, {"id": "to", "type": "string", "label": "End time HH:MM (the clock stops EXACTLY here, never past it)", "default": "0:30"}, {"id": "label", "type": "string", "label": "Kicker above the clock", "default": "SAMPLE \u00b7 START TO FINISH"}, {"id": "source", "type": "string", "label": "Source chip under the clock", "default": "Source: where this time came from"}, {"id": "top", "type": "number", "label": "Card top y (px). Waist-up framing ~260; tight selfie ~1180 with scale ~0.74", "default": 260, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Card centre x (px; 496 = centre of the safe zone)", "default": 496, "unit": "px"}, {"id": "scale", "type": "number", "label": "Size (1 = full; shrink only to fit tight footage)", "default": 1, "min": 0.5, "max": 1.2, "step": 0.01}, {"id": "runAt", "type": "number", "label": "Clock starts running (s from clip start)", "default": 0.4, "min": 0, "step": 0.05, "unit": "s"}, {"id": "runDur", "type": "number", "label": "Run length to the final minute (s). DONE lands ~0.15 s after", "default": 1.2, "min": 0.3, "step": 0.05, "unit": "s"}, {"id": "outAt", "type": "number", "label": "Card leaves (s; 99 = hold to clip end)", "default": 2.25, "min": 0, "step": 0.05, "unit": "s"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: clock-counter. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.cc-wrap{position:absolute;left:176px;top:260px;width:640px;}
+.cc-in{position:relative;width:100%;}
+.cc-card{position:relative;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);padding:26px 40px 24px;}
+.cc-kick{display:flex;align-items:center;gap:12px;height:28px;font:500 22px 'Roboto Mono',monospace;letter-spacing:3px;color:#5B6670;white-space:nowrap;}
+.cc-dot{display:block;width:12px;height:12px;border-radius:99px;background:#00BEFF;flex:none;}
+.cc-clock{display:flex;align-items:flex-start;margin-top:6px;font-family:'Bebas Neue',sans-serif;font-size:268px;color:#0B0F12;height:.86em;}
+.cc-slot{position:relative;display:block;flex:none;width:.4em;height:.86em;overflow:hidden;}
+.cc-cell{position:absolute;left:0;top:0;display:block;width:100%;height:.86em;}
+.cc-cell b{position:relative;display:block;top:.055em;height:.86em;line-height:.86em;text-align:center;font-weight:400;}
+.cc-colon{position:relative;display:block;flex:none;width:.2em;height:.86em;}
+.cc-colon i{position:absolute;left:.055em;width:.092em;height:.092em;border-radius:.016em;background:#0B0F12;}
+.cc-colon i:first-child{top:.255em;}
+.cc-colon i:last-child{top:.52em;}
+.cc-src{display:inline-flex;align-items:center;gap:10px;margin-top:10px;height:46px;padding:0 18px 0 12px;border-radius:99px;background:#F4F6F8;font:500 24px Roboto,sans-serif;color:#5B6670;white-space:nowrap;}
+.cc-src svg{display:block;width:24px;height:24px;flex:none;}
+.cc-stampbox{position:absolute;right:-40px;bottom:-34px;width:250px;height:108px;}
+.cc-ring{position:absolute;inset:0;border:6px solid #00BEFF;border-radius:20px;}
+.cc-stamp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;background:#00BEFF;border:5px solid #0B0F12;border-radius:14px;
+  box-shadow:0 14px 30px rgba(11,15,18,.32);font-family:'Bebas Neue',sans-serif;font-size:84px;line-height:1;letter-spacing:3px;color:#0B0F12;}
+.cc-stamp span{display:block;position:relative;top:.05em;}
+.cc-stamp svg{display:block;width:56px;height:56px;flex:none;}
+</style>
+<div id="root" data-composition-id="clock-counter" data-width="1080" data-height="1920">
+<div class="cc-wrap"><div class="cc-in">
+<div class="cc-card">
+<div class="cc-kick"><span class="cc-dot"></span><span data-var-text="label">SAMPLE · START TO FINISH</span></div>
+<div class="cc-clock" data-slot="clock"></div>
+<div class="cc-src"><svg viewBox="0 0 24 24"><path d="M6 2.8h8.2L19 7.6v13.6H6z" fill="none" stroke="#5B6670" stroke-width="2" stroke-linejoin="round"/><path d="M14 2.8v5h5M9 12.5h7M9 16.5h7" fill="none" stroke="#5B6670" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-var-text="source">Source: where this time came from</span></div>
+<div class="cc-stampbox" data-layout-allow-overlap><div class="cc-ring"></div><div class="cc-stamp"><svg viewBox="0 0 40 40"><path d="M9 21l7.5 7.5L31 13" fill="none" stroke="#0B0F12" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>DONE</span></div></div>
+</div>
+</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const D = {"from": "0:00", "to": "0:30", "label": "SAMPLE \u00b7 START TO FINISH", "source": "Source: where this time came from", "top": 260, "centerX": 496, "scale": 1, "runAt": 0.4, "runDur": 1.2, "outAt": 2.25};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null) ? D[k] : x; };
+const T = function(k){ const x = V(k); return (x === '' ) ? String(D[k]) : String(x); };
+const N = function(k){ const x = V(k); const n = Number(x); return (x === '' || !isFinite(n)) ? Number(D[k]) : n; };
+const Q = function(s){ return document.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+const wrap = Q('.cc-wrap'), inn = Q('.cc-in'), card = Q('.cc-card'), clock = Q("[data-slot='clock']");
+const stamp = Q('.cc-stamp'), ring = Q('.cc-ring'), src = Q('.cc-src'), dot = Q('.cc-dot'), kick = Q('.cc-kick');
+const W = 640;
+wrap.style.top = N('top') + 'px'; wrap.style.left = (N('centerX') - W / 2) + 'px';
+gsap.set(wrap, { scale: N('scale'), transformOrigin: '50% 0%' });
+
+// ---- times. 12-hour when both ends are 1-12 (12:50 -> 1:10 works), else 24-hour. The run never goes backwards.
+const parse = function(s){ const m = String(s || '').trim().match(/^(\d{1,2})\s*[:.hH]\s*(\d{2})/); return m ? { h: +m[1] % 24, m: Math.min(59, +m[2]), lead: m[1].length === 2 && m[1].charAt(0) === '0' } : null; };
+const A = parse(V('from')) || parse(D.from), B = parse(V('to')) || parse(D.to);
+const twelve = A.h >= 1 && A.h <= 12 && B.h >= 1 && B.h <= 12;
+const period = twelve ? 720 : 1440;
+const mins = function(t){ return twelve ? (t.h % 12) * 60 + t.m : t.h * 60 + t.m; };
+const a0 = mins(A), span = (mins(B) - a0 + period) % period;
+const fmt = function(k){ const mm = (a0 + k) % period; let h = Math.floor(mm / 60); const m = mm % 60;
+  if (twelve && h === 0) h = 12; let hs = String(h); if ((A.lead || !twelve) && hs.length < 2) hs = '0' + hs;   // 24-hour pads: 00:12
+  return { h: hs, m: (m < 10 ? '0' : '') + m }; };
+let hw = 1; for (let k = 0; k <= span; k++) { hw = Math.max(hw, fmt(k).h.length); if (hw === 2) break; }
+const BLANK = -1;   // a slot with no digit (only when the hour width changes, e.g. 12:59 -> 1:00)
+const idx = function(k){ const f = fmt(k); const hs = f.h.length < hw ? ' ' + f.h : f.h; const out = [];
+  for (let i = 0; i < hw; i++) { const c = hs.charAt(i); out.push(c === ' ' ? BLANK : +c); }
+  out.push(+f.m.charAt(0)); out.push(+f.m.charAt(1)); return out; };
+
+// ---- build the digit slots once: 10 stacked cells per slot, only the current one is shown (no text is rewritten)
+const cells = [];
+if (clock && !clock.dataset.done) { clock.dataset.done = '1';
+  const mk = function(){ const slot = document.createElement('span'); slot.className = 'cc-slot'; slot.setAttribute('data-layout-allow-overflow', '');
+    const row = []; for (let c = 0; c < 10; c++) { const cell = document.createElement('span'); cell.className = 'cc-cell';
+      const g = document.createElement('b'); g.textContent = String(c); cell.appendChild(g); slot.appendChild(cell); row.push(cell); }
+    clock.appendChild(slot); cells.push(row); };
+  for (let i = 0; i < hw; i++) mk();
+  const col = document.createElement('span'); col.className = 'cc-colon'; col.appendChild(document.createElement('i')); col.appendChild(document.createElement('i')); clock.appendChild(col);
+  mk(); mk();
+}
+let prev = idx(0);
+cells.forEach(function(row, i){ row.forEach(function(c, d){ gsap.set(c, { opacity: d === prev[i] ? 1 : 0, yPercent: 0 }); }); });
+
+// ---- the run: value k shows at an ease-out time (power 3: fast, then slows), the last minute lands at runAt+runDur.
+// Rounded schedule (value k appears once the eased progress passes k-0.5), rescaled so k = span arrives at the end.
+const runAt = Math.max(0, N('runAt')), runDur = Math.max(0.3, N('runDur')), POW = 3;
+const xinv = function(p){ return 1 - Math.pow(Math.max(0, 1 - p), 1 / POW); };
+const xEnd = span > 0 ? xinv((span - 0.5) / span) : 1;
+const tick = function(k){ return runAt + runDur * xinv((k - 0.5) / span) / xEnd; };
+let tPrev = runAt, lastRoll = 0;
+for (let k = 1; k <= span; k++) {
+  const t = tick(k), cur = idx(k), gap = t - tPrev;
+  for (let i = 0; i < cells.length; i++) {
+    const o = prev[i], n = cur[i];
+    if (o === n) continue;
+    const oc = o >= 0 ? cells[i][o] : null, nc = n >= 0 ? cells[i][n] : null;
+    if (i >= hw && gap >= 0.05 && oc && nc) {        // slow end of the run: the minute digit rolls up like an odometer
+      const d = Math.min(0.14, gap * 0.8); lastRoll = Math.max(lastRoll, d);
+      tl.set(nc, { opacity: 1 }, t);
+      tl.fromTo(nc, { yPercent: 100 }, { yPercent: 0, duration: d, ease: 'power2.out', immediateRender: false }, t);
+      tl.fromTo(oc, { yPercent: 0 }, { yPercent: -100, duration: d, ease: 'power2.out', immediateRender: false }, t);
+      tl.set(oc, { opacity: 0, yPercent: 0 }, t + d + 0.001);
+    } else {
+      if (oc) tl.set(oc, { opacity: 0 }, t);
+      if (nc) tl.set(nc, { opacity: 1 }, t);
+    }
+  }
+  prev = cur; tPrev = t;
+}
+const stopAt = span > 0 ? tick(span) + (tPrev - tick(span - 1) >= 0.05 ? lastRoll : 0) : runAt;
+const doneAt = stopAt + 0.03;
+
+// ---- entrance, live dot, DONE stamp, exit
+gsap.set(inn, { y: 40, opacity: 0 }); gsap.set(src, { opacity: 0, y: 8 });
+gsap.set(stamp, { opacity: 0, scale: 2.5, rotation: -18 }); gsap.set(ring, { opacity: 0, scale: 0.7, rotation: 7 });
+tl.fromTo(inn, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.34, ease: 'power3.out', immediateRender: false }, 0);
+tl.fromTo(src, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.28, ease: 'power2.out', immediateRender: false }, 0.2);
+for (let b = runAt; b < doneAt - 0.12; b += 0.24) { tl.set(dot, { opacity: 0.25 }, b); tl.set(dot, { opacity: 1 }, b + 0.12); }
+tl.set(dot, { opacity: 1 }, doneAt);
+tl.fromTo(stamp, { opacity: 0, scale: 2.5, rotation: -18 }, { opacity: 1, scale: 1, rotation: 7, duration: 0.17, ease: 'power4.in', immediateRender: false }, doneAt);
+tl.fromTo(stamp, { scale: 1 }, { scale: 1.06, duration: 0.07, ease: 'power2.out', immediateRender: false }, doneAt + 0.17);
+tl.fromTo(stamp, { scale: 1.06 }, { scale: 1, duration: 0.2, ease: 'power2.inOut', immediateRender: false }, doneAt + 0.24);
+tl.fromTo(ring, { opacity: 0.95, scale: 1 }, { opacity: 0, scale: 1.55, duration: 0.45, ease: 'power2.out', immediateRender: false }, doneAt + 0.17);
+tl.fromTo(card, { y: 0 }, { y: 9, duration: 0.05, ease: 'power2.out', immediateRender: false }, doneAt + 0.17);
+tl.fromTo(card, { y: 9 }, { y: 0, duration: 0.3, ease: 'back.out(3)', immediateRender: false }, doneAt + 0.22);
+const outAt = N('outAt');
+if (outAt < 98) tl.fromTo(inn, { y: 0, opacity: 1 }, { y: -26, opacity: 0, duration: 0.26, ease: 'power2.in', immediateRender: false }, Math.max(outAt, doneAt + 0.5));
+window.__timelines["clock-counter"] = tl;
+</script>
+</template>
+</body>
+</html>

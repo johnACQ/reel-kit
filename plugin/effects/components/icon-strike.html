@@ -1,0 +1,101 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "count", "type": "number", "label": "How many tiles (2-4)", "default": 3, "min": 1, "max": 4, "step": 1}, {"id": "label1", "type": "string", "label": "Tile 1 label", "default": "Editing app"}, {"id": "label2", "type": "string", "label": "Tile 2 label", "default": "Captions app"}, {"id": "label3", "type": "string", "label": "Tile 3 label", "default": "Audio app"}, {"id": "label4", "type": "string", "label": "Tile 4 label", "default": "Effects app"}, {"id": "glyph1", "type": "enum", "label": "Tile 1 glyph", "default": "scissors", "options": [{"value": "scissors", "label": "scissors"}, {"value": "film", "label": "film"}, {"value": "play", "label": "play"}, {"value": "sliders", "label": "sliders"}, {"value": "wave", "label": "wave"}, {"value": "camera", "label": "camera"}, {"value": "layers", "label": "layers"}, {"value": "captions", "label": "captions"}, {"value": "mic", "label": "mic"}]}, {"id": "glyph2", "type": "enum", "label": "Tile 2 glyph", "default": "captions", "options": [{"value": "scissors", "label": "scissors"}, {"value": "film", "label": "film"}, {"value": "play", "label": "play"}, {"value": "sliders", "label": "sliders"}, {"value": "wave", "label": "wave"}, {"value": "camera", "label": "camera"}, {"value": "layers", "label": "layers"}, {"value": "captions", "label": "captions"}, {"value": "mic", "label": "mic"}]}, {"id": "glyph3", "type": "enum", "label": "Tile 3 glyph", "default": "wave", "options": [{"value": "scissors", "label": "scissors"}, {"value": "film", "label": "film"}, {"value": "play", "label": "play"}, {"value": "sliders", "label": "sliders"}, {"value": "wave", "label": "wave"}, {"value": "camera", "label": "camera"}, {"value": "layers", "label": "layers"}, {"value": "captions", "label": "captions"}, {"value": "mic", "label": "mic"}]}, {"id": "glyph4", "type": "enum", "label": "Tile 4 glyph", "default": "sliders", "options": [{"value": "scissors", "label": "scissors"}, {"value": "film", "label": "film"}, {"value": "play", "label": "play"}, {"value": "sliders", "label": "sliders"}, {"value": "wave", "label": "wave"}, {"value": "camera", "label": "camera"}, {"value": "layers", "label": "layers"}, {"value": "captions", "label": "captions"}, {"value": "mic", "label": "mic"}]}, {"id": "tint1", "type": "color", "label": "Tile 1 colour", "default": "#4F6D8F"}, {"id": "tint2", "type": "color", "label": "Tile 2 colour", "default": "#7A5C8E"}, {"id": "tint3", "type": "color", "label": "Tile 3 colour", "default": "#3D7C77"}, {"id": "tint4", "type": "color", "label": "Tile 4 colour", "default": "#A9674D"}, {"id": "icon1", "type": "string", "label": "Tile 1 icon image you have the rights to use (path); blank = generic glyph tile", "default": ""}, {"id": "icon2", "type": "string", "label": "Tile 2 icon image you have the rights to use (path); blank = generic glyph tile", "default": ""}, {"id": "icon3", "type": "string", "label": "Tile 3 icon image you have the rights to use (path); blank = generic glyph tile", "default": ""}, {"id": "icon4", "type": "string", "label": "Tile 4 icon image you have the rights to use (path); blank = generic glyph tile", "default": ""}, {"id": "word", "type": "string", "label": "Word after the strike (serif italic)", "default": "strike."}, {"id": "strikeAt", "type": "number", "label": "First strike starts (s from clip start, lock to the spoken word)", "default": 0.75, "min": 0, "step": 0.01, "unit": "s"}, {"id": "strikeGap", "type": "number", "label": "Gap between strikes (s)", "default": 0.12, "min": 0, "step": 0.01, "unit": "s"}, {"id": "hold", "type": "number", "label": "Word holds this long, then exits (s). 0 = hold to the cut", "default": 0.35, "min": 0, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the row (px). Top band 236; below the chin ~1196", "default": 236, "min": 220, "max": 1290, "step": 1, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: icon-strike. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.gly{fill:none;stroke:#fff;stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round;overflow:visible;}.gly .f{fill:#fff;}
+.appicon{display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:inherit;object-fit:cover;}
+.has-icon{background:none !important;overflow:hidden;}
+.has-icon .appicon{display:block;}
+.has-icon .gly{display:none !important;}
+.is-wrap{position:absolute;left:72px;right:160px;top:calc(var(--top, 236) * 1px);height:200px;}
+.is-row{position:absolute;left:0;right:0;top:0;display:flex;justify-content:center;}
+.is-slot{width:176px;display:flex;flex-direction:column;align-items:center;}
+.is-pop{position:relative;width:124px;height:124px;}
+.is-tile{position:absolute;inset:0;border-radius:30px;background:linear-gradient(165deg,color-mix(in srgb,var(--t) 70%,#ffffff) 0%,var(--t) 52%,color-mix(in srgb,var(--t) 82%,#000000) 100%);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.28),inset 0 -3px 8px rgba(0,0,0,.14),0 16px 34px rgba(11,15,18,.34);
+  display:flex;align-items:center;justify-content:center;}
+.is-tile .gly{width:70px;height:70px;}
+.is-s1 .is-tile{--t:var(--tint1, #4F6D8F);} .is-s2 .is-tile{--t:var(--tint2, #7A5C8E);} .is-s3 .is-tile{--t:var(--tint3, #3D7C77);} .is-s4 .is-tile{--t:var(--tint4, #A9674D);}
+.is-strike{position:absolute;left:-16px;top:-16px;width:156px;height:156px;overflow:visible;filter:drop-shadow(0 3px 4px rgba(11,15,18,.35));}
+.is-strike path{fill:none;stroke:#FF4D4D;stroke-width:7.4;stroke-linecap:round;stroke-dasharray:1 2;}
+.is-lab{margin-top:14px;background:#FFFFFF;border-radius:99px;padding:8px 16px 9px;font:700 23px/1 Roboto,sans-serif;color:#0B0F12;white-space:nowrap;
+  box-shadow:0 8px 22px rgba(11,15,18,.24);}
+.is-wordrow{position:absolute;left:0;right:0;top:104px;display:flex;justify-content:center;}
+.is-chip{background:#FFFFFF;border-radius:14px;padding:4px 28px 11px;font:italic 400 74px/1 'Instrument Serif',Georgia,serif;color:#0B0F12;
+  letter-spacing:.5px;white-space:nowrap;box-shadow:0 24px 60px rgba(11,15,18,.30);}
+</style>
+<div id="root" data-composition-id="icon-strike" data-width="1080" data-height="1920">
+<div class="is-wrap"><div class="is-row"><div class="is-slot is-s1"><div class="is-pop"><div class="is-tile"><svg class="gly" viewBox="0 0 64 64" aria-hidden="true"><g data-glyph="scissors"><circle cx="20" cy="46" r="7.5"/><circle cx="44" cy="46" r="7.5"/><path d="M25.5 40.5L47 11M38.5 40.5L17 11"/></g><g data-glyph="film"><rect x="13" y="9" width="38" height="46" rx="6"/><path d="M22 9v46M42 9v46M22 32h20"/><g class="f"><rect x="15.6" y="15" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="25" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="35" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="45" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="15" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="25" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="35" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="45" width="3.6" height="4.4" rx="1"/></g></g><g data-glyph="play"><circle cx="32" cy="32" r="21"/><path class="f" d="M27.5 22.5L43 32L27.5 41.5Z" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></g><g data-glyph="sliders"><path d="M13 20h38M13 32h38M13 44h38"/><g class="f"><circle cx="24" cy="20" r="6"/><circle cx="41" cy="32" r="6"/><circle cx="29" cy="44" r="6"/></g></g><g data-glyph="wave"><path d="M13 28v8M19.5 22v20M26 15v34M32.5 24v16M39 18v28M45.5 12v40M52 26v12"/></g><g data-glyph="camera"><rect x="9" y="20" width="46" height="31" rx="8"/><circle cx="32" cy="35.5" r="8.5"/><path d="M23 20l3.5-6.5h11L41 20"/></g><g data-glyph="layers"><path class="f" d="M32 11L53 22L32 33L11 22Z" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M11 31.5L32 42.5L53 31.5M11 41.5L32 52.5L53 41.5"/></g><g data-glyph="captions"><rect x="8" y="14" width="48" height="36" rx="8"/><path d="M17 28h22M17 38h10M33 38h14"/></g><g data-glyph="mic"><rect x="24.5" y="9" width="15" height="27" rx="7.5"/><path d="M17 30a15 15 0 0 0 30 0M32 45v9M24 54h16"/></g></svg><img class="appicon" data-var-src="icon1" src="compositions/assets/fx_icons/tile-scissors.svg" alt="" /></div><svg class="is-strike" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="M13 30 L87 70"/></svg></div><div class="is-lab" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="label1">Editing app</div></div><div class="is-slot is-s2"><div class="is-pop"><div class="is-tile"><svg class="gly" viewBox="0 0 64 64" aria-hidden="true"><g data-glyph="scissors"><circle cx="20" cy="46" r="7.5"/><circle cx="44" cy="46" r="7.5"/><path d="M25.5 40.5L47 11M38.5 40.5L17 11"/></g><g data-glyph="film"><rect x="13" y="9" width="38" height="46" rx="6"/><path d="M22 9v46M42 9v46M22 32h20"/><g class="f"><rect x="15.6" y="15" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="25" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="35" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="45" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="15" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="25" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="35" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="45" width="3.6" height="4.4" rx="1"/></g></g><g data-glyph="play"><circle cx="32" cy="32" r="21"/><path class="f" d="M27.5 22.5L43 32L27.5 41.5Z" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></g><g data-glyph="sliders"><path d="M13 20h38M13 32h38M13 44h38"/><g class="f"><circle cx="24" cy="20" r="6"/><circle cx="41" cy="32" r="6"/><circle cx="29" cy="44" r="6"/></g></g><g data-glyph="wave"><path d="M13 28v8M19.5 22v20M26 15v34M32.5 24v16M39 18v28M45.5 12v40M52 26v12"/></g><g data-glyph="camera"><rect x="9" y="20" width="46" height="31" rx="8"/><circle cx="32" cy="35.5" r="8.5"/><path d="M23 20l3.5-6.5h11L41 20"/></g><g data-glyph="layers"><path class="f" d="M32 11L53 22L32 33L11 22Z" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M11 31.5L32 42.5L53 31.5M11 41.5L32 52.5L53 41.5"/></g><g data-glyph="captions"><rect x="8" y="14" width="48" height="36" rx="8"/><path d="M17 28h22M17 38h10M33 38h14"/></g><g data-glyph="mic"><rect x="24.5" y="9" width="15" height="27" rx="7.5"/><path d="M17 30a15 15 0 0 0 30 0M32 45v9M24 54h16"/></g></svg><img class="appicon" data-var-src="icon2" src="compositions/assets/fx_icons/tile-captions.svg" alt="" /></div><svg class="is-strike" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="M13 30 L87 70"/></svg></div><div class="is-lab" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="label2">Captions app</div></div><div class="is-slot is-s3"><div class="is-pop"><div class="is-tile"><svg class="gly" viewBox="0 0 64 64" aria-hidden="true"><g data-glyph="scissors"><circle cx="20" cy="46" r="7.5"/><circle cx="44" cy="46" r="7.5"/><path d="M25.5 40.5L47 11M38.5 40.5L17 11"/></g><g data-glyph="film"><rect x="13" y="9" width="38" height="46" rx="6"/><path d="M22 9v46M42 9v46M22 32h20"/><g class="f"><rect x="15.6" y="15" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="25" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="35" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="45" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="15" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="25" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="35" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="45" width="3.6" height="4.4" rx="1"/></g></g><g data-glyph="play"><circle cx="32" cy="32" r="21"/><path class="f" d="M27.5 22.5L43 32L27.5 41.5Z" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></g><g data-glyph="sliders"><path d="M13 20h38M13 32h38M13 44h38"/><g class="f"><circle cx="24" cy="20" r="6"/><circle cx="41" cy="32" r="6"/><circle cx="29" cy="44" r="6"/></g></g><g data-glyph="wave"><path d="M13 28v8M19.5 22v20M26 15v34M32.5 24v16M39 18v28M45.5 12v40M52 26v12"/></g><g data-glyph="camera"><rect x="9" y="20" width="46" height="31" rx="8"/><circle cx="32" cy="35.5" r="8.5"/><path d="M23 20l3.5-6.5h11L41 20"/></g><g data-glyph="layers"><path class="f" d="M32 11L53 22L32 33L11 22Z" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M11 31.5L32 42.5L53 31.5M11 41.5L32 52.5L53 41.5"/></g><g data-glyph="captions"><rect x="8" y="14" width="48" height="36" rx="8"/><path d="M17 28h22M17 38h10M33 38h14"/></g><g data-glyph="mic"><rect x="24.5" y="9" width="15" height="27" rx="7.5"/><path d="M17 30a15 15 0 0 0 30 0M32 45v9M24 54h16"/></g></svg><img class="appicon" data-var-src="icon3" src="compositions/assets/fx_icons/tile-wave.svg" alt="" /></div><svg class="is-strike" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="M13 30 L87 70"/></svg></div><div class="is-lab" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="label3">Audio app</div></div><div class="is-slot is-s4"><div class="is-pop"><div class="is-tile"><svg class="gly" viewBox="0 0 64 64" aria-hidden="true"><g data-glyph="scissors"><circle cx="20" cy="46" r="7.5"/><circle cx="44" cy="46" r="7.5"/><path d="M25.5 40.5L47 11M38.5 40.5L17 11"/></g><g data-glyph="film"><rect x="13" y="9" width="38" height="46" rx="6"/><path d="M22 9v46M42 9v46M22 32h20"/><g class="f"><rect x="15.6" y="15" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="25" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="35" width="3.6" height="4.4" rx="1"/><rect x="15.6" y="45" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="15" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="25" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="35" width="3.6" height="4.4" rx="1"/><rect x="44.8" y="45" width="3.6" height="4.4" rx="1"/></g></g><g data-glyph="play"><circle cx="32" cy="32" r="21"/><path class="f" d="M27.5 22.5L43 32L27.5 41.5Z" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></g><g data-glyph="sliders"><path d="M13 20h38M13 32h38M13 44h38"/><g class="f"><circle cx="24" cy="20" r="6"/><circle cx="41" cy="32" r="6"/><circle cx="29" cy="44" r="6"/></g></g><g data-glyph="wave"><path d="M13 28v8M19.5 22v20M26 15v34M32.5 24v16M39 18v28M45.5 12v40M52 26v12"/></g><g data-glyph="camera"><rect x="9" y="20" width="46" height="31" rx="8"/><circle cx="32" cy="35.5" r="8.5"/><path d="M23 20l3.5-6.5h11L41 20"/></g><g data-glyph="layers"><path class="f" d="M32 11L53 22L32 33L11 22Z" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M11 31.5L32 42.5L53 31.5M11 41.5L32 52.5L53 41.5"/></g><g data-glyph="captions"><rect x="8" y="14" width="48" height="36" rx="8"/><path d="M17 28h22M17 38h10M33 38h14"/></g><g data-glyph="mic"><rect x="24.5" y="9" width="15" height="27" rx="7.5"/><path d="M17 30a15 15 0 0 0 30 0M32 45v9M24 54h16"/></g></svg><img class="appicon" data-var-src="icon4" src="compositions/assets/fx_icons/tile-sliders.svg" alt="" /></div><svg class="is-strike" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="M13 30 L87 70"/></svg></div><div class="is-lab" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="label4">Effects app</div></div></div><div class="is-wordrow"><div class="is-chip" data-var-text="word">strike.</div></div></div>
+</div>
+<script>
+const CID = "icon-strike";
+const DEF = {"count": 3, "label1": "Editing app", "label2": "Captions app", "label3": "Audio app", "label4": "Effects app", "glyph1": "scissors", "glyph2": "captions", "glyph3": "wave", "glyph4": "sliders", "tint1": "#4F6D8F", "tint2": "#7A5C8E", "tint3": "#3D7C77", "tint4": "#A9674D", "icon1": "", "icon2": "", "icon3": "", "icon4": "", "word": "strike.", "strikeAt": 0.75, "strikeGap": 0.12, "hold": 0.35, "top": 236};
+const GLYPHS = ["scissors", "film", "play", "sliders", "wave", "camera", "layers", "captions", "mic"];
+const got = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const v = Object.assign({}, DEF, got || {});
+const num = function (k) { const x = Number(v[k]); return isFinite(x) ? x : Number(DEF[k]); };
+// The runtime scopes document queries to THIS instance and renames the root id per mount (icon-strike__hf1, ...),
+// so query by plain class: a "[data-composition-id='" + CID + "']" prefix matches nothing once a comp is mounted twice.
+const qa = function (s) { return Array.from(document.querySelectorAll(s)); };
+const q1 = function (s) { return document.querySelector(s); };
+function pickGlyph(slot, i) {
+  const want = String(v["glyph" + (i + 1)] || "").toLowerCase().trim();
+  const name = GLYPHS.indexOf(want) >= 0 ? want : DEF["glyph" + (i + 1)];
+  slot.querySelectorAll("[data-glyph]").forEach(function (g) { g.style.display = g.getAttribute("data-glyph") === name ? "" : "none"; });
+  const src = String(v["icon" + (i + 1)] || "").trim();
+  const tile = slot.querySelector(".is-tile, .jd-tile"), img = slot.querySelector("img.appicon");
+  if (src && tile && img) { img.setAttribute("src", src); tile.classList.add("has-icon"); }
+}
+const tl = gsap.timeline({ paused: true });
+
+const n = Math.max(1, Math.min(4, Math.round(num("count"))));
+const slots = qa(".is-slot");
+slots.forEach(function (s, i) { s.style.display = i < n ? "" : "none"; pickGlyph(s, i); });
+const live = slots.slice(0, n);
+const pops = live.map(function (s) { return s.querySelector(".is-pop"); });
+const tiles = live.map(function (s) { return s.querySelector(".is-tile"); });
+const lines = live.map(function (s) { return s.querySelector(".is-strike path"); });
+const labs = live.map(function (s) { return s.querySelector(".is-lab"); });
+const wrap = q1(".is-wrap"), chip = q1(".is-chip");
+const ROT = [-4, 3, -3, 4];
+// initial states, outside the timeline
+gsap.set(pops, { scale: 0.3, opacity: 0, y: 26, rotation: 0 });
+gsap.set(tiles, { filter: "grayscale(0) brightness(1)" });
+gsap.set(lines, { strokeDashoffset: 1, opacity: 0 });
+gsap.set(labs, { opacity: 0, y: 8 });
+gsap.set(chip, { opacity: 0, scale: 0.7, y: 14, rotation: -6 });
+gsap.set(wrap, { opacity: 1, y: 0 });
+// 1. tiles pop in one by one: overshoot, then settle
+let lastStrike = 0;
+pops.forEach(function (p, i) {
+  const t = 0.06 + i * 0.12;
+  tl.fromTo(p, { scale: 0.3, opacity: 0, y: 26 }, { scale: 1, y: 0, duration: 0.5, ease: "back.out(2.4)", immediateRender: false }, t);
+  tl.fromTo(p, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "none", immediateRender: false }, t);
+  tl.fromTo(labs[i], { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", immediateRender: false }, t + 0.16);
+  // 2. red strike draws across, then the tile greys out and drops
+  const s = Math.max(num("strikeAt") + i * num("strikeGap"), t + 0.36);
+  lastStrike = Math.max(lastStrike, s);
+  tl.set(lines[i], { opacity: 1 }, s);
+  tl.fromTo(lines[i], { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, s);
+  tl.fromTo(tiles[i], { filter: "grayscale(0) brightness(1)" }, { filter: "grayscale(1) brightness(1.3)", duration: 0.3, ease: "power1.out", immediateRender: false }, s + 0.1);
+  tl.fromTo(p, { y: 0, scale: 1, rotation: 0 }, { y: 16, scale: 0.94, rotation: ROT[i], duration: 0.38, ease: "power2.out", immediateRender: false }, s + 0.1);
+});
+// 3. labels step back, the word stamps in over the struck row
+const w = lastStrike + 0.22;
+labs.forEach(function (l) { tl.fromTo(l, { opacity: 1 }, { opacity: 0, duration: 0.2, ease: "power1.in", immediateRender: false }, w - 0.12); });
+tl.fromTo(chip, { opacity: 0, scale: 0.7, y: 14, rotation: -6 }, { opacity: 1, scale: 1, y: 0, rotation: -2, duration: 0.36, ease: "back.out(2.6)", immediateRender: false }, w);
+// 4. optional exit
+const hold = num("hold");
+if (hold > 0) {
+  tl.fromTo(wrap, { opacity: 1, y: 0 }, { opacity: 0, y: -14, duration: 0.24, ease: "power2.in", immediateRender: false }, w + 0.36 + hold);
+}
+
+window.__timelines["icon-strike"] = tl;
+</script>
+</template>
+</body>
+</html>

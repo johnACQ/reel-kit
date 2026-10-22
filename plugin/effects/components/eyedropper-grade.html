@@ -1,0 +1,101 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "hex1", "type": "string", "label": "Swatch 1 hex", "default": "#0B0F12"}, {"id": "hex2", "type": "string", "label": "Swatch 2 hex", "default": "#1D4E63"}, {"id": "hex3", "type": "string", "label": "Swatch 3 hex", "default": "#00BEFF"}, {"id": "hex4", "type": "string", "label": "Swatch 4 hex", "default": "#E6F2F7"}, {"id": "label", "type": "string", "label": "Card kicker", "default": "SAMPLE PALETTE"}, {"id": "targetFilter", "type": "string", "label": "Target grade (CSS filter on the footage under it)", "default": "saturate(.72) contrast(1.08) brightness(1.03)"}, {"id": "tintOpacity", "type": "number", "label": "Palette tint strength 0-1 (hex3 at the top to hex2 at the bottom)", "default": 0.3}, {"id": "tintBlend", "type": "string", "label": "Tint blend mode (color keeps the light and shade, soft-light is gentler)", "default": "color"}, {"id": "pickX", "type": "number", "label": "Eyedropper tip x (px)", "default": 120}, {"id": "pickY", "type": "number", "label": "Eyedropper tip y (px)", "default": 800}, {"id": "cardY", "type": "number", "label": "Palette card top y (px)", "default": 1296}, {"id": "pickAt", "type": "number", "label": "Tip touches the frame (s from clip start)", "default": 0.42}, {"id": "cardAt", "type": "number", "label": "Palette card pops in (s)", "default": 0.6}, {"id": "gradeAt", "type": "number", "label": "Regrade starts (s)", "default": 1.0}, {"id": "gradeDur", "type": "number", "label": "Regrade length (s)", "default": 0.7}, {"id": "cardOutAt", "type": "number", "label": "Card leaves (s)", "default": 1.7}, {"id": "releaseAt", "type": "number", "label": "Grade fades back to the untouched footage (s; 99 = hold to clip end)", "default": 2.0}, {"id": "releaseDur", "type": "number", "label": "Release fade (s)", "default": 0.3}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: eyedropper-grade. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/InstrumentSerif-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.ed{position:absolute;inset:0;}
+.ed-pane{position:absolute;inset:0;opacity:0;}
+.ed-tint{mix-blend-mode:color;}
+.ed-ring{position:absolute;left:150px;top:600px;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:99px;opacity:0;}
+.ed-ring1{border:7px solid #FFFFFF;box-shadow:0 0 22px rgba(11,15,18,.4);}
+.ed-ring2{border:6px solid #00BEFF;}
+.ed-tool{position:absolute;left:115px;top:375px;width:260px;height:260px;opacity:0;transform-origin:35px 225px;}
+.ed-tool svg{display:block;width:260px;height:260px;overflow:visible;filter:drop-shadow(0 10px 18px rgba(11,15,18,.45));}
+.ed-card{left:72px;top:1296px;width:848px;padding:20px 26px 22px;opacity:0;}
+.ed-kick{display:flex;justify-content:space-between;font:500 20px 'Roboto Mono',monospace;letter-spacing:3px;color:#5B6670;}
+.ed-row{display:flex;justify-content:space-between;margin-top:16px;}
+.ed-item{display:flex;align-items:center;width:190px;}
+.ed-sw{width:62px;height:62px;border-radius:14px;border:1px solid rgba(11,15,18,.16);flex:none;}
+.ed-hex{margin-left:14px;font:500 25px 'Roboto Mono',monospace;color:#0B0F12;white-space:nowrap;}
+.ed-hex span{opacity:0;}
+</style>
+<div id="root" data-composition-id="eyedropper-grade" data-width="1080" data-height="1920">
+<div class="ed" data-fx="eyedropper-grade">
+<div class="ed-pane ed-grade"></div>
+<div class="ed-pane ed-tint"></div>
+<div class="ed-ring ed-ring1"></div><div class="ed-ring ed-ring2"></div>
+<div class="ed-tool"><svg viewBox="0 0 150 150"><g transform="rotate(42 20 130)"><path d="M20 130 L13.5 112 L26.5 112 Z" fill="#0B0F12"/><rect x="12" y="64" width="16" height="50" rx="4" fill="#FFFFFF" stroke="#0B0F12" stroke-width="3.5"/><rect class="ed-liquid" x="16" y="84" width="8" height="26" rx="2" fill="#00BEFF"/><rect x="5" y="50" width="30" height="16" rx="4" fill="#0B0F12"/><rect x="9" y="6" width="22" height="48" rx="11" fill="#0B0F12"/><rect x="14" y="14" width="5" height="22" rx="2.5" fill="#FFFFFF" opacity=".35"/></g></svg></div>
+<div class="card ed-card"><div class="ed-kick"><span data-var-text="label">SAMPLE PALETTE</span><span>04</span></div>
+<div class="ed-row"><div class="ed-item"><div class="ed-sw ed-sw1"></div><div class="ed-hex mono" data-slot="h1"></div></div><div class="ed-item"><div class="ed-sw ed-sw2"></div><div class="ed-hex mono" data-slot="h2"></div></div><div class="ed-item"><div class="ed-sw ed-sw3"></div><div class="ed-hex mono" data-slot="h3"></div></div><div class="ed-item"><div class="ed-sw ed-sw4"></div><div class="ed-hex mono" data-slot="h4"></div></div></div></div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const ent = document.querySelectorAll("[data-composition-id='eyedropper-grade'] .enter");
+if (ent.length) tl.fromTo(ent, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0.04);
+const v = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const num = function(k, d){ const x = Number(v[k]); return (v[k] === undefined || v[k] === '' || !isFinite(x)) ? d : x; };
+const str = function(k, d){ return (v[k] === undefined || v[k] === null || String(v[k]) === '') ? d : String(v[k]); };
+
+const W = document.querySelector('[data-fx="eyedropper-grade"]');
+const q = function(s){ return W.querySelector(s); };
+const hex = [1, 2, 3, 4].map(function(i, k){ return str('hex' + i, ["#0B0F12", "#1D4E63", "#00BEFF", "#E6F2F7"][k]); });
+const grade = q('.ed-grade'), tint = q('.ed-tint'), tool = q('.ed-tool'), card = q('.ed-card');
+const r1 = q('.ed-ring1'), r2 = q('.ed-ring2'), liquid = q('.ed-liquid');
+grade.style.webkitBackdropFilter = grade.style.backdropFilter = str('targetFilter', 'saturate(.72) contrast(1.08) brightness(1.03)');
+tint.style.background = 'linear-gradient(180deg,' + hex[2] + ' 0%,' + hex[1] + ' 100%)'; tint.style.mixBlendMode = str('tintBlend', 'color');
+liquid.setAttribute('fill', hex[2]);
+const px = num('pickX', 120), py = num('pickY', 800), cy = num('cardY', 1296);
+tool.style.left = (px - 35) + 'px'; tool.style.top = (py - 225) + 'px';   // the tip (20,130 of 150) sits on the pick point
+r1.style.left = r2.style.left = px + 'px'; r1.style.top = r2.style.top = py + 'px';
+card.style.top = cy + 'px';
+const pickAt = num('pickAt', .42), cardAt = num('cardAt', .6), gradeAt = num('gradeAt', 1), gradeDur = num('gradeDur', .7);
+const cardOutAt = num('cardOutAt', 1.7), relAt = num('releaseAt', 2), relDur = num('releaseDur', .3);
+const sws = [], chars = [];
+hex.forEach(function(h, k){
+  const sw = q('.ed-sw' + (k + 1)); sw.style.background = h; sws.push(sw);
+  const slot = q("[data-slot='h" + (k + 1) + "']");
+  if (slot && !slot.dataset.done) { slot.dataset.done = '1';
+    const row = [];
+    h.toUpperCase().split('').forEach(function(ch){ const s = document.createElement('span'); s.textContent = ch; slot.appendChild(s); row.push(s); });
+    chars.push(row);
+  } else { chars.push([]); }
+});
+gsap.set(tool, { x: 330, y: -250, rotation: -16, opacity: 0 }); gsap.set(liquid, { scaleY: 0, transformOrigin: '50% 100%' });
+gsap.set([r1, r2], { scale: .2, opacity: 0 }); gsap.set(card, { y: 46, scale: .96, opacity: 0 });
+gsap.set(sws, { scale: 0 }); gsap.set([grade, tint], { opacity: 0 });
+// the tool glides in on an arc (x and y on different eases), touches, fills, leaves
+const t0 = Math.max(0, pickAt - .42);
+tl.fromTo(tool, { opacity: 0 }, { opacity: 1, duration: .12, immediateRender: false }, t0);
+tl.fromTo(tool, { x: 330 }, { x: 0, duration: .42, ease: 'power3.out', immediateRender: false }, t0);
+tl.fromTo(tool, { y: -250, rotation: -16 }, { y: 0, rotation: 0, duration: .42, ease: 'power2.out', immediateRender: false }, t0);
+tl.fromTo(tool, { scale: 1 }, { scale: .9, duration: .07, ease: 'power2.in', immediateRender: false }, pickAt);
+tl.fromTo(tool, { scale: .9 }, { scale: 1, duration: .16, ease: 'back.out(3)', immediateRender: false }, pickAt + .07);
+tl.fromTo(liquid, { scaleY: 0 }, { scaleY: 1, duration: .24, ease: 'power2.out', immediateRender: false }, pickAt + .02);
+tl.fromTo(r1, { scale: .2, opacity: 1 }, { scale: 1.25, opacity: 0, duration: .5, ease: 'power2.out', immediateRender: false }, pickAt);
+tl.fromTo(r2, { scale: .2, opacity: 1 }, { scale: 1.6, opacity: 0, duration: .62, ease: 'power2.out', immediateRender: false }, pickAt + .06);
+tl.fromTo(tool, { x: 0, y: 0, opacity: 1 }, { x: 150, y: -110, opacity: 0, duration: .3, ease: 'power2.in', immediateRender: false }, pickAt + .34);
+// palette card: card, then swatches pop, then each hex code types in
+tl.fromTo(card, { y: 46, scale: .96, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: .32, ease: 'power3.out', immediateRender: false }, cardAt);
+sws.forEach(function(sw, k){
+  const ts = cardAt + .12 + k * .07;
+  tl.fromTo(sw, { scale: 0 }, { scale: 1, duration: .26, ease: 'back.out(2.4)', immediateRender: false }, ts);
+  chars[k].forEach(function(s, j){ tl.set(s, { opacity: 1 }, ts + .08 + j * .022); });
+});
+// the regrade: target filter + a soft-light wash in the palette, eased in together
+tl.fromTo([grade, tint], { opacity: 0 }, { opacity: function(i){ return i ? num('tintOpacity', .3) : 1; }, duration: gradeDur, ease: 'sine.inOut', immediateRender: false }, gradeAt);
+tl.fromTo(card, { y: 0, opacity: 1 }, { y: 36, opacity: 0, duration: .28, ease: 'power2.in', immediateRender: false }, cardOutAt);
+if (relAt < 98) tl.fromTo([grade, tint], { opacity: function(i){ return i ? num('tintOpacity', .3) : 1; } }, { opacity: 0, duration: relDur, ease: 'sine.inOut', immediateRender: false }, relAt);
+window.__timelines["eyedropper-grade"] = tl;
+</script>
+</template>
+</body>
+</html>

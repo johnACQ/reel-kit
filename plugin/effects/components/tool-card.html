@@ -1,0 +1,38 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "kicker", "type": "string", "label": "Kicker", "default": "FREE \u00b7 OPEN SOURCE"}, {"id": "category1", "type": "string", "label": "Category line 1", "default": "Voice"}, {"id": "category2", "type": "string", "label": "Category line 2 (accent)", "default": "Dictation"}, {"id": "tool", "type": "string", "label": "Tool name", "default": "tool-name"}, {"id": "replaces", "type": "string", "label": "Replaces", "default": "Paid App"}, {"id": "saves", "type": "string", "label": "Saves (live-checked)", "default": "SAMPLE"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: tool-card. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.card{left:190px;top:560px;width:700px;padding:36px 40px;}
+.kick{font:500 22px 'Roboto Mono',monospace;letter-spacing:2px;color:#5B6670;padding-bottom:16px;border-bottom:2px solid rgba(11,15,18,.10);}
+.cat{font:900 64px/1.05 Roboto,sans-serif;margin-top:22px;}
+.cat .fill{display:inline-block;margin-top:6px;padding:2px 14px;}
+.pill{display:inline-block;margin-top:22px;border:3px solid #0B0F12;border-radius:99px;padding:6px 22px;font:500 28px 'Roboto Mono',monospace;}
+.foot{margin-top:30px;padding-top:20px;border-top:2px solid rgba(11,15,18,.10);display:flex;align-items:flex-end;justify-content:space-between;}
+.rl{font:500 20px 'Roboto Mono',monospace;letter-spacing:2px;color:#5B6670;}
+.old{font:900 50px Roboto,sans-serif;text-decoration:line-through;text-decoration-color:#FF4D4D;text-decoration-thickness:7px;}
+.save{font:900 34px Roboto,sans-serif;padding:6px 16px;}
+.save small{font:500 18px 'Roboto Mono',monospace;letter-spacing:2px;display:block;}
+</style>
+<div id="root" data-composition-id="tool-card" data-width="1080" data-height="1920">
+<div class="card enter"><div class="kick" data-var-text="kicker">FREE · OPEN SOURCE</div>
+<div class="cat"><span data-var-text="category1">Voice</span><br><span class="fill" data-var-text="category2">Dictation</span></div>
+<div class="pill" data-var-text="tool">tool-name</div>
+<div class="foot"><div><div class="rl">REPLACES</div><div class="old" data-var-text="replaces">Paid App</div></div><div class="save fill"><small>SAVES</small><span data-var-text="saves">SAMPLE</span></div></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const ent = document.querySelectorAll(".enter");  // runtime scopes queries to this mount; an id-prefixed selector finds nothing once a component is mounted twice
+if (ent.length) tl.fromTo(ent, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0.04);
+
+window.__timelines["tool-card"] = tl;
+</script>
+</template>
+</body>
+</html>

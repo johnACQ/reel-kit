@@ -1,0 +1,75 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "word", "type": "string", "label": "Comment keyword (same as comment-drop)", "default": "WORD"}, {"id": "user", "type": "string", "label": "Commenter (generic, never a real person)", "default": "you"}, {"id": "handle", "type": "string", "label": "Who replies", "default": "yourhandle"}, {"id": "initials", "type": "string", "label": "Reply avatar initials", "default": "YH"}, {"id": "reply", "type": "string", "label": "Reply text", "default": "Sent. Check your DMs"}, {"id": "timeLabel", "type": "string", "label": "Time label", "default": "now"}, {"id": "replyAt", "type": "number", "label": "Reply slides in (s from clip start)", "default": 0.5, "min": 0.15, "max": 6, "step": 0.05, "unit": "s"}, {"id": "chain", "type": "boolean", "label": "Chain after comment-drop (posted row already on screen at frame 0)", "default": false}, {"id": "top", "type": "number", "label": "Top edge of the posted row (px; match comment-drop&#39;s top to chain)", "default": 236, "min": 220, "max": 1270, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre (px; match comment-drop to chain)", "default": 496, "min": 330, "max": 660, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: comment-reply. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.mono{font-family:'Roboto Mono',monospace;}
+.ccard{position:relative;width:620px;height:92px;background:#FFFFFF;border-radius:22px;box-shadow:0 18px 44px rgba(11,15,18,.30);}
+.av{position:absolute;left:16px;top:12px;width:48px;height:48px;border-radius:50%;overflow:hidden;}
+.av svg{display:block;width:100%;height:100%;}
+.prow{position:absolute;left:78px;right:70px;top:15px;}
+.pmeta{font:500 21px/26px Roboto,sans-serif;color:#5B6670;white-space:nowrap;}
+.pmeta b{font-weight:700;color:#0B0F12;margin-right:10px;}
+.pword{font:700 30px/36px Roboto,sans-serif;color:#0B0F12;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.heart{position:absolute;right:22px;top:30px;width:32px;height:32px;}
+.heart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+.cr{position:absolute;left:calc(var(--centerX) * 1px - 310px);width:620px;top:calc(var(--top) * 1px);}
+.reply{position:absolute;left:64px;top:102px;width:556px;height:88px;background:#FFFFFF;border-radius:22px;box-shadow:0 18px 44px rgba(11,15,18,.30);}
+.reply .av{width:46px;height:46px;top:14px;background:#0B0F12;display:flex;align-items:center;justify-content:center;font:400 25px/1 'Bebas Neue',sans-serif;color:#00BEFF;letter-spacing:1px;padding-top:3px;box-sizing:border-box;}
+.reply .prow{left:76px;right:20px;top:15px;}
+.rtext{font:500 27px/36px Roboto,sans-serif;color:#0B0F12;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dot{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:#00BEFF;}
+
+</style>
+<div id="root" data-composition-id="comment-reply" data-width="1080" data-height="1920">
+<div class="cr" data-tc="comment-reply">
+<div class="ccard posted"><div class="av"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="#E3E8EC"/><circle cx="24" cy="19" r="8.5" fill="#A3ADB6"/><path d="M8.6 41.6c2.6-7.6 8.6-11.6 15.4-11.6s12.8 4 15.4 11.6A23.9 23.9 0 0 1 24 48 23.9 23.9 0 0 1 8.6 41.6z" fill="#A3ADB6"/></svg></div>
+<div class="prow"><div class="pmeta"><b data-var-text="user">you</b><span data-var-text="timeLabel">now</span></div>
+<div class="pword" data-var-text="word">WORD</div></div>
+<div class="heart"><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i><svg class="hout" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="#5B6670" stroke-width="1.9"/></svg>
+<svg class="hfill" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#00BEFF" stroke="#0B0F12" stroke-width="1.6"/></svg></div>
+</div>
+<div class="reply"><div class="av" data-var-text="initials">YH</div>
+<div class="prow"><div class="pmeta"><b data-var-text="handle">yourhandle</b><span data-var-text="timeLabel">now</span></div>
+<div class="rtext" data-var-text="reply">Sent. Check your DMs</div></div></div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// The wrapper, not [data-composition-id=...]: a 2nd instance of the same component gets a renamed root.
+const R = document.querySelector("[data-tc='comment-reply']");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"word": "WORD", "user": "you", "handle": "yourhandle", "initials": "YH", "reply": "Sent. Check your DMs", "timeLabel": "now", "replyAt": 0.5, "chain": false, "top": 236, "centerX": 496};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const B = function(k){ const x = V(k); return x === true || x === 'true' || x === 1 || x === '1'; };
+const rnd = function(i, s){ const x = Math.sin(i * 12.9898 + s * 78.233) * 43758.5453; return x - Math.floor(x); };
+
+const POSTED = Q('.posted'), REPLY = Q('.reply'), HOUT = Q('.hout'), HFILL = Q('.hfill'), DOTSE = QA('.dot');
+const chain = B('chain');
+const A = Math.max(N('replyAt'), chain ? 0.15 : 0.35);
+gsap.set(POSTED, { y: chain ? 0 : 18, opacity: chain ? 1 : 0, scale: chain ? 1 : 0.97 });
+gsap.set(REPLY, { y: -22, opacity: 0, scale: 0.94, transformOrigin: '0% 0%' });
+gsap.set(HFILL, { scale: 0, transformOrigin: '50% 55%' });
+gsap.set(DOTSE, { opacity: 0 });
+if (!chain) tl.fromTo(POSTED, { y: 18, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.3, ease: 'power3.out', immediateRender: false }, 0.02);
+// the reply drops out from under the comment
+tl.fromTo(REPLY, { y: -22, opacity: 0, scale: 0.94 }, { y: 0, opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.7)', immediateRender: false }, A);
+// heart pop on the comment, with a small burst
+const H = A + 0.3;
+tl.to(HOUT, { opacity: 0, duration: 0.1 }, H);
+tl.to(HFILL, { scale: 1.35, duration: 0.15, ease: 'power2.out' }, H);
+tl.to(HFILL, { scale: 1, duration: 0.24, ease: 'back.out(2.5)' }, H + 0.15);
+DOTSE.forEach(function(d, i){ const a = (i / DOTSE.length) * Math.PI * 2 - Math.PI / 2;
+  tl.fromTo(d, { x: 0, y: 0, opacity: 1, scale: 1 }, { x: Math.cos(a) * 30, y: Math.sin(a) * 30, opacity: 0, scale: 0.4, duration: 0.42, ease: 'power2.out', immediateRender: false }, H + 0.04); });
+
+window.__timelines["comment-reply"] = tl;
+</script>
+</template>
+</body>
+</html>

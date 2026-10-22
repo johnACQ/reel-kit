@@ -1,0 +1,106 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "title", "type": "string", "label": "Title", "default": "SAMPLE \u00b7 Timeline"}, {"id": "timecodeStart", "type": "string", "label": "Timecode start (HH:MM:SS:FF, 30 fps)", "default": "00:00:08:00"}, {"id": "sweepDur", "type": "number", "label": "Playhead sweep length (s)", "default": 1.0, "min": 0.4, "max": 4, "step": 0.05, "unit": "s"}, {"id": "tracks", "type": "string", "label": "Track labels, top to bottom, comma separated", "default": "T1,V2,V1,A1"}, {"id": "clipName", "type": "string", "label": "Name on the first video clip", "default": "SAMPLE_take_04"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: editing-timeline. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.panel{left:72px;top:1192px;width:848px;padding:16px 18px 18px;border-radius:20px;}
+.hd{display:flex;align-items:center;height:42px;}
+.ti{flex:1;display:flex;align-items:center;gap:10px;font:700 24px Roboto,sans-serif;color:#0B0F12;white-space:nowrap;}
+.dot{width:10px;height:10px;border-radius:99px;background:#00BEFF;}
+.tcw{display:flex;align-items:center;gap:10px;background:#F4F6F8;border-radius:10px;padding:0 14px;height:40px;}
+.tc{position:relative;width:184px;height:40px;font:500 25px/40px 'Roboto Mono',monospace;letter-spacing:1px;color:#0B0F12;}
+.tv{position:absolute;left:0;top:0;white-space:nowrap;}
+.bd{position:relative;margin-top:10px;display:flex;gap:10px;}
+.lb{flex:none;width:54px;padding-top:28px;}
+.tl{height:30px;margin-bottom:8px;border-radius:6px;background:#F4F6F8;font:500 15px/30px 'Roboto Mono',monospace;color:#0B0F12;text-align:center;letter-spacing:1px;}
+.lanes{position:relative;width:748px;}
+.ru{position:relative;height:22px;margin-bottom:6px;}
+.tk{position:absolute;bottom:0;width:2px;height:7px;margin-left:-1px;background:rgba(11,15,18,.28);}
+.tk.mj{height:12px;background:rgba(11,15,18,.55);}
+.rl{position:absolute;top:-2px;font:500 14px 'Roboto Mono',monospace;color:#3A434B;white-space:nowrap;padding-left:6px;}
+.ln{position:relative;height:30px;margin-bottom:8px;border-radius:6px;background:#F4F6F8;overflow:hidden;}
+.b{position:absolute;top:3px;bottom:3px;border-radius:6px;overflow:hidden;}
+.bt{top:6px;bottom:6px;background:#FFFFFF;border:2px solid #0B0F12;}
+.bv2{background:#0B0F12;box-shadow:inset 0 0 0 2px rgba(255,255,255,.14);}
+.bv1{background:#00BEFF;box-shadow:inset 0 0 0 2px rgba(11,15,18,.18);}
+.cl{position:absolute;left:10px;top:0;font:500 14px/24px 'Roboto Mono',monospace;color:#0B0F12;white-space:nowrap;}
+.wv i{position:absolute;width:4px;border-radius:2px;background:#9AA4AD;}
+.ph{position:absolute;left:0;top:0;width:3px;margin-left:-1px;height:172px;background:#0B0F12;border-radius:2px;}
+.phh{position:absolute;left:-8px;top:-6px;width:19px;height:22px;border-radius:5px;background:#00BEFF;border:2px solid #0B0F12;}
+</style>
+<div id="root" data-composition-id="editing-timeline" data-width="1080" data-height="1920">
+<div class="card panel">
+<div class="hd"><div class="ti"><span class="dot"></span><span data-var-text="title">SAMPLE · Timeline</span></div>
+<div class="tcw"><svg viewBox="0 0 20 20" width="16" height="16"><path d="M5 3l12 7-12 7z" fill="#0B0F12"/></svg><div class="tc" data-slot="tc"></div></div></div>
+<div class="bd"><div class="lb"><div class="tl" data-tr="0">T1</div><div class="tl" data-tr="1">V2</div><div class="tl" data-tr="2">V1</div><div class="tl" data-tr="3">A1</div></div>
+<div class="lanes"><div class="ru" data-slot="ru"><b class="tk mj" style="left:0.0px"></b><b class="tk" style="left:46.8px"></b><b class="tk" style="left:93.5px"></b><b class="tk" style="left:140.2px"></b><b class="tk mj" style="left:187.0px"></b><b class="tk" style="left:233.8px"></b><b class="tk" style="left:280.5px"></b><b class="tk" style="left:327.2px"></b><b class="tk mj" style="left:374.0px"></b><b class="tk" style="left:420.8px"></b><b class="tk" style="left:467.5px"></b><b class="tk" style="left:514.2px"></b><b class="tk mj" style="left:561.0px"></b><b class="tk" style="left:607.8px"></b><b class="tk" style="left:654.5px"></b><b class="tk" style="left:701.2px"></b><b class="tk mj" style="left:748.0px"></b></div>
+<div class="ln"><div class="b bt" style="left:18px;width:132px"></div><div class="b bt" style="left:186px;width:140px"></div><div class="b bt" style="left:368px;width:102px"></div><div class="b bt" style="left:516px;width:136px"></div><div class="b bt" style="left:688px;width:54px"></div></div><div class="ln"><div class="b bv2" style="left:96px;width:156px"></div><div class="b bv2" style="left:408px;width:152px"></div><div class="b bv2" style="left:640px;width:108px"></div></div><div class="ln"><div class="b bv1" style="left:0px;width:236px"><span class="cl" data-var-text="clipName">SAMPLE_take_04</span></div><div class="b bv1" style="left:239px;width:163px"></div><div class="b bv1" style="left:405px;width:193px"></div><div class="b bv1" style="left:601px;width:147px"></div></div><div class="ln wv"><i style="left:0px;height:3px;top:13.5px"></i><i style="left:7px;height:3px;top:13.5px"></i><i style="left:14px;height:19px;top:5.5px"></i><i style="left:21px;height:18px;top:6.0px"></i><i style="left:28px;height:21px;top:4.5px"></i><i style="left:35px;height:14px;top:8.0px"></i><i style="left:42px;height:20px;top:5.0px"></i><i style="left:49px;height:26px;top:2.0px"></i><i style="left:56px;height:19px;top:5.5px"></i><i style="left:63px;height:22px;top:4.0px"></i><i style="left:70px;height:15px;top:7.5px"></i><i style="left:77px;height:23px;top:3.5px"></i><i style="left:84px;height:23px;top:3.5px"></i><i style="left:91px;height:21px;top:4.5px"></i><i style="left:98px;height:19px;top:5.5px"></i><i style="left:105px;height:15px;top:7.5px"></i><i style="left:112px;height:20px;top:5.0px"></i><i style="left:119px;height:13px;top:8.5px"></i><i style="left:126px;height:11px;top:9.5px"></i><i style="left:133px;height:11px;top:9.5px"></i><i style="left:140px;height:10px;top:10.0px"></i><i style="left:147px;height:11px;top:9.5px"></i><i style="left:154px;height:8px;top:11.0px"></i><i style="left:161px;height:10px;top:10.0px"></i><i style="left:168px;height:10px;top:10.0px"></i><i style="left:175px;height:15px;top:7.5px"></i><i style="left:182px;height:13px;top:8.5px"></i><i style="left:189px;height:12px;top:9.0px"></i><i style="left:196px;height:14px;top:8.0px"></i><i style="left:203px;height:13px;top:8.5px"></i><i style="left:210px;height:13px;top:8.5px"></i><i style="left:217px;height:18px;top:6.0px"></i><i style="left:224px;height:23px;top:3.5px"></i><i style="left:231px;height:20px;top:5.0px"></i><i style="left:238px;height:17px;top:6.5px"></i><i style="left:245px;height:18px;top:6.0px"></i><i style="left:252px;height:19px;top:5.5px"></i><i style="left:259px;height:3px;top:13.5px"></i><i style="left:266px;height:3px;top:13.5px"></i><i style="left:273px;height:13px;top:8.5px"></i><i style="left:280px;height:12px;top:9.0px"></i><i style="left:287px;height:15px;top:7.5px"></i><i style="left:294px;height:14px;top:8.0px"></i><i style="left:301px;height:17px;top:6.5px"></i><i style="left:308px;height:11px;top:9.5px"></i><i style="left:315px;height:13px;top:8.5px"></i><i style="left:322px;height:15px;top:7.5px"></i><i style="left:329px;height:9px;top:10.5px"></i><i style="left:336px;height:9px;top:10.5px"></i><i style="left:343px;height:9px;top:10.5px"></i><i style="left:350px;height:11px;top:9.5px"></i><i style="left:357px;height:12px;top:9.0px"></i><i style="left:364px;height:14px;top:8.0px"></i><i style="left:371px;height:11px;top:9.5px"></i><i style="left:378px;height:11px;top:9.5px"></i><i style="left:385px;height:12px;top:9.0px"></i><i style="left:392px;height:15px;top:7.5px"></i><i style="left:399px;height:15px;top:7.5px"></i><i style="left:406px;height:13px;top:8.5px"></i><i style="left:413px;height:11px;top:9.5px"></i><i style="left:420px;height:18px;top:6.0px"></i><i style="left:427px;height:14px;top:8.0px"></i><i style="left:434px;height:15px;top:7.5px"></i><i style="left:441px;height:12px;top:9.0px"></i><i style="left:448px;height:14px;top:8.0px"></i><i style="left:455px;height:14px;top:8.0px"></i><i style="left:462px;height:20px;top:5.0px"></i><i style="left:469px;height:19px;top:5.5px"></i><i style="left:476px;height:15px;top:7.5px"></i><i style="left:483px;height:13px;top:8.5px"></i><i style="left:490px;height:11px;top:9.5px"></i><i style="left:497px;height:16px;top:7.0px"></i><i style="left:504px;height:12px;top:9.0px"></i><i style="left:511px;height:16px;top:7.0px"></i><i style="left:518px;height:3px;top:13.5px"></i><i style="left:525px;height:3px;top:13.5px"></i><i style="left:532px;height:8px;top:11.0px"></i><i style="left:539px;height:9px;top:10.5px"></i><i style="left:546px;height:10px;top:10.0px"></i><i style="left:553px;height:11px;top:9.5px"></i><i style="left:560px;height:14px;top:8.0px"></i><i style="left:567px;height:14px;top:8.0px"></i><i style="left:574px;height:17px;top:6.5px"></i><i style="left:581px;height:11px;top:9.5px"></i><i style="left:588px;height:17px;top:6.5px"></i><i style="left:595px;height:13px;top:8.5px"></i><i style="left:602px;height:15px;top:7.5px"></i><i style="left:609px;height:23px;top:3.5px"></i><i style="left:616px;height:22px;top:4.0px"></i><i style="left:623px;height:24px;top:3.0px"></i><i style="left:630px;height:15px;top:7.5px"></i><i style="left:637px;height:16px;top:7.0px"></i><i style="left:644px;height:19px;top:5.5px"></i><i style="left:651px;height:18px;top:6.0px"></i><i style="left:658px;height:17px;top:6.5px"></i><i style="left:665px;height:22px;top:4.0px"></i><i style="left:672px;height:13px;top:8.5px"></i><i style="left:679px;height:15px;top:7.5px"></i><i style="left:686px;height:14px;top:8.0px"></i><i style="left:693px;height:16px;top:7.0px"></i><i style="left:700px;height:11px;top:9.5px"></i><i style="left:707px;height:10px;top:10.0px"></i><i style="left:714px;height:11px;top:9.5px"></i><i style="left:721px;height:9px;top:10.5px"></i><i style="left:728px;height:8px;top:11.0px"></i><i style="left:735px;height:12px;top:9.0px"></i><i style="left:742px;height:14px;top:8.0px"></i></div>
+<div class="ph"><div class="phh"></div></div></div></div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// fallback to the (mount-scoped) document: when a component is mounted twice the runtime renames the root, so the id selector finds nothing
+const R = document.querySelector("[data-composition-id='editing-timeline']") || document;
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"title": "SAMPLE \u00b7 Timeline", "timecodeStart": "00:00:08:00", "sweepDur": 1.0, "tracks": "T1,V2,V1,A1", "clipName": "SAMPLE_take_04"};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ return (VV[k] === undefined || VV[k] === null || VV[k] === '') ? D[k] : VV[k]; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const panel = Q('.panel'), ph = Q('.ph'), tc = Q('[data-slot="tc"]'), ru = Q('[data-slot="ru"]');
+const LW = 748, SPAN = 8, FPS = 30;
+const sweep = Math.max(0.4, Math.min(4, N('sweepDur')));
+// Track labels from one comma list.
+const tr = String(V('tracks')).split(',').map(function(s){ return s.trim(); });
+QA('[data-tr]').forEach(function(el, i){ el.textContent = tr[i] !== undefined ? tr[i] : ''; });
+// Timecode start -> frames.
+const p = String(V('timecodeStart')).split(':').map(function(s){ return parseInt(s, 10) || 0; });
+while (p.length < 4) p.unshift(0);
+const f0 = ((p[0] * 60 + p[1]) * 60 + p[2]) * FPS + p[3];
+const pad = function(x){ return (x < 10 ? '0' : '') + x; };
+const tcStr = function(fr){ const ff = fr % FPS, s = Math.floor(fr / FPS), ss = s % 60, mm = Math.floor(s / 60) % 60, hh = Math.floor(s / 3600); return pad(hh) + ':' + pad(mm) + ':' + pad(ss) + ':' + pad(ff); };
+// Ruler labels every 2 s.
+QA('.rl').forEach(function(el){ el.remove(); });
+for (let k = 0; k < SPAN; k += 2) { const l = document.createElement('div'); l.className = 'rl'; l.setAttribute('data-layout-allow-occlusion', ''); l.style.left = (k * LW / SPAN) + 'px'; const s = Math.floor(f0 / FPS) + k; l.textContent = pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60); ru.appendChild(l); }
+// Timecode readout: one span per displayed value.
+tc.textContent = '';
+const T0 = 0.5;                       // sweep start
+const steps = Math.max(2, Math.round(sweep * FPS));
+const tcs = [];
+for (let k = 0; k <= steps; k++) { const s = document.createElement('div'); s.className = 'tv'; s.textContent = tcStr(f0 + Math.round(SPAN * FPS * k / steps)); tc.appendChild(s); tcs.push(s); }
+
+const blocksAll = QA('.b');
+const wav = QA('.wv i');
+// Initial states.
+gsap.set(panel, { y: 760 });
+gsap.set(tcs, { display: 'none' }); gsap.set(tcs[0], { display: 'block' });
+gsap.set(blocksAll, { opacity: 0, x: function(i){ return (i % 2 ? 70 : -70); }, scaleX: 0.82, transformOrigin: '50% 50%' });
+gsap.set(wav, { scaleY: 0, transformOrigin: '50% 50%' });
+gsap.set(ph, { x: 0, opacity: 0 });
+
+// Slide up from the bottom.
+tl.fromTo(panel, { y: 760 }, { y: 0, duration: 0.46, ease: 'power3.out', immediateRender: false }, 0);
+// Clips snap in, track by track.
+tl.to(blocksAll, { opacity: 1, x: 0, scaleX: 1, duration: 0.3, ease: 'back.out(2.2)', stagger: 0.022 }, 0.08);
+tl.to(wav, { scaleY: 1, duration: 0.22, ease: 'power2.out', stagger: { amount: 0.26 } }, 0.14);
+// Playhead sweeps; timecode runs; played audio darkens.
+tl.to(ph, { opacity: 1, duration: 0.08, ease: 'none' }, T0 - 0.08);
+tl.fromTo(ph, { x: 0 }, { x: LW, duration: sweep, ease: 'none', immediateRender: false }, T0);
+tcs.forEach(function(s, k){ if (k === 0) return; tl.set(tcs[k - 1], { display: 'none' }, T0 + sweep * k / steps); tl.set(s, { display: 'block' }, T0 + sweep * k / steps); });
+wav.forEach(function(b){ const x = parseFloat(b.style.left) || 0; tl.set(b, { backgroundColor: '#0B0F12' }, T0 + sweep * Math.min(1, x / LW)); });
+// Slide away.
+const out = T0 + sweep + 0.1;
+tl.to(panel, { y: 760, duration: 0.32, ease: 'power3.in' }, out);
+tl.set({}, {}, out + 0.32);
+window.__timelines["editing-timeline"] = tl;
+</script>
+</template>
+</body>
+</html>

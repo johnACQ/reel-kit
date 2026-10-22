@@ -1,0 +1,28 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "label", "type": "string", "label": "Label", "default": "PROMPT"}, {"id": "prompt", "type": "string", "label": "Prompt text (the real one)", "default": "SAMPLE PROMPT TEXT. Replace with the real prompt from the guide."}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: prompt-flash. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.card{left:150px;top:250px;width:700px;height:780px;padding:34px;background:#0B0F12;border-color:rgba(255,255,255,.08);overflow:hidden;}
+.lab{display:inline-block;font:500 22px 'Roboto Mono',monospace;letter-spacing:2px;margin-bottom:22px;padding:4px 12px;}
+.txt{font:400 20px/1.45 'Roboto Mono',monospace;color:#C9D4DC;white-space:pre-wrap;}
+</style>
+<div id="root" data-composition-id="prompt-flash" data-width="1080" data-height="1920">
+<div class="card"><div class="lab fill" data-var-text="label">PROMPT</div><div class="txt" data-var-text="prompt">SAMPLE PROMPT TEXT. Replace with the real prompt from the guide.</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const ent = document.querySelectorAll(".enter");  // runtime scopes queries to this mount; an id-prefixed selector finds nothing once a component is mounted twice
+if (ent.length) tl.fromTo(ent, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0.04);
+
+window.__timelines["prompt-flash"] = tl;
+</script>
+</template>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "boxes", "type": "string", "label": "Boxes &#39;x,y,w,h|x,y,w,h|...&#39; (frame px, or recording px with mapX/mapY/mapScale)", "default": "32,404,476,88|32,516,476,88|96,628,412,88|580,404,300,96"}, {"id": "times", "type": "string", "label": "Seconds from clip start the ring LANDS on each box (lock to the spoken words)", "default": "0.32,0.85,1.57,2.0"}, {"id": "press", "type": "boolean", "label": "Press pulse on the last box", "default": true}, {"id": "pressAt", "type": "number", "label": "Press time (s from clip start; 0 or before the last landing = last landing + 0.4)", "default": 0, "min": 0, "max": 20, "step": 0.01, "unit": "s"}, {"id": "hop", "type": "number", "label": "Hop length s (shortened if two words are closer)", "default": 0.32, "min": 0.1, "max": 1, "step": 0.01, "unit": "s"}, {"id": "pad", "type": "number", "label": "Ring padding around each box (px)", "default": 10, "min": 0, "max": 60, "unit": "px"}, {"id": "radius", "type": "number", "label": "Corner radius (px)", "default": 16, "min": 0, "max": 60, "unit": "px"}, {"id": "stroke", "type": "number", "label": "Ring stroke (px)", "default": 5, "min": 2, "max": 12, "unit": "px"}, {"id": "dim", "type": "number", "label": "Dim the rest of the screen (0 = off, 0.3 default)", "default": 0.3, "min": 0, "max": 0.8, "step": 0.01}, {"id": "mapX", "type": "number", "label": "Map: frame x of the recording&#39;s 0 (px)", "default": 0, "unit": "px"}, {"id": "mapY", "type": "number", "label": "Map: frame y of the recording&#39;s 0 (px)", "default": 0, "unit": "px"}, {"id": "mapScale", "type": "number", "label": "Map: frame px per recording px (1 = boxes already in frame px)", "default": 1, "min": 0.05, "max": 8, "step": 0.001}, {"id": "dur", "type": "number", "label": "Clip length s: fades out in the last 0.25 s (0 = no exit)", "default": 3.6, "min": 0, "max": 20, "step": 0.05, "unit": "s"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: path-ring. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_screen/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.pr{position:absolute;inset:0;overflow:hidden;}
+.pr-svg{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:visible;}
+.pr-ring{filter:drop-shadow(0 0 9px rgba(0,190,255,.85));}
+
+</style>
+<div id="root" data-composition-id="path-ring" data-width="1080" data-height="1920">
+<div class="pr" data-layout-allow-overflow><svg class="pr-svg" viewBox="0 0 1080 1920" width="1080" height="1920" data-layout-allow-overflow>
+<rect class="pr-dim" fill="none" stroke="#0B0F12" stroke-width="6000" />
+<rect class="pr-fill" fill="#00BEFF" />
+<g class="pr-pulse"><rect class="pr-hair" fill="none" stroke="#0B0F12" stroke-opacity="0.55" /><rect class="pr-ring" fill="none" stroke="#00BEFF" /></g>
+<rect class="pr-rip" fill="none" stroke="#00BEFF" stroke-width="3" />
+<circle class="pr-tap" fill="#00BEFF" fill-opacity="0.26" stroke="#FFFFFF" stroke-width="3" />
+</svg></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// Plain class, never [data-composition-id=...]: a second mount gets a renamed root and the runtime scopes
+// document queries to each mount (round-one lesson 1).
+const R = document.querySelector(".pr");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"boxes": "32,404,476,88|32,516,476,88|96,628,412,88|580,404,300,96", "times": "0.32,0.85,1.57,2.0", "press": true, "pressAt": 0, "hop": 0.32, "pad": 10, "radius": 16, "stroke": 5, "dim": 0.3, "mapX": 0, "mapY": 0, "mapScale": 1, "dur": 3.6};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const RAW = function(k){ const x = VV[k]; return (x === undefined || x === null) ? D[k] : x; };   // '' stays ''
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const NUMS = function(s){ return String(s || '').split(',').map(function(x){ return String(x).trim(); })
+  .filter(function(x){ return x !== ''; }).map(Number).filter(function(x){ return isFinite(x); }); };
+
+const DIM = Q('.pr-dim'), FILL = Q('.pr-fill'), PULSE = Q('.pr-pulse'), HAIR = Q('.pr-hair'), RING = Q('.pr-ring'), RIP = Q('.pr-rip'), TAP = Q('.pr-tap');
+const parse = function(s){ return String(s || '').split('|').map(function(b){ return b.split(',').map(function(x){ return Number(String(x).trim()); }); })
+  .filter(function(a){ return a.length === 4 && a.every(function(x){ return isFinite(x); }) && a[2] > 0 && a[3] > 0; }); };
+let B = parse(V('boxes')); if (!B.length) B = parse(D.boxes);
+const MX = N('mapX'), MY = N('mapY'), MS = N('mapScale') > 0 ? N('mapScale') : 1;
+const PAD = Math.max(0, N('pad')), SK = Math.max(1, N('stroke')), RAD = Math.max(0, N('radius')), BIG = 6000;
+// padded box in frame px (boxes may be in screen-recording px: frame = map + box * mapScale)
+const P = B.map(function(b){ return { x: MX + b[0] * MS - PAD, y: MY + b[1] * MS - PAD, w: b[2] * MS + 2 * PAD, h: b[3] * MS + 2 * PAD }; });
+// attribute sets per layer, e = extra growth outward (px)
+const ringA = function(p, e){ e = e || 0; return { x: p.x - SK / 2 - e, y: p.y - SK / 2 - e, width: p.w + SK + 2 * e, height: p.h + SK + 2 * e, rx: RAD + SK / 2 + e, ry: RAD + SK / 2 + e }; };
+const dimA = function(p){ const r = ringA(p); return { x: r.x - BIG / 2, y: r.y - BIG / 2, width: r.width + BIG, height: r.height + BIG, rx: r.rx + BIG / 2, ry: r.rx + BIG / 2 }; };
+const fillA = function(p){ return { x: p.x, y: p.y, width: p.w, height: p.h, rx: RAD, ry: RAD }; };
+const ctr = function(p){ return (p.x + p.w / 2) + ' ' + (p.y + p.h / 2); };
+// landing times: one per box; missing ones follow the last at 0.6 s steps; never closer than 0.12 s
+let T = NUMS(V('times'));
+if (!T.length) T = [0.35];
+while (T.length < P.length) T.push(T[T.length - 1] + 0.6);
+T = T.slice(0, P.length);
+T[0] = Math.max(0.12, T[0]);
+for (let i = 1; i < T.length; i++) T[i] = Math.max(T[i], T[i - 1] + 0.12);
+const HOP = Math.max(0.1, N('hop')), DIMA = Math.max(0, Math.min(0.8, N('dim')));
+const LAST = T[T.length - 1], PL = P[P.length - 1];
+const PRESS = (VV.press === undefined || VV.press === null) ? !!D.press : (VV.press === true || VV.press === 'true' || VV.press === 1 || VV.press === '1');
+const PA = N('pressAt') > LAST ? N('pressAt') : LAST + 0.4;
+const DUR = N('dur');
+const END = DUR > 0 ? Math.max(DUR, (PRESS ? PA : LAST) + 0.5) : (PRESS ? PA : LAST) + 0.9;
+
+// initial states (outside the timeline)
+gsap.set(RING, { attr: Object.assign({ 'stroke-width': SK }, ringA(P[0])) });
+gsap.set(HAIR, { attr: Object.assign({ 'stroke-width': SK + 3 }, ringA(P[0])) });
+gsap.set(DIM, { attr: dimA(P[0]) });
+gsap.set(FILL, { attr: fillA(PL) });
+gsap.set(RIP, { attr: ringA(PL) });
+gsap.set(TAP, { attr: { cx: PL.x + PL.w / 2, cy: PL.y + PL.h / 2, r: 30 } });
+gsap.set(PULSE, { opacity: 0, scale: 1.3, svgOrigin: ctr(P[0]) });
+gsap.set(DIM, { opacity: 0 });
+gsap.set([FILL, RIP, TAP], { opacity: 0 });
+gsap.set(R, { opacity: 1 });
+
+// 1. the ring drops onto the first box, the screen around it dims
+const A0 = Math.max(0, T[0] - 0.3);
+tl.fromTo(PULSE, { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, svgOrigin: ctr(P[0]), duration: T[0] - A0, ease: 'power3.out', immediateRender: false }, A0);
+tl.fromTo(DIM, { opacity: 0 }, { opacity: DIMA, duration: 0.35, ease: 'power1.out', immediateRender: false }, A0);
+
+// 2. hops: the ring, its hairline and the dim hole morph box to box (corners stay true); the ring swells a touch in
+//    flight and settles on landing
+for (let i = 1; i < P.length; i++) {
+  const d = Math.min(HOP, (T[i] - T[i - 1]) * 0.8), s = T[i] - d;
+  tl.fromTo(RING, { attr: ringA(P[i - 1]) }, { attr: ringA(P[i]), duration: d, ease: 'power3.inOut', immediateRender: false }, s);
+  tl.fromTo(HAIR, { attr: ringA(P[i - 1]) }, { attr: ringA(P[i]), duration: d, ease: 'power3.inOut', immediateRender: false }, s);
+  tl.fromTo(DIM, { attr: dimA(P[i - 1]) }, { attr: dimA(P[i]), duration: d, ease: 'power3.inOut', immediateRender: false }, s);
+  tl.fromTo(PULSE, { scale: 1 }, { scale: 1.04, svgOrigin: ctr(P[i]), duration: d * 0.6, ease: 'power1.out', immediateRender: false }, s);
+  tl.fromTo(PULSE, { scale: 1.04 }, { scale: 1, svgOrigin: ctr(P[i]), duration: 0.3, ease: 'back.out(2.2)', immediateRender: false }, s + d * 0.6);
+}
+
+// 3. press on the last box: tap dot, ring squeeze, cyan flash, ripple out
+if (PRESS) {
+  const cx = PL.x + PL.w / 2, cy = PL.y + PL.h / 2;
+  tl.fromTo(TAP, { opacity: 0, attr: { r: 12 } }, { opacity: 1, attr: { r: 27 }, duration: 0.14, ease: 'power2.out', immediateRender: false }, PA - 0.14);
+  tl.to(TAP, { attr: { r: 21 }, duration: 0.08, ease: 'power2.in' }, PA);
+  tl.to(TAP, { opacity: 0, attr: { r: 34 }, duration: 0.3, ease: 'power2.out' }, PA + 0.12);
+  tl.fromTo(PULSE, { scale: 1 }, { scale: 0.95, svgOrigin: cx + ' ' + cy, duration: 0.08, ease: 'power2.in', immediateRender: false }, PA);
+  tl.fromTo(PULSE, { scale: 0.95 }, { scale: 1, svgOrigin: cx + ' ' + cy, duration: 0.42, ease: 'back.out(3)', immediateRender: false }, PA + 0.08);
+  tl.fromTo(FILL, { opacity: 0 }, { opacity: 0.32, duration: 0.08, ease: 'power1.out', immediateRender: false }, PA);
+  tl.to(FILL, { opacity: 0, duration: 0.5, ease: 'power1.out' }, PA + 0.1);
+  tl.fromTo(RIP, { opacity: 0.95, attr: ringA(PL) }, { opacity: 0, attr: ringA(PL, 34), duration: 0.6, ease: 'power2.out', immediateRender: false }, PA);
+}
+
+// 4. exit (dur 0 = none)
+if (DUR > 0) tl.fromTo(R, { opacity: 1 }, { opacity: 0, duration: 0.25, ease: 'power2.in', immediateRender: false }, END - 0.25);
+tl.set({}, {}, END);
+
+window.__timelines["path-ring"] = tl;
+</script>
+</template>
+</body>
+</html>

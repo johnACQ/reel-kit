@@ -1,0 +1,73 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "kicker", "type": "string", "label": "Kicker (serif italic, small, above the word; blank = none)", "default": "and it&#39;s"}, {"id": "word", "type": "string", "label": "Big word (Bebas, falls apart)", "default": "GONE"}, {"id": "holdFor", "type": "number", "label": "Hold before the letters fall (s)", "default": 0.4, "min": 0, "max": 3, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the kicker (px from frame top)", "default": 236, "min": 220, "max": 1300, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre (px; 496 = centre of the safe band)", "default": 496, "min": 300, "max": 700, "unit": "px"}, {"id": "size", "type": "number", "label": "Word size px (0 = auto from length)", "default": 0, "min": 0, "max": 260, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: gravity-drop. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.mono{font-family:'Roboto Mono',monospace;}
+.gd{position:absolute;left:calc(var(--centerX) * 1px - 500px);width:1000px;top:calc(var(--top) * 1px);display:flex;flex-direction:column;align-items:center;}
+.kick{position:relative;z-index:2;margin-bottom:-18px;}
+.kchip{display:block;background:#FFFFFF;color:#0B0F12;border-radius:14px;padding:0 24px 6px;font-family:'Instrument Serif',serif;font-style:italic;font-size:58px;line-height:1.1;transform:rotate(-3deg);box-shadow:0 10px 28px rgba(11,15,18,.30);white-space:nowrap;}
+.word{position:relative;z-index:1;display:flex;filter:drop-shadow(0 16px 22px rgba(11,15,18,.36));}
+.L{display:block;background:#00BEFF;color:#0B0F12;font-family:'Bebas Neue',sans-serif;line-height:.8;padding:.17em .03em .05em;margin-right:-1px;white-space:pre;}
+.L.first{border-top-left-radius:16px;border-bottom-left-radius:16px;padding-left:.15em;}
+.L.last{border-top-right-radius:16px;border-bottom-right-radius:16px;padding-right:.15em;margin-right:0;}
+
+</style>
+<div id="root" data-composition-id="gravity-drop" data-width="1080" data-height="1920">
+<div class="gd" data-tc="gravity-drop"><div class="kick" data-layout-allow-overlap><div class="kchip" data-var-text="kicker">and it's</div></div><div class="word"></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// The wrapper, not [data-composition-id=...]: a 2nd instance of the same component gets a renamed root.
+const R = document.querySelector("[data-tc='gravity-drop']");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"kicker": "and it's", "word": "GONE", "holdFor": 0.4, "top": 236, "centerX": 496, "size": 0};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const B = function(k){ const x = V(k); return x === true || x === 'true' || x === 1 || x === '1'; };
+const rnd = function(i, s){ const x = Math.sin(i * 12.9898 + s * 78.233) * 43758.5453; return x - Math.floor(x); };
+
+const word = String(V('word'));
+const chars = Array.from(word);
+const n = Math.max(1, chars.length);
+let fs = N('size'); if (!(fs > 0)) fs = Math.min(190, Math.round(800 / (0.42 * n + 0.32)));
+const W = Q('.word');
+let Ls = QA('.word .L');
+if (!Ls.length) {
+  chars.forEach(function(ch, i){ const s = document.createElement('span'); s.className = 'L' + (i === 0 ? ' first' : '') + (i === n - 1 ? ' last' : '');
+    s.textContent = ch === ' ' ? '\u00A0' : ch; W.appendChild(s); });
+  Ls = QA('.word .L');
+}
+Ls.forEach(function(l){ l.style.fontSize = fs + 'px'; });
+const K = Q('.kick');
+if (!String(V('kicker')).trim()) K.style.display = 'none';
+gsap.set(Ls, { y: -170, opacity: 0, transformOrigin: '50% 60%' });
+gsap.set(K, { y: 18, opacity: 0 });
+// in: slices drop into place one by one and settle
+Ls.forEach(function(l, i){ tl.fromTo(l, { y: -170, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: 'back.out(2.2)', immediateRender: false }, 0.04 * i); });
+tl.fromTo(K, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, ease: 'power3.out', immediateRender: false }, 0.05);
+// hold, then gravity: constant acceleration, so a letter higher in frame falls for longer
+const fallAt = 0.04 * (n - 1) + 0.3 + Math.max(0, N('holdFor'));
+const g = 11000, top = N('top');
+const order = Ls.map(function(_, i){ return i; }).sort(function(a, b){ return rnd(a, 3) - rnd(b, 3); });
+order.forEach(function(idx, k){
+  const l = Ls[idx], t = fallAt + k * 0.055, s = rnd(idx, 7) < 0.5 ? -1 : 1;
+  const rot = s * (6 + rnd(idx, 11) * 16), dx = s * (10 + rnd(idx, 13) * 40);
+  const dist = Math.max(700, 2150 - top), dur = Math.sqrt(2 * dist / g);
+  tl.to(l, { y: -12, rotation: rot * 0.12, duration: 0.07, ease: 'power1.out' }, t);
+  tl.to(l, { y: dist, duration: dur, ease: 'power2.in' }, t + 0.07);
+  tl.to(l, { rotation: rot, duration: dur, ease: 'power1.in' }, t + 0.07);
+  tl.to(l, { x: dx, duration: dur, ease: 'none' }, t + 0.07);
+});
+tl.to(K, { y: -14, opacity: 0, duration: 0.26, ease: 'power2.in' }, fallAt);
+
+window.__timelines["gravity-drop"] = tl;
+</script>
+</template>
+</body>
+</html>

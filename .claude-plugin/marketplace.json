@@ -1,0 +1,14 @@
+{
+  "name": "johnmilne",
+  "owner": { "name": "John Milne" },
+  "metadata": {
+    "description": "Tools John Milne uses to run his business with Claude."
+  },
+  "plugins": [
+    {
+      "name": "reel-kit",
+      "source": "./plugin",
+      "description": "Claude edits your talking-head reels: cuts, captions, cards and effects, with a plan you OK before anything renders."
+    }
+  ]
+}

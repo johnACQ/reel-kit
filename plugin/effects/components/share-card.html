@@ -1,0 +1,109 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "chipLabel", "type": "string", "label": "Contact chip label (a role, never a real person)", "default": "SAMPLE contact"}, {"id": "sendText", "type": "string", "label": "Button before the send", "default": "Send"}, {"id": "sentText", "type": "string", "label": "Button after the send (with a tick)", "default": "Sent"}, {"id": "searchText", "type": "string", "label": "Search placeholder", "default": "Search"}, {"id": "flyAt", "type": "number", "label": "Plane pops in (s from clip start); it lands flyAt + 0.72", "default": 0.45, "min": 0.3, "max": 8, "step": 0.05, "unit": "s"}, {"id": "dur", "type": "number", "label": "Clip length s: exits in the last 0.28 s (0 = no exit)", "default": 1.9, "min": 0, "max": 20, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the card (px)", "default": 300, "min": 0, "max": 1400, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre (px; 496 = centre of the safe band)", "default": 496, "min": 300, "max": 780, "unit": "px"}, {"id": "scale", "type": "number", "label": "Scale (1 = card 680 px wide; shrinks from the top centre)", "default": 1, "min": 0.4, "max": 1.2, "step": 0.01}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: share-card. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_phone/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.sc-pos{position:absolute;left:calc(var(--centerX) * 1px - 340px);top:calc(var(--top) * 1px);width:680px;height:459px;transform:scale(var(--scale));transform-origin:50% 0;}
+.shc{position:absolute;inset:0;}
+.sc{position:absolute;left:0;top:0;width:680px;padding:14px 24px 24px;box-sizing:border-box;background:#FFFFFF;border-radius:30px;box-shadow:0 24px 60px rgba(11,15,18,.34);}
+.gb{width:48px;height:5px;border-radius:3px;background:#D3D9DE;margin:0 auto 16px;}
+.sr{display:flex;align-items:center;height:60px;padding:0 18px;border-radius:16px;background:#F1F3F5;box-sizing:border-box;}
+.st{margin-left:12px;font:400 26px/1 Roboto,sans-serif;color:#5B6670;white-space:nowrap;}
+.ls{margin-top:16px;}
+.ch{position:relative;display:flex;align-items:center;height:100px;margin-top:12px;padding:0 14px;border-radius:50px;background:#F4F6F8;box-sizing:border-box;}
+.ch.c0{margin-top:0;}
+.ca{position:relative;flex:none;width:72px;height:72px;border-radius:50%;}
+.ca svg{display:block;width:100%;height:100%;}
+.sk .ca,.sk .bar,.sk .gh{opacity:.55;}
+.cn{margin-left:18px;min-width:0;flex:1;font:700 30px/1.1 Roboto,sans-serif;color:#0B0F12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar{margin-left:18px;height:18px;border-radius:9px;background:#D3D9DE;}
+.cbt{position:relative;flex:none;margin-left:auto;width:140px;height:56px;}
+.gh{position:absolute;inset:0;border-radius:28px;border:2.5px solid #D3D9DE;box-sizing:border-box;}
+.send{position:absolute;inset:0;border-radius:28px;border:3px solid #0B0F12;box-sizing:border-box;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font:700 25px/1 Roboto,sans-serif;color:#0B0F12;}
+.sent{position:absolute;inset:0;border-radius:28px;background:#00BEFF;display:flex;align-items:center;justify-content:center;font:700 25px/1 Roboto,sans-serif;color:#0B0F12;}
+.sent svg{margin-right:6px;}
+.pr{position:absolute;inset:-4px;border-radius:54px;border:4px solid #00BEFF;}
+.td{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#00BEFF;box-shadow:0 0 0 2px rgba(11,15,18,.6);}
+.pl{position:absolute;left:-40px;top:-40px;width:80px;height:80px;filter:drop-shadow(0 8px 10px rgba(11,15,18,.35));}
+.pl svg{display:block;width:100%;height:100%;overflow:visible;}
+
+</style>
+<div id="root" data-composition-id="share-card" data-width="1080" data-height="1920">
+<div class="sc-pos"><div class="shc" data-tc="share-card">
+<div class="sc"><div class="gb"></div>
+<div class="sr"><svg viewBox="0 0 24 24" width="26" height="26"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#5B6670" stroke-width="2.4"/><path d="M15.5 15.5l5 5" stroke="#5B6670" stroke-width="2.4" stroke-linecap="round"/></svg><span class="st" data-var-text="searchText">Search</span></div>
+<div class="ls"><div class="ch c0 sk"><div class="ca"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="#E3E8EC"/><circle cx="24" cy="19" r="8.5" fill="#C3CBD2"/><path d="M8.6 41.6c2.6-7.6 8.6-11.6 15.4-11.6s12.8 4 15.4 11.6A23.9 23.9 0 0 1 24 48 23.9 23.9 0 0 1 8.6 41.6z" fill="#C3CBD2"/></svg></div><div class="bar" style="width:190px"></div><div class="cbt"><div class="gh"></div></div></div><div class="ch c1 t"><div class="pr" data-layout-allow-overlap></div><div class="ca"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="#E3E8EC"/><circle cx="24" cy="19" r="8.5" fill="#A3ADB6"/><path d="M8.6 41.6c2.6-7.6 8.6-11.6 15.4-11.6s12.8 4 15.4 11.6A23.9 23.9 0 0 1 24 48 23.9 23.9 0 0 1 8.6 41.6z" fill="#A3ADB6"/></svg></div><div class="cn" data-var-text="chipLabel">SAMPLE contact</div><div class="cbt"><div class="send" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="sendText">Send</div><div class="sent" data-layout-allow-overlap data-layout-allow-occlusion><svg viewBox="0 0 24 24" width="24" height="24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#0B0F12" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-var-text="sentText">Sent</span></div></div></div><div class="ch c2 sk"><div class="ca"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="#E3E8EC"/><circle cx="24" cy="19" r="8.5" fill="#C3CBD2"/><path d="M8.6 41.6c2.6-7.6 8.6-11.6 15.4-11.6s12.8 4 15.4 11.6A23.9 23.9 0 0 1 24 48 23.9 23.9 0 0 1 8.6 41.6z" fill="#C3CBD2"/></svg></div><div class="bar" style="width:150px"></div><div class="cbt"><div class="gh"></div></div></div></div></div>
+<i class="td" data-layout-allow-overlap style="left:-36.3px;top:391.5px"></i><i class="td" data-layout-allow-overlap style="left:-22.2px;top:319.1px"></i><i class="td" data-layout-allow-overlap style="left:-2.9px;top:247.8px"></i><i class="td" data-layout-allow-overlap style="left:22.3px;top:178.5px"></i><i class="td" data-layout-allow-overlap style="left:54.8px;top:112.3px"></i><i class="td" data-layout-allow-overlap style="left:96.1px;top:51.2px"></i><i class="td" data-layout-allow-overlap style="left:147.6px;top:-1.3px"></i><i class="td" data-layout-allow-overlap style="left:210.5px;top:-39.6px"></i><i class="td" data-layout-allow-overlap style="left:282.1px;top:-55.6px"></i><i class="td" data-layout-allow-overlap style="left:354.5px;top:-44.2px"></i><i class="td" data-layout-allow-overlap style="left:418.8px;top:-8.6px"></i><i class="td" data-layout-allow-overlap style="left:471.1px;top:43.2px"></i><i class="td" data-layout-allow-overlap style="left:511.8px;top:104.7px"></i>
+<div class="pl" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow><svg viewBox="0 0 68 68"><path d="M63 34L6 9l13 25z" fill="#00BEFF" stroke="#0B0F12" stroke-width="3.6" stroke-linejoin="round"/><path d="M63 34H19L6 59z" fill="#0098D0" stroke="#0B0F12" stroke-width="3.6" stroke-linejoin="round"/></svg></div>
+</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// Plain class, never [data-composition-id=...]: a second mount of a component gets a renamed root, and the
+// runtime scopes document queries to each mount (round-one lesson 1).
+const R = document.querySelector(".shc");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"chipLabel": "SAMPLE contact", "sendText": "Send", "sentText": "Sent", "searchText": "Search", "flyAt": 0.45, "dur": 1.9, "top": 300, "centerX": 496, "scale": 1};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+
+const CARD = Q('.sc'), CHS = QA('.ch'), TGT = Q('.ch.t'), AV = Q('.ch.t .ca'), SEND = Q('.send'), SENT = Q('.sent');
+const TK = Q('.sent path'), PL = Q('.pl'), PR = Q('.pr'), TDS = QA('.td');
+const KF = [{"x":-44.0,"y":447.0,"r":-83.2,"d":0.0},{"x":-40.4,"y":419.2,"r":-82.1,"d":0.0181},{"x":-36.3,"y":391.5,"r":-80.8,"d":0.0182},{"x":-31.5,"y":363.9,"r":-79.5,"d":0.0183},{"x":-26.0,"y":336.4,"r":-78.0,"d":0.0185},{"x":-19.8,"y":309.1,"r":-76.5,"d":0.0188},{"x":-12.9,"y":281.9,"r":-74.8,"d":0.0192},{"x":-5.1,"y":255.0,"r":-73.1,"d":0.0196},{"x":3.4,"y":228.3,"r":-71.2,"d":0.0202},{"x":12.9,"y":202.0,"r":-69.1,"d":0.0208},{"x":23.4,"y":176.0,"r":-66.9,"d":0.0216},{"x":34.9,"y":150.4,"r":-64.5,"d":0.0226},{"x":47.6,"y":125.4,"r":-61.8,"d":0.0237},{"x":61.5,"y":101.1,"r":-58.9,"d":0.0251},{"x":76.6,"y":77.5,"r":-55.6,"d":0.0268},{"x":93.2,"y":54.9,"r":-51.9,"d":0.0288},{"x":111.2,"y":33.5,"r":-47.9,"d":0.0311},{"x":130.8,"y":13.4,"r":-43.3,"d":0.0336},{"x":152.0,"y":-4.8,"r":-38.1,"d":0.0363},{"x":174.9,"y":-21.0,"r":-32.3,"d":0.0386},{"x":199.4,"y":-34.6,"r":-25.7,"d":0.0401},{"x":225.3,"y":-45.2,"r":-18.5,"d":0.0401},{"x":252.4,"y":-52.3,"r":-10.7,"d":0.0386},{"x":280.2,"y":-55.5,"r":-2.5,"d":0.0363},{"x":308.2,"y":-54.7,"r":5.9,"d":0.0336},{"x":335.8,"y":-49.9,"r":14.1,"d":0.0311},{"x":362.4,"y":-41.2,"r":21.9,"d":0.0288},{"x":387.7,"y":-29.1,"r":29.1,"d":0.0268},{"x":411.3,"y":-14.1,"r":35.6,"d":0.0251},{"x":433.2,"y":3.3,"r":41.4,"d":0.0237},{"x":453.3,"y":22.8,"r":46.7,"d":0.0226},{"x":471.7,"y":44.0,"r":51.3,"d":0.0216},{"x":488.4,"y":66.5,"r":55.5,"d":0.0208},{"x":503.5,"y":90.1,"r":59.3,"d":0.0202},{"x":517.1,"y":114.6,"r":62.7,"d":0.0196},{"x":529.2,"y":139.8,"r":65.8,"d":0.0192},{"x":540.1,"y":165.7,"r":68.6,"d":0.0188},{"x":549.7,"y":192.0,"r":71.2,"d":0.0185},{"x":558.2,"y":218.7,"r":73.6,"d":0.0183},{"x":565.6,"y":245.7,"r":75.8,"d":0.0182},{"x":572.0,"y":273.0,"r":77.7,"d":0.0181}];       // the route, resampled by arc length: x, y, heading, time share
+const TR = [0.0363, 0.085, 0.136, 0.1911, 0.2529, 0.3253, 0.4138, 0.5175, 0.6173, 0.7, 0.7684, 0.8276, 0.8811];       // trail dots: time share at which the plane passes each
+const F = Math.max(0.3, N('flyAt'));
+const FD = 0.62, T0 = F + 0.1, LAND = T0 + FD;
+const DUR = N('dur');
+const END = DUR > 0 ? Math.max(DUR, LAND + 0.5) : LAND + 0.9;
+const OUT = END - 0.28;
+
+// initial states (outside the timeline)
+gsap.set(CARD, { y: 46, opacity: 0, scale: 0.96, transformOrigin: '50% 0%' });
+gsap.set(CHS, { y: 14, opacity: 0 });
+gsap.set(TGT, { transformOrigin: '50% 50%' });
+gsap.set(PL, { x: KF[0].x, y: KF[0].y, rotation: KF[0].r, scale: 0, opacity: 0, transformOrigin: '50% 50%' });
+gsap.set(SENT, { scale: 0.5, opacity: 0 });
+gsap.set(TK, { strokeDasharray: 24, strokeDashoffset: 24 });
+gsap.set(PR, { opacity: 0, transformOrigin: '50% 50%' });
+gsap.set(AV, { boxShadow: '0 0 0 0px rgba(0,190,255,0)' });
+gsap.set(TDS, { opacity: 0, scale: 0.3 });
+
+// 1. the sheet rises in, chips settle one by one
+tl.fromTo(CARD, { y: 46, opacity: 0, scale: 0.96 }, { y: 0, opacity: 1, scale: 1, duration: 0.42, ease: 'power3.out', immediateRender: false }, 0);
+CHS.forEach(function(c, i){ tl.fromTo(c, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: 'power2.out', immediateRender: false }, 0.12 + i * 0.06); });
+
+// 2. the plane pops in beside the card and flies the curve, nose on the tangent, dropping a dotted trail
+tl.fromTo(PL, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.14, ease: 'back.out(2.5)', immediateRender: false }, F);
+tl.to(PL, { keyframes: KF.slice(1).map(function(k){ return { x: k.x, y: k.y, rotation: k.r, duration: k.d * FD, ease: 'none' }; }), ease: 'none' }, T0);
+TDS.forEach(function(d, i){
+  const t = T0 + TR[i] * FD;
+  tl.fromTo(d, { opacity: 0, scale: 0.3 }, { opacity: 0.95, scale: 1, duration: 0.08, ease: 'power1.out', immediateRender: false }, t);
+  tl.to(d, { opacity: 0, scale: 0.5, duration: 0.3, ease: 'power1.in' }, t + 0.16);
+});
+
+// 3. lands: the plane is absorbed into Send, the chip pulses, the button flips to a cyan Sent tick
+tl.to(PL, { scale: 0.35, opacity: 0, duration: 0.12, ease: 'power2.in' }, LAND - 0.05);
+tl.to(SEND, { opacity: 0, scale: 0.86, duration: 0.07, ease: 'power2.in' }, LAND - 0.07);
+tl.fromTo(SENT, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.36, ease: 'back.out(2.6)', immediateRender: false }, LAND + 0.01);
+tl.to(TK, { strokeDashoffset: 0, duration: 0.22, ease: 'power2.out' }, LAND + 0.1);
+tl.to(TGT, { scale: 1.045, duration: 0.1, ease: 'power2.out' }, LAND);
+tl.to(TGT, { scale: 1, duration: 0.36, ease: 'back.out(3)' }, LAND + 0.1);
+tl.to(TGT, { backgroundColor: '#E2F6FF', duration: 0.18, ease: 'power1.out' }, LAND);
+tl.to(AV, { boxShadow: '0 0 0 4px #00BEFF', duration: 0.2, ease: 'power2.out' }, LAND + 0.04);
+tl.fromTo(PR, { scaleX: 1, scaleY: 1, opacity: 0.95 }, { scaleX: 1.04, scaleY: 1.26, opacity: 0, duration: 0.55, ease: 'power2.out', immediateRender: false }, LAND);
+
+// 4. exit (dur 0 = none)
+if (DUR > 0) tl.to(CARD, { y: -36, opacity: 0, duration: 0.26, ease: 'power2.in' }, OUT);
+tl.set({}, {}, END);
+
+window.__timelines["share-card"] = tl;
+</script>
+</template>
+</body>
+</html>

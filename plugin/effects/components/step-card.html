@@ -1,0 +1,44 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "step", "type": "string", "label": "Step number", "default": "01"}, {"id": "total", "type": "string", "label": "Total steps", "default": "04"}, {"id": "title", "type": "string", "label": "One-word title", "default": "TRACK"}, {"id": "label", "type": "string", "label": "Short label", "default": "What happens here"}, {"id": "icon", "type": "string", "label": "Icon file (compositions/assets/icons/<name>.svg)", "default": "compositions/assets/icons/phone.svg"}, {"id": "titleAt", "type": "number", "label": "Title reveal (s from clip start; 0 = shown from the start). Before it the title is a blank bar, so the card never shows the word before the speaker says it", "default": 0}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: step-card. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.card{left:150px;top:260px;width:700px;padding:40px 44px 36px;}
+.tw{position:relative;display:inline-block;}
+.rb{position:absolute;left:-6px;right:-6px;top:30px;bottom:24px;border-radius:12px;background:#E6EAED;display:none;}
+.kick{font:500 26px 'Roboto Mono',monospace;letter-spacing:2px;color:#5B6670;}
+.kick .fill{padding:2px 10px;}
+.title{font-family:'Bebas Neue',sans-serif;font-size:150px;line-height:.9;margin:18px 0 10px;color:#0B0F12;}
+.well{background:#F4F6F8;border-radius:14px;height:230px;display:flex;align-items:center;justify-content:center;}
+.well img{width:170px;height:170px;}
+.label{margin-top:22px;font:700 28px Roboto,sans-serif;color:#0B0F12;}
+</style>
+<div id="root" data-composition-id="step-card" data-width="1080" data-height="1920">
+<div class="card enter"><div class="kick">[ STEP <span class="fill" data-var-text="step">01</span> ] / <span data-var-text="total">04</span></div>
+<div class="tw"><div class="title" data-var-text="title">TRACK</div><div class="rb"></div></div><div class="well"><img data-var-src="icon" src="compositions/assets/icons/phone.svg" alt="" /></div><div class="label" data-var-text="label">What happens here</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const ent = document.querySelectorAll(".enter");  // runtime scopes queries to this mount; an id-prefixed selector finds nothing once a component is mounted twice
+if (ent.length) tl.fromTo(ent, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0.04);
+const sv = (window.__hyperframes && window.__hyperframes.getVariables) ? (window.__hyperframes.getVariables() || {}) : {};
+const ta = Number(sv.titleAt) || 0;
+const stt = document.querySelector('.tw .title'), srb = document.querySelector('.tw .rb');
+if (ta > 0 && stt && srb) {
+  srb.style.display = 'block';
+  gsap.set(stt, { clipPath: 'inset(0% 100% 0% 0%)' });
+  gsap.set(srb, { scaleX: 1, transformOrigin: '100% 50%' });
+  tl.fromTo(srb, { scaleX: 1 }, { scaleX: 0, duration: 0.24, ease: 'power2.in', immediateRender: false }, ta);
+  tl.fromTo(stt, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.26, ease: 'power2.out', immediateRender: false }, ta);
+}
+window.__timelines["step-card"] = tl;
+</script>
+</template>
+</body>
+</html>

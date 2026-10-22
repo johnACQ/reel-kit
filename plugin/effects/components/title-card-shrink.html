@@ -1,0 +1,78 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "title", "type": "string", "label": "Title (| = new line, 1-3 short lines)", "default": "THE|TABLE"}, {"id": "kicker", "type": "string", "label": "Small mono line above the title", "default": "CHAPTER 02 \u00b7 SAMPLE"}, {"id": "timecodeStart", "type": "string", "label": "Running timecode starts at (HH:MM:SS:FF)", "default": "00:00:14:16"}, {"id": "fps", "type": "number", "label": "Timecode frames per second", "default": 30}, {"id": "bg", "type": "string", "label": "Card colour: #0B0F12 (white type, accent timecode) or #FFFFFF (ink type)", "default": "#0B0F12"}, {"id": "font", "type": "string", "label": "Title font: Bebas Neue (locked look) or Instrument Serif", "default": "Bebas Neue"}, {"id": "titleSize", "type": "number", "label": "Title size (px; ~250 Bebas, ~190 serif)", "default": 250}, {"id": "phoneAt", "type": "number", "label": "Title lifts away / host footage pops into the phone (s from clip start)", "default": 1.05}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: title-card-shrink. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/InstrumentSerif-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.tc{position:absolute;inset:0;}
+.tc-bg{position:absolute;inset:0;background:#0B0F12;}
+.tc-tc{position:absolute;left:0;right:0;top:300px;height:40px;text-align:center;font:500 30px 'Roboto Mono',monospace;letter-spacing:5px;}
+.tc-tc span{position:absolute;left:0;right:0;top:0;opacity:0;}
+.tc-kick{position:absolute;left:72px;right:72px;text-align:center;font:500 24px 'Roboto Mono',monospace;letter-spacing:4px;opacity:0;white-space:nowrap;}
+.tc-title{position:absolute;left:72px;right:72px;text-align:center;}
+.tc-mask{overflow:hidden;}
+.tc-line{white-space:nowrap;}
+.tc-rule{width:140px;height:8px;margin:28px auto 0;background:#00BEFF;border-radius:4px;opacity:0;}
+</style>
+<div id="root" data-composition-id="title-card-shrink" data-width="1080" data-height="1920">
+<div class="tc" data-fx="title-card-shrink"><div class="tc-bg"></div><div class="tc-tc" data-slot="tc"></div>
+<div class="tc-kick" data-var-text="kicker">CHAPTER 02 · SAMPLE</div>
+<div class="tc-title"><div data-slot="lines"></div><div class="tc-rule"></div></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const ent = document.querySelectorAll("[data-composition-id='title-card-shrink'] .enter");
+if (ent.length) tl.fromTo(ent, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0.04);
+const v = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const num = function(k, d){ const x = Number(v[k]); return (v[k] === undefined || v[k] === '' || !isFinite(x)) ? d : x; };
+const str = function(k, d){ return (v[k] === undefined || v[k] === null || String(v[k]) === '') ? d : String(v[k]); };
+
+const W = document.querySelector('[data-fx="title-card-shrink"]');
+const q = function(s){ return W.querySelector(s); };
+const bg = str('bg', '#0B0F12'), light = /^#(f|e)/i.test(bg);
+const ink = light ? '#0B0F12' : '#FFFFFF', tcol = light ? '#5B6670' : '#00BEFF';
+const font = str('font', 'Bebas Neue'), serif = /serif/i.test(font) && !/bebas/i.test(font);
+const size = num('titleSize', serif ? 190 : 250), fps = Math.max(1, Math.round(num('fps', 30))), phoneAt = num('phoneAt', 1.05);
+const lines = str('title', 'THE|TABLE').split('|').map(function(x){ return x.trim(); }).filter(Boolean).slice(0, 3);
+q('.tc-bg').style.background = bg;
+const tcBox = q("[data-slot='tc']"), kick = q('.tc-kick'), title = q('.tc-title'), rule = q('.tc-rule'), box = q("[data-slot='lines']");
+tcBox.style.color = tcol; kick.style.color = ink; title.style.color = ink;
+const lh = size * (serif ? 1.0 : .9), top = 960 - lines.length * lh / 2 - 30;
+title.style.top = top + 'px'; kick.style.top = (top - 78) + 'px';
+const lineEls = [], tcEls = [];
+if (box && !box.dataset.done) { box.dataset.done = '1';
+  lines.forEach(function(t){
+    const m = document.createElement('div'); m.className = 'tc-mask'; m.style.height = lh + 'px';
+    const l = document.createElement('div'); l.className = 'tc-line'; l.textContent = serif ? t : t.toUpperCase();
+    l.style.fontFamily = "'" + font + "', serif"; l.style.fontSize = size + 'px'; l.style.lineHeight = lh + 'px';
+    if (!serif) l.style.letterSpacing = '3px';
+    m.appendChild(l); box.appendChild(m); lineEls.push(l);
+  });
+  // running timecode: one span per frame value, each shown for exactly one frame (no onUpdate text)
+  const p = str('timecodeStart', '00:00:14:16').split(':').map(Number);
+  const f0 = (((p[0] || 0) * 60 + (p[1] || 0)) * 60 + (p[2] || 0)) * fps + (p[3] || 0);
+  const pad = function(n){ return (n < 10 ? '0' : '') + n; };
+  const n = Math.round((phoneAt + .05) * fps) + 1;
+  for (let i = 0; i < n; i++) { const f = f0 + i; const s = document.createElement('span');
+    s.textContent = pad(Math.floor(f / (fps * 3600))) + ':' + pad(Math.floor(f / (fps * 60)) % 60) + ':' + pad(Math.floor(f / fps) % 60) + ':' + pad(f % fps);
+    tcBox.appendChild(s); tcEls.push(s); }
+}
+gsap.set(W, { clipPath: 'inset(100% 0% 0% 0%)' }); gsap.set(lineEls, { yPercent: 105 }); gsap.set(rule, { scaleX: 0, opacity: 0 });
+tl.fromTo(W, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: .24, ease: 'power4.inOut', immediateRender: false }, 0);
+tcEls.forEach(function(s, i){ tl.set(s, { opacity: 1 }, i / fps); if (i) tl.set(tcEls[i - 1], { opacity: 0 }, i / fps); });
+tl.fromTo(kick, { opacity: 0, y: 14 }, { opacity: .72, y: 0, duration: .3, ease: 'power3.out', immediateRender: false }, .16);
+lineEls.forEach(function(l, i){ tl.fromTo(l, { yPercent: 105 }, { yPercent: 0, duration: .42, ease: 'power4.out', immediateRender: false }, .24 + i * .2); });
+tl.fromTo(rule, { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: .34, ease: 'power3.inOut', immediateRender: false }, .3 + lineEls.length * .2);
+tl.fromTo([kick, title, tcBox], { opacity: function(i){ return i ? 1 : .72; }, y: 0 }, { opacity: 0, y: -40, duration: .2, ease: 'power2.in', immediateRender: false }, phoneAt - .18);
+window.__timelines["title-card-shrink"] = tl;
+</script>
+</template>
+</body>
+</html>

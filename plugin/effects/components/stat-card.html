@@ -1,0 +1,122 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "line1", "type": "string", "label": "Line 1 number (blank = label line; line + unit both blank = no line). No currency", "default": "00"}, {"id": "unit1", "type": "string", "label": "Line 1 unit (accent box) or label", "default": "SAMPLE"}, {"id": "line2", "type": "string", "label": "Line 2 number (blank = label line)", "default": ""}, {"id": "unit2", "type": "string", "label": "Line 2 unit or label", "default": "SAMPLE"}, {"id": "line3", "type": "string", "label": "Line 3 number: the LAST line slams in on slamAt", "default": "00"}, {"id": "unit3", "type": "string", "label": "Line 3 unit or label", "default": "SAMPLE"}, {"id": "source", "type": "string", "label": "Source chip (where the number comes from; blank shows SOURCE NEEDED)", "default": "Source: where this number came from"}, {"id": "line1At", "type": "number", "label": "Line 1 lands (s from clip start; lock to the spoken word)", "default": 0.12, "min": 0, "step": 0.05, "unit": "s"}, {"id": "line2At", "type": "number", "label": "Line 2 lands (s)", "default": 0.8, "min": 0, "step": 0.05, "unit": "s"}, {"id": "slamAt", "type": "number", "label": "LAST line hits (s; the thump frame, lock to the word, e.g. &#39;Zero&#39;)", "default": 1.5, "min": 0.3, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Card top y (px). Waist-up framing 260", "default": 260, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Card centre x (px; 496 = centre of the safe zone)", "default": 496, "unit": "px"}, {"id": "scale", "type": "number", "label": "Size (1 = full; shrink only to fit tight footage)", "default": 1, "min": 0.5, "max": 1.2, "step": 0.01}, {"id": "outAt", "type": "number", "label": "Card leaves (s; 99 = hold to clip end)", "default": 2.5, "min": 0, "step": 0.05, "unit": "s"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: stat-card. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.sc-wrap{position:absolute;left:156px;top:260px;width:680px;}
+.sc-in{position:relative;width:100%;}
+.sc-card{position:relative;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);padding:20px 40px 28px;}
+.sc-row{position:relative;display:block;}
+.sc-rule{display:block;height:2px;margin:6px 0 10px;background:rgba(11,15,18,.10);transform-origin:0% 50%;}
+.sc-line{display:flex;align-items:flex-end;gap:22px;}
+.sc-mask{position:relative;display:block;flex:none;overflow:hidden;}
+.sc-numw{position:relative;display:block;flex:none;}
+.sc-num{display:block;font-family:'Bebas Neue',sans-serif;font-size:216px;line-height:.8;padding-top:.06em;color:#0B0F12;white-space:nowrap;}
+.sc-unit{display:block;flex:none;margin-bottom:12px;padding:9px 14px 3px;border-radius:10px;background:#00BEFF;color:#0B0F12;
+  font-family:'Bebas Neue',sans-serif;font-size:64px;line-height:1;letter-spacing:2px;white-space:nowrap;text-transform:uppercase;}
+.sc-lab{display:block;padding:8px 0 4px;font-family:'Bebas Neue',sans-serif;font-size:104px;line-height:1;letter-spacing:1px;color:#0B0F12;white-space:nowrap;text-transform:uppercase;}
+.sc-ring{position:absolute;left:-18px;right:-18px;top:-8px;bottom:-14px;border:6px solid #00BEFF;border-radius:20px;}
+.sc-src{display:inline-flex;align-items:center;gap:10px;margin-top:16px;height:46px;padding:0 18px 0 12px;border-radius:99px;background:#F4F6F8;font:500 24px Roboto,sans-serif;color:#5B6670;white-space:nowrap;}
+.sc-src svg{display:block;width:24px;height:24px;flex:none;}
+.sc-src.sc-missing{background:#FFE9E9;color:#0B0F12;}
+</style>
+<div id="root" data-composition-id="stat-card" data-width="1080" data-height="1920">
+<div class="sc-wrap"><div class="sc-in"><div class="sc-card"><div class="sc-row sc-r1"><div class="sc-rule"></div><div class="sc-line"><div class="sc-numw" data-layout-allow-overflow><div class="sc-mask" data-layout-allow-overflow><div class="sc-num" data-layout-allow-overlap>00</div></div><div class="sc-ring"></div></div><div class="sc-unit">SAMPLE</div></div><div class="sc-mask sc-labm" data-layout-allow-overflow><div class="sc-lab" data-layout-allow-overlap></div></div></div><div class="sc-row sc-r2"><div class="sc-rule"></div><div class="sc-line"><div class="sc-numw" data-layout-allow-overflow><div class="sc-mask" data-layout-allow-overflow><div class="sc-num" data-layout-allow-overlap></div></div><div class="sc-ring"></div></div><div class="sc-unit">SAMPLE</div></div><div class="sc-mask sc-labm" data-layout-allow-overflow><div class="sc-lab" data-layout-allow-overlap>SAMPLE</div></div></div><div class="sc-row sc-r3"><div class="sc-rule"></div><div class="sc-line"><div class="sc-numw" data-layout-allow-overflow><div class="sc-mask" data-layout-allow-overflow><div class="sc-num" data-layout-allow-overlap>00</div></div><div class="sc-ring"></div></div><div class="sc-unit">SAMPLE</div></div><div class="sc-mask sc-labm" data-layout-allow-overflow><div class="sc-lab" data-layout-allow-overlap></div></div></div><div class="sc-src"><svg viewBox="0 0 24 24"><path d="M6 2.8h8.2L19 7.6v13.6H6z" fill="none" stroke="#5B6670" stroke-width="2" stroke-linejoin="round"/><path d="M14 2.8v5h5M9 12.5h7M9 16.5h7" fill="none" stroke="#5B6670" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sc-src-t">Source: where this number came from</span></div></div></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const D = {"line1": "00", "unit1": "SAMPLE", "line2": "", "unit2": "SAMPLE", "line3": "00", "unit3": "SAMPLE", "source": "Source: where this number came from", "line1At": 0.12, "line2At": 0.8, "slamAt": 1.5, "top": 260, "centerX": 496, "scale": 1, "outAt": 2.5};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null) ? D[k] : x; };
+const T = function(k){ const x = V(k); return (x === '' ) ? String(D[k]) : String(x); };
+const N = function(k){ const x = V(k); const n = Number(x); return (x === '' || !isFinite(n)) ? Number(D[k]) : n; };
+const Q = function(s){ return document.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+const wrap = Q('.sc-wrap'), inn = Q('.sc-in'), card = Q('.sc-card'), src = Q('.sc-src'), srcT = Q('.sc-src-t');
+const W = 680, INNER = 600, NUM = 216, UNIT = 64, LAB = 104;
+wrap.style.top = N('top') + 'px'; wrap.style.left = (N('centerX') - W / 2) + 'px';
+gsap.set(wrap, { scale: N('scale'), transformOrigin: '50% 0%' });
+
+// ---- text. A blank value stays blank here (a blank number = label line; number + unit blank = no line).
+const R = function(k){ const x = VV[k]; return (x === undefined || x === null) ? String(D[k]) : String(x).trim(); };
+// Hard rule: never a currency sign or code on this card. A line that has one falls back to its default (number + unit).
+const CUR = new RegExp("\\p{Sc}|(?<![A-Za-z])(?:USD|CAD|AUD|NZD|EUR|GBP|JPY|CNY|RMB|INR|MXN|CHF|HKD|SGD|ZAR|SEK|NOK|DKK|KRW|BRL|AED|DOLLARS?|EUROS?)(?![A-Za-z])", 'iu');
+const lines = [1, 2, 3].map(function(i){ let n = R('line' + i), u = R('unit' + i);
+  if (CUR.test(n) || CUR.test(u)) { n = String(D['line' + i]); u = String(D['unit' + i]); }
+  return { n: n, u: u.toUpperCase() }; });
+let source = R('source'); if (CUR.test(source)) source = String(D.source);
+if (source === '') { source = 'SOURCE NEEDED'; src.classList.add('sc-missing'); }
+srcT.textContent = source;
+
+// ---- lay out each row (text set once; long lines shrink to fit, from the character count: deterministic, no measuring)
+const ADV = 0.44, DIG = 0.42;                    // Bebas Neue average advance per caps letter / digit, in em
+const rows = [1, 2, 3].map(function(i){ return Q('.sc-r' + i); });
+const vis = [];
+lines.forEach(function(L, i){
+  const row = rows[i], num = row.querySelector('.sc-num'), unit = row.querySelector('.sc-unit'), lab = row.querySelector('.sc-lab');
+  const line = row.querySelector('.sc-line'), labm = row.querySelector('.sc-labm');
+  if (!L.n && !L.u) { row.style.display = 'none'; return; }
+  if (L.n) {
+    labm.style.display = 'none'; num.textContent = L.n;
+    let us = UNIT, uw = 0;
+    if (L.u) { unit.textContent = L.u; uw = L.u.length * (ADV * us + 2) + 28;
+      if (uw > INNER * 0.62) { us = Math.max(34, Math.floor((INNER * 0.62 - 28) / (L.u.length * (ADV + 2 / us)))); uw = L.u.length * (ADV * us + 2) + 28; }
+      unit.style.fontSize = us + 'px'; }
+    else unit.style.display = 'none';
+    const ns = Math.max(80, Math.min(NUM, Math.floor((INNER - (L.u ? uw + 22 : 0)) / (L.n.length * DIG))));
+    num.style.fontSize = ns + 'px';
+    vis.push({ row: row, kind: 'stat', mask: row.querySelector('.sc-numw .sc-mask'), lead: num, unit: L.u ? unit : null,
+               ring: row.querySelector('.sc-ring'), hit: row.querySelector('.sc-numw'), rule: row.querySelector('.sc-rule') });
+  } else {
+    line.style.display = 'none'; lab.textContent = L.u;
+    lab.style.fontSize = Math.max(44, Math.min(LAB, Math.floor(INNER / (L.u.length * (ADV + 1 / LAB))))) + 'px';
+    vis.push({ row: row, kind: 'label', mask: labm, lead: lab, unit: null, ring: null, hit: lab, rule: row.querySelector('.sc-rule') });
+  }
+});
+if (vis.length) vis[0].rule.style.display = 'none';          // a rule sits only BETWEEN two lines
+
+// ---- timing: lines before the last land on line1At / line2At; the last one slams so it HITS on slamAt
+const slamAt = Math.max(0.3, N('slamAt')), outAt = N('outAt');
+const ats = [N('line1At'), N('line2At')];
+gsap.set(inn, { y: 40, opacity: 0 }); gsap.set(src, { opacity: 0, y: 8 });
+vis.forEach(function(r){ gsap.set(r.lead, { yPercent: 0, opacity: 1 }); if (r.unit) gsap.set(r.unit, { scale: 0.5, opacity: 0 });
+  if (r.ring) gsap.set(r.ring, { opacity: 0 }); gsap.set(r.rule, { scaleX: 0 }); });
+tl.fromTo(inn, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.34, ease: 'power3.out', immediateRender: false }, 0);
+tl.fromTo(src, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.28, ease: 'power2.out', immediateRender: false }, 0.24);
+vis.forEach(function(r, k){
+  const last = k === vis.length - 1;
+  if (!last) {
+    // rise out of a mask, unit pops a beat later, the rule above draws in
+    const t = Math.max(0, Math.min(ats[Math.min(k, 1)], slamAt - 0.3));
+    gsap.set(r.lead, { yPercent: 108 });
+    tl.fromTo(r.lead, { yPercent: 108 }, { yPercent: 0, duration: 0.42, ease: 'power3.out', immediateRender: false }, t);
+    if (r.unit) tl.fromTo(r.unit, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(2.4)', immediateRender: false }, t + 0.1);
+    tl.fromTo(r.rule, { scaleX: 0 }, { scaleX: 1, duration: 0.36, ease: 'power2.out', immediateRender: false }, Math.max(0, t - 0.06));
+  } else {
+    // the slam: comes in big and fast (power4.in) and HITS on slamAt, then clock-counter's thump + cyan ring
+    const s0 = Math.max(0.05, slamAt - 0.16);
+    gsap.set(r.hit, { scale: 2.6, opacity: 0, rotation: -5, transformOrigin: '50% 60%' });
+    tl.fromTo(r.rule, { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: 'power2.out', immediateRender: false }, Math.max(0, s0 - 0.12));
+    tl.fromTo(r.hit, { opacity: 0 }, { opacity: 1, duration: 0.06, ease: 'none', immediateRender: false }, s0);
+    tl.fromTo(r.hit, { scale: 2.6, rotation: -5 }, { scale: 1, rotation: 0, duration: 0.16, ease: 'power4.in', immediateRender: false }, s0);
+    tl.fromTo(r.hit, { scale: 1 }, { scale: 1.06, duration: 0.07, ease: 'power2.out', immediateRender: false }, slamAt);
+    tl.fromTo(r.hit, { scale: 1.06 }, { scale: 1, duration: 0.22, ease: 'power2.inOut', immediateRender: false }, slamAt + 0.07);
+    if (r.ring) tl.fromTo(r.ring, { opacity: 0.95, scale: 1 }, { opacity: 0, scale: 1.5, duration: 0.45, ease: 'power2.out', immediateRender: false }, slamAt);
+    if (r.unit) tl.fromTo(r.unit, { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(2.6)', immediateRender: false }, slamAt + 0.06);
+    tl.fromTo(card, { y: 0 }, { y: 10, duration: 0.05, ease: 'power2.out', immediateRender: false }, slamAt);
+    tl.fromTo(card, { y: 10 }, { y: 0, duration: 0.3, ease: 'back.out(3)', immediateRender: false }, slamAt + 0.05);
+  }
+});
+if (outAt < 98) tl.fromTo(inn, { y: 0, opacity: 1 }, { y: -26, opacity: 0, duration: 0.26, ease: 'power2.in', immediateRender: false }, Math.max(outAt, slamAt + 0.5));
+window.__timelines["stat-card"] = tl;
+</script>
+</template>
+</body>
+</html>

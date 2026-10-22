@@ -1,0 +1,85 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "img1", "type": "string", "label": "Frame 1 image (compositions/assets/...; a still from the real raw take)", "default": "compositions/assets/fx_screen/film/sample1.svg"}, {"id": "img2", "type": "string", "label": "Frame 2 image (compositions/assets/...; a still from the real raw take)", "default": "compositions/assets/fx_screen/film/sample2.svg"}, {"id": "img3", "type": "string", "label": "Frame 3 image (compositions/assets/...; a still from the real raw take)", "default": "compositions/assets/fx_screen/film/sample3.svg"}, {"id": "img4", "type": "string", "label": "Frame 4 image (compositions/assets/...; a still from the real raw take)", "default": "compositions/assets/fx_screen/film/sample4.svg"}, {"id": "img5", "type": "string", "label": "Frame 5 image (compositions/assets/...; a still from the real raw take)", "default": "compositions/assets/fx_screen/film/sample5.svg"}, {"id": "img6", "type": "string", "label": "Frame 6 image (compositions/assets/...; a still from the real raw take)", "default": "compositions/assets/fx_screen/film/sample6.svg"}, {"id": "count", "type": "number", "label": "Frames on the strip (4-6; uses img1..imgN)", "default": 6, "min": 4, "max": 6, "step": 1}, {"id": "chip", "type": "string", "label": "Chip label (blank = none), e.g. &#39;5 raw takes&#39; (a real count)", "default": "raw takes"}, {"id": "kicker", "type": "string", "label": "Accent kicker (blank = none)", "default": "YOUR FOOTAGE"}, {"id": "direction", "type": "enum", "label": "Travel direction", "default": "left", "options": [{"value": "left", "label": "Right to left"}, {"value": "right", "label": "Left to right"}]}, {"id": "top", "type": "number", "label": "Top edge of the labels; the strip sits 76 px under it (px)", "default": 250, "min": 0, "max": 1400, "unit": "px"}, {"id": "frameW", "type": "number", "label": "Frame width (px; height = 16:9 portrait)", "default": 200, "min": 120, "max": 320, "unit": "px"}, {"id": "tilt", "type": "number", "label": "Strip tilt (deg)", "default": -2.5, "min": -10, "max": 10, "step": 0.5, "unit": "deg"}, {"id": "hold", "type": "number", "label": "Middle speed vs the ends (0.06 = near stop in the middle, 0.6 = nearly even)", "default": 0.06, "min": 0.01, "max": 0.6, "step": 0.01}, {"id": "dur", "type": "number", "label": "Clip length s (the strip crosses in exactly this time)", "default": 2.0, "min": 0.8, "max": 8, "step": 0.05, "unit": "s"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: filmstrip. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_screen/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.fs{position:absolute;inset:0;}
+.fs-lab{position:absolute;left:72px;top:calc(var(--top) * 1px);display:flex;align-items:center;gap:12px;}
+.fs-kick{height:46px;padding:0 14px;border-radius:10px;background:#00BEFF;display:flex;align-items:center;font:500 24px/1 'Roboto Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:#0B0F12;white-space:nowrap;box-shadow:0 10px 26px rgba(11,15,18,.28);}
+.fs-chip{height:46px;padding:0 18px 0 12px;border-radius:99px;background:#FFFFFF;display:flex;align-items:center;gap:9px;font:700 26px/1 Roboto,sans-serif;color:#0B0F12;white-space:nowrap;box-shadow:0 10px 26px rgba(11,15,18,.28);}
+.fs-chip svg{flex:none;}
+.fs-tilt{position:absolute;left:0;width:1080px;top:calc(var(--top) * 1px + 76px);}
+.fs-move{position:absolute;left:0;top:0;}
+.fs-strip{position:relative;background:#FFFFFF;border-radius:8px;box-shadow:0 24px 60px rgba(11,15,18,.34),0 0 0 1px rgba(11,15,18,.10);}
+.fs-holes{position:absolute;left:4px;right:4px;height:34px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='34'><rect x='11' y='7' width='18' height='20' rx='4' fill='%230B0F12'/></svg>") repeat-x 0 0;opacity:.88;}
+.fs-holes.t{top:0;} .fs-holes.b{bottom:0;}
+.fs-row{position:absolute;left:0;top:34px;display:flex;gap:16px;padding:0 16px;}
+.fs-fr{position:relative;flex:none;width:calc(var(--frameW) * 1px);height:calc(var(--frameW) * 16px / 9);border-radius:4px;overflow:hidden;background:#F4F6F8;box-shadow:inset 0 0 0 1px rgba(11,15,18,.12);}
+.fs-fr img{display:block;width:100%;height:100%;object-fit:cover;}
+.fs-dev{position:absolute;inset:0;background:#FFFFFF;}
+
+</style>
+<div id="root" data-composition-id="filmstrip" data-width="1080" data-height="1920">
+<div class="fs" data-layout-allow-overflow>
+<div class="fs-tilt" data-layout-allow-overflow><div class="fs-move" data-layout-allow-overflow><div class="fs-strip" data-layout-allow-overflow>
+<div class="fs-holes t"></div><div class="fs-row" data-layout-allow-overflow><div class="fs-fr" data-layout-allow-overflow><img data-var-src="img1" src="compositions/assets/fx_screen/film/sample1.svg" alt="" /><div class="fs-dev"></div></div><div class="fs-fr" data-layout-allow-overflow><img data-var-src="img2" src="compositions/assets/fx_screen/film/sample2.svg" alt="" /><div class="fs-dev"></div></div><div class="fs-fr" data-layout-allow-overflow><img data-var-src="img3" src="compositions/assets/fx_screen/film/sample3.svg" alt="" /><div class="fs-dev"></div></div><div class="fs-fr" data-layout-allow-overflow><img data-var-src="img4" src="compositions/assets/fx_screen/film/sample4.svg" alt="" /><div class="fs-dev"></div></div><div class="fs-fr" data-layout-allow-overflow><img data-var-src="img5" src="compositions/assets/fx_screen/film/sample5.svg" alt="" /><div class="fs-dev"></div></div><div class="fs-fr" data-layout-allow-overflow><img data-var-src="img6" src="compositions/assets/fx_screen/film/sample6.svg" alt="" /><div class="fs-dev"></div></div></div><div class="fs-holes b"></div>
+</div></div></div>
+<div class="fs-lab"><div class="fs-kick" data-var-text="kicker">YOUR FOOTAGE</div><div class="fs-chip"><svg viewBox="0 0 24 24" width="26" height="26"><rect x="3" y="4" width="18" height="16" rx="2.5" fill="#00BEFF" stroke="#0B0F12" stroke-width="2"/><path d="M7 4v16M17 4v16" stroke="#0B0F12" stroke-width="2"/><g fill="#0B0F12"><rect x="4.4" y="6.5" width="1.4" height="2" rx=".4"/><rect x="4.4" y="11" width="1.4" height="2" rx=".4"/><rect x="4.4" y="15.5" width="1.4" height="2" rx=".4"/><rect x="18.2" y="6.5" width="1.4" height="2" rx=".4"/><rect x="18.2" y="11" width="1.4" height="2" rx=".4"/><rect x="18.2" y="15.5" width="1.4" height="2" rx=".4"/></g></svg><span data-var-text="chip">raw takes</span></div></div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// Plain class, never [data-composition-id=...]: a second mount gets a renamed root and the runtime scopes
+// document queries to each mount (round-one lesson 1).
+const R = document.querySelector(".fs");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"img1": "compositions/assets/fx_screen/film/sample1.svg", "img2": "compositions/assets/fx_screen/film/sample2.svg", "img3": "compositions/assets/fx_screen/film/sample3.svg", "img4": "compositions/assets/fx_screen/film/sample4.svg", "img5": "compositions/assets/fx_screen/film/sample5.svg", "img6": "compositions/assets/fx_screen/film/sample6.svg", "count": 6, "chip": "raw takes", "kicker": "YOUR FOOTAGE", "direction": "left", "top": 250, "frameW": 200, "tilt": -2.5, "hold": 0.06, "dur": 2.0};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const RAW = function(k){ const x = VV[k]; return (x === undefined || x === null) ? D[k] : x; };   // '' stays ''
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const NUMS = function(s){ return String(s || '').split(',').map(function(x){ return String(x).trim(); })
+  .filter(function(x){ return x !== ''; }).map(Number).filter(function(x){ return isFinite(x); }); };
+
+const TILT = Q('.fs-tilt'), MOVE = Q('.fs-move'), STRIP = Q('.fs-strip'), LAB = Q('.fs-lab'), KICK = Q('.fs-kick'), CHIP = Q('.fs-chip');
+const FR = QA('.fs-fr'), DEV = QA('.fs-dev');
+const CNT = Math.max(4, Math.min(6, Math.round(N('count'))));
+const FW = Math.max(120, N('frameW')), FH = Math.round(FW * 16 / 9), GAP = 16, BAND = 34;
+FR.forEach(function(f, i){ if (i >= CNT) f.style.display = 'none'; });
+const SW = CNT * FW + (CNT - 1) * GAP + 2 * 16;
+STRIP.style.width = SW + 'px'; STRIP.style.height = (FH + 2 * BAND) + 'px';
+if (!String(RAW('kicker')).trim()) KICK.style.display = 'none';
+if (!String(RAW('chip')).trim()) CHIP.style.display = 'none';
+const DUR = N('dur') > 0.8 ? N('dur') : 2.0;
+const LEFT = String(V('direction')) !== 'right';
+const X0 = LEFT ? 1080 + 40 : -SW - 40, X1 = LEFT ? -SW - 40 : 1080 + 40;   // fully off one side to fully off the other
+// fast-slow-fast travel: speed v(p) = vmin + (1 - vmin) * |2p - 1|^n, integrated and normalised (smooth, never stops)
+const VMIN = Math.max(0.01, Math.min(0.6, N('hold'))), NP = 2.4;
+const I = function(p){ return p <= 0.5 ? (1 - Math.pow(1 - 2 * p, NP + 1)) / (2 * (NP + 1)) : 1 / (2 * (NP + 1)) + Math.pow(2 * p - 1, NP + 1) / (2 * (NP + 1)); };
+const ACROSS = function(p){ return (VMIN * p + (1 - VMIN) * I(p)) / (VMIN + (1 - VMIN) / (NP + 1)); };
+
+gsap.set(TILT, { rotation: N('tilt'), transformOrigin: '50% 50%' });
+gsap.set(MOVE, { x: X0 });
+gsap.set(LAB, { opacity: 0, y: 14 });
+gsap.set(DEV, { opacity: 0.85 });
+
+// 1. the strip crosses the frame: in fast, slow drift through the middle, out fast
+tl.fromTo(MOVE, { x: X0 }, { x: X1, duration: DUR, ease: ACROSS, immediateRender: false }, 0);
+// 2. frames develop from white as they come in (in the order they enter)
+const order = FR.slice(0, CNT).map(function(_, i){ return LEFT ? i : CNT - 1 - i; });
+order.forEach(function(fi, k){ tl.fromTo(DEV[fi], { opacity: 0.85 }, { opacity: 0, duration: 0.42, ease: 'power1.out', immediateRender: false }, 0.06 + k * 0.07); });
+// 3. kicker + chip sit still above the strip, in after it arrives, out before it leaves
+tl.fromTo(LAB, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out', immediateRender: false }, Math.min(0.22, DUR * 0.12));
+tl.to(LAB, { opacity: 0, y: -10, duration: 0.22, ease: 'power2.in' }, DUR - 0.36);
+tl.set({}, {}, DUR);
+
+window.__timelines["filmstrip"] = tl;
+</script>
+</template>
+</body>
+</html>

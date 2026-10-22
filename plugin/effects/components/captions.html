@@ -1,0 +1,47 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "text", "type": "string", "label": "Spoken words (from the transcript)", "default": "SAMPLE caption words appear here one at a time"}, {"id": "times", "type": "string", "label": "Word start times in s, comma separated (blank = even)", "default": ""}, {"id": "dur", "type": "number", "label": "Clip length s", "default": 6}, {"id": "per", "type": "number", "label": "Words per group", "default": 4}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: captions. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.band{position:absolute;left:160px;right:160px;top:1280px;height:190px;display:flex;align-items:flex-end;justify-content:center;text-align:center;}
+.grp{position:absolute;bottom:0;left:0;right:0;opacity:0;font:900 58px/1.15 Roboto,sans-serif;}
+.wd{color:#FFFFFF;text-shadow:0 3px 12px rgba(0,0,0,.7);border-radius:8px;padding:0 .1em;}
+</style>
+<div id="root" data-composition-id="captions" data-width="1080" data-height="1920">
+<div class="band" data-slot="caps"></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const ent = document.querySelectorAll(".enter");  // runtime scopes queries to this mount; an id-prefixed selector finds nothing once a component is mounted twice
+if (ent.length) tl.fromTo(ent, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0.04);
+const v = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const words = String(v.text || 'SAMPLE caption').trim().split(/\s+/);
+const dur = Number(v.dur) || 6, per = Math.max(1, Number(v.per) || 4);
+let times = String(v.times || '').split(',').map(Number).filter(function(x){ return !isNaN(x) && String(x) !== ''; });
+if (times.length !== words.length) { times = words.map(function(_, i){ return i * dur / words.length; }); }
+const band = document.querySelector("[data-slot='caps']");
+if (band && !band.dataset.done) { band.dataset.done = '1';
+  for (let g = 0; g < words.length; g += per) {
+    const grp = document.createElement('div'); grp.className = 'grp';
+    const idx = [];
+    for (let i = g; i < Math.min(g + per, words.length); i++) { const s = document.createElement('span'); s.className = 'wd'; s.textContent = words[i]; grp.appendChild(s); grp.appendChild(document.createTextNode(' ')); idx.push([i, s]); }
+    band.appendChild(grp);
+    const t0 = times[g], t1 = (g + per < words.length) ? times[g + per] : dur;
+    tl.set(grp, { opacity: 1 }, t0); tl.set(grp, { opacity: 0 }, t1 - 0.001);
+    idx.forEach(function(p){ const i = p[0], s = p[1]; const ts = times[i], te = (i + 1 < words.length) ? times[i + 1] : dur;
+      tl.set(s, { backgroundColor: '#00BEFF', color: '#0B0F12', textShadow: 'none' }, ts);
+      tl.set(s, { backgroundColor: 'rgba(0,0,0,0)', color: '#FFFFFF', textShadow: '0 3px 12px rgba(0,0,0,.7)' }, te - 0.001); });
+  }
+  tl.set({}, {}, dur);
+}
+window.__timelines["captions"] = tl;
+</script>
+</template>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "words", "type": "string", "label": "Words, separated by | (2-6, short)", "default": "RECORD|COPY|PROMPT|CHECK"}, {"id": "times", "type": "string", "label": "Build times in s from clip start, comma separated, one per word (blank = one beat apart from 0.08 s)", "default": ""}, {"id": "beat", "type": "number", "label": "Gap between words when times are blank or missing (s)", "default": 0.42, "min": 0.05, "max": 2, "step": 0.01, "unit": "s"}, {"id": "layout", "type": "enum", "label": "Layout", "default": "row", "options": [{"value": "row", "label": "row (wraps if too long)"}, {"value": "stack", "label": "stack (one per line)"}]}, {"id": "numbers", "type": "boolean", "label": "Number chips 1-n", "default": true}, {"id": "outAt", "type": "number", "label": "Exit starts (s from clip start; 0 = hold to the cut)", "default": 2.3, "min": 0, "max": 20, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the first row (px from frame top)", "default": 300, "min": 220, "max": 1380, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre (px; 496 = centre of the safe band)", "default": 496, "min": 300, "max": 700, "unit": "px"}, {"id": "size", "type": "number", "label": "Type size px (0 = auto: one row if it fits at >= 84 px, else balanced rows; max 120)", "default": 0, "min": 0, "max": 200, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: step-stack. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.ss{position:absolute;inset:0;}
+.ss-item{position:absolute;left:0;top:0;}
+.ss-box{position:absolute;inset:0;background:#00BEFF;border-radius:12px;overflow:hidden;box-shadow:0 14px 34px rgba(11,15,18,.32);}
+.ss-txt{display:block;width:100%;height:100%;box-sizing:border-box;padding-top:.16em;font-family:'Bebas Neue',sans-serif;font-weight:400;line-height:.8;letter-spacing:1px;color:#0B0F12;text-align:center;white-space:nowrap;}
+.ss-chip{position:absolute;border-radius:50%;background:#0B0F12;color:#00BEFF;display:flex;align-items:center;justify-content:center;font-family:Roboto,sans-serif;font-weight:900;line-height:1;box-shadow:0 0 0 3px #FFFFFF,0 8px 18px rgba(11,15,18,.35);}
+
+</style>
+<div id="root" data-composition-id="step-stack" data-width="1080" data-height="1920">
+<div class="ss"></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const D = {"words": "RECORD|COPY|PROMPT|CHECK", "times": "", "beat": 0.42, "layout": "row", "numbers": true, "outAt": 2.3, "top": 300, "centerX": 496, "size": 0};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? (window.__hyperframes.getVariables() || {}) : {};
+const RAW = function(k){ return (VV[k] === undefined || VV[k] === null) ? D[k] : VV[k]; };
+const V = function(k){ const x = RAW(k); return String(x).trim() === '' ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const B = function(k){ const x = RAW(k); return x === true || x === 'true' || x === 1 || x === '1' || x === 'yes' || x === 'on'; };
+const Q = function(s){ return document.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+const CH = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u2019\u2018\u201c\u201d\u2026\u00b7\u2013\u00e9";
+const ADV = {"bebas":[160,210,336,412,400,589,417,188,276,276,422,400,188,270,188,389,400,400,400,400,400,400,400,400,400,400,188,188,400,400,400,363,696,401,404,383,406,363,344,391,420,192,265,414,344,538,427,400,386,400,403,372,364,402,382,557,406,394,362,276,389,276,400,300,500,401,404,383,406,363,344,391,420,192,265,414,344,538,427,400,386,400,403,372,364,402,382,557,406,394,362,276,500,276,400,188,188,336,336,500,188,300,363]};
+// width of a string in em, from the real font's advance table (unknown glyphs count as 0.5 em)
+const textW = function(str, f){ const t = ADV[f]; let w = 0; Array.from(String(str)).forEach(function(c){ const i = CH.indexOf(c); w += i < 0 ? 500 : t[i]; }); return w / 1000; };
+const top = N('top'), cx = N('centerX');
+const half = Math.max(160, Math.min(cx - 72, 920 - cx));  // symmetric half-width inside the 72 px side / 160 px rail safe zone
+
+const words = String(V('words')).split('|').map(function(s){ return s.trim(); }).filter(Boolean).slice(0, 6);
+if (!words.length) words.push('SAMPLE');
+const n = words.length;
+const stack = String(V('layout')).trim().toLowerCase() === 'stack';
+const chips = B('numbers');
+const fixed = N('size') > 0 ? N('size') : 0;
+const PX = 0.22, LS = 1, GAP = 24, RGAP = 18, W = half * 2, MINROW = 84;
+const nch = words.map(function(w){ return Array.from(w).length; });
+const adv = words.map(function(w){ return textW(w, 'bebas') * 1.03; });
+const bw = function(i, f){ return Math.round((adv[i] + 2 * PX) * f + LS * nch[i]); };
+let fs, rows, pos = [];
+if (!stack) {
+  // as few rows as possible while the type stays >= MINROW px (else wrap into balanced rows); each row is centred on centerX
+  const split = function(r){ const out = []; let k = 0; for (let j = 0; j < r; j++) { const c = Math.ceil((n - k) / (r - j)); const row = []; for (let m = 0; m < c; m++) row.push(k + m); out.push(row); k += c; } return out; };
+  const fitFs = function(rs){ return Math.min.apply(null, rs.map(function(row){ let a = 0, ls = 0; row.forEach(function(i){ a += adv[i] + 2 * PX; ls += LS * nch[i]; }); return (W - (chips ? 20 : 0) - GAP * (row.length - 1) - ls) / a; })); };
+  rows = null;
+  for (let r = 1; r <= n && !rows; r++) { const rs = split(r), f = fitFs(rs); if (f >= (fixed ? fixed * 0.97 : MINROW)) { rows = rs; fs = fixed ? Math.min(fixed, f) : Math.min(120, f); } }
+  if (!rows) { rows = split(n); fs = Math.min(fixed || 120, fitFs(rows)); }
+} else {
+  const maxA = Math.max.apply(null, words.map(function(_, i){ return adv[i] + 2 * PX; }));
+  const fW = (W - (chips ? 0.62 * 100 + 16 : 0)) / maxA;               // width fit (chip assumed ~62 px)
+  const fH = (620 - RGAP * (n - 1)) / (n * 1.02);                    // height fit: stack stays within ~620 px
+  fs = fixed || Math.min(100, fW, fH);
+  rows = words.map(function(_, i){ return [i]; });
+}
+fs = Math.round(fs);
+const h = Math.round(fs * 1.02);
+const chipD = Math.max(38, Math.round(fs * (stack ? 0.62 : 0.5)));
+// rows sit far enough apart that a corner chip never lands on the row above
+const RG = (!stack && chips) ? Math.max(RGAP, Math.round(chipD * 0.4) + 12) : RGAP;
+if (!stack) {
+  rows.forEach(function(row, r){
+    const ws = row.map(function(i){ return bw(i, fs); });
+    const total = ws.reduce(function(a, b){ return a + b; }, 0) + GAP * (row.length - 1);
+    let x = cx - total / 2 + (chips ? 10 : 0);
+    row.forEach(function(i, m){
+      // partial-row offsets: the row re-centres on centerX each time a word joins it
+      const offs = [];
+      for (let k = m; k < row.length; k++) { let pt = 0; for (let j = 0; j <= k; j++) pt += ws[j] + (j ? GAP : 0); let px = cx - pt / 2 + (chips ? 10 : 0); for (let j = 0; j < m; j++) px += ws[j] + GAP; offs.push(px); }
+      pos[i] = { x: x, y: top + r * (h + RG), w: ws[m], row: r, m: m, offs: offs, rowItems: row };
+      x += ws[m] + GAP;
+    });
+  });
+} else {
+  const colW = Math.max.apply(null, words.map(function(_, i){ return bw(i, fs); })) + (chips ? chipD + 16 : 0);
+  const x0 = cx - colW / 2;
+  words.forEach(function(_, i){ pos[i] = { x: x0 + (chips ? chipD + 16 : 0), y: top + i * (h + RGAP), w: bw(i, fs), row: i, m: 0, offs: [x0 + (chips ? chipD + 16 : 0)], rowItems: [i] }; });
+}
+// build the DOM (idempotent: cleared first, so a re-run never doubles it)
+const HOST = Q('.ss');
+HOST.textContent = '';
+const items = [], txts = [], chipEls = [];
+words.forEach(function(w, i){
+  const p = pos[i];
+  const it = document.createElement('div'); it.className = 'ss-item';
+  it.style.left = Math.round(p.x) + 'px'; it.style.top = Math.round(p.y) + 'px'; it.style.width = p.w + 'px'; it.style.height = h + 'px';
+  const box = document.createElement('div'); box.className = 'ss-box'; box.setAttribute('data-layout-allow-overflow', '');  // the word rises out of the box mask
+  const tx = document.createElement('span'); tx.className = 'ss-txt'; tx.style.fontSize = fs + 'px'; tx.textContent = w;
+  box.appendChild(tx); it.appendChild(box);
+  if (chips) {
+    const c = document.createElement('div'); c.className = 'ss-chip'; c.textContent = String(i + 1);
+    c.style.width = chipD + 'px'; c.style.height = chipD + 'px'; c.style.fontSize = Math.round(chipD * 0.56) + 'px';
+    if (stack) { c.style.left = (-chipD - 16) + 'px'; c.style.top = Math.round((h - chipD) / 2) + 'px'; }
+    else { c.style.left = Math.round(-chipD * 0.4) + 'px'; c.style.top = Math.round(-chipD * 0.4) + 'px'; }
+    it.appendChild(c); chipEls[i] = c;
+  }
+  HOST.appendChild(it); items.push(it); txts.push(tx);
+});
+// times: given list first, the rest continue one beat apart
+const beat = Math.max(0.05, N('beat'));
+const given = String(V('times')).split(',').map(function(s){ return s.trim(); }).filter(function(s){ return s !== ''; }).map(Number).filter(function(x){ return isFinite(x); });
+const T = [];
+for (let i = 0; i < n; i++) T.push(i < given.length ? given[i] : (i ? T[i - 1] + beat : 0.08));
+// initial states (outside the timeline)
+words.forEach(function(_, i){
+  const p = pos[i];
+  gsap.set(items[i], { x: p.offs[0] - p.x, y: 24, scale: 0.6, opacity: 0, transformOrigin: '50% 100%' });
+  gsap.set(txts[i], { yPercent: 108 });
+  if (chips) gsap.set(chipEls[i], { scale: 0, rotation: -60 });
+});
+// build: each word pops in at its time; earlier words in the same row slide to keep the row centred
+words.forEach(function(_, i){
+  const p = pos[i], t = T[i];
+  tl.fromTo(items[i], { opacity: 0 }, { opacity: 1, duration: 0.12, ease: 'none', immediateRender: false }, t);
+  tl.fromTo(items[i], { y: 24, scale: 0.6 }, { y: 0, scale: 1, duration: 0.42, ease: 'back.out(1.8)', immediateRender: false }, t);
+  tl.fromTo(txts[i], { yPercent: 108 }, { yPercent: 0, duration: 0.36, ease: 'power3.out', immediateRender: false }, t + 0.04);
+  if (chips) tl.fromTo(chipEls[i], { scale: 0, rotation: -60 }, { scale: 1, rotation: 0, duration: 0.34, ease: 'back.out(2.6)', immediateRender: false }, t + 0.14);
+  p.rowItems.forEach(function(j){
+    const q = pos[j], k = p.m - q.m;
+    if (j < i && k > 0 && q.offs[k] !== q.offs[k - 1]) tl.fromTo(items[j], { x: q.offs[k - 1] - q.x }, { x: q.offs[k] - q.x, duration: 0.4, ease: 'power3.out', immediateRender: false }, t);
+  });
+});
+// exit (outAt 0 = hold to the cut)
+const out = N('outAt');
+// shrink away rather than fade, so no frame shows half-transparent type
+if (out > 0) items.forEach(function(it, i){ const o = out + i * 0.04; tl.to(it, { scale: 0, y: -10, duration: 0.24, ease: 'back.in(1.6)' }, o); tl.set(it, { opacity: 0 }, o + 0.24); });
+
+window.__timelines["step-stack"] = tl;
+</script>
+</template>
+</body>
+</html>

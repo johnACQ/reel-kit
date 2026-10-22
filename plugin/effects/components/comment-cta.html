@@ -1,0 +1,29 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "word", "type": "string", "label": "Comment word", "default": "WORD"}, {"id": "guide", "type": "string", "label": "What they get", "default": "for the full guide + prompts"}, {"id": "share", "type": "string", "label": "Share line", "default": "Send this to a friend who needs it"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: comment-cta. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.wrap{position:absolute;top:820px;left:110px;right:200px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.box{background:#00BEFF;border-radius:14px;padding:22px 30px;font:900 52px/1.1 Roboto,sans-serif;color:#0B0F12;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.w{background:#0B0F12;color:#00BEFF;border-radius:10px;padding:0 .2em;}
+.share{margin-top:16px;background:#FFFFFF;border-radius:10px;padding:10px 20px;font:700 30px Roboto,sans-serif;color:#0B0F12;box-shadow:0 10px 30px rgba(11,15,18,.25);}
+</style>
+<div id="root" data-composition-id="comment-cta" data-width="1080" data-height="1920">
+<div class="wrap enter"><div class="box">Comment <span class="w" data-var-text="word">WORD</span> <span data-var-text="guide">for the full guide + prompts</span></div><div class="share" data-var-text="share">Send this to a friend who needs it</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const ent = document.querySelectorAll(".enter");  // runtime scopes queries to this mount; an id-prefixed selector finds nothing once a component is mounted twice
+if (ent.length) tl.fromTo(ent, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0.04);
+
+window.__timelines["comment-cta"] = tl;
+</script>
+</template>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "label", "type": "string", "label": "Box title", "default": "PRICE"}, {"id": "aiNote", "type": "string", "label": "Note when the AI is bounced", "default": "AI can\u2019t price this"}, {"id": "youText", "type": "string", "label": "What YOU type (never a dollar figure)", "default": "your price"}, {"id": "aiTry", "type": "string", "label": "What the AI tries to type (never a dollar figure)", "default": "???"}, {"id": "top", "type": "number", "label": "Box top y (px). Waist-up ~260; tight selfie ~1190 with scale ~0.85", "default": 260, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Box centre x (px; 496 = centre of the safe zone)", "default": 496, "unit": "px"}, {"id": "scale", "type": "number", "label": "Size (1 = full; shrink only to fit tight footage)", "default": 1, "min": 0.5, "max": 1.2, "step": 0.01}, {"id": "aiAt", "type": "number", "label": "AI cursor clicks into the box (s from clip start)", "default": 0.5, "min": 0.3, "step": 0.05, "unit": "s"}, {"id": "youAt", "type": "number", "label": "YOU cursor clicks in (s; at least 0.5 s after the bounce)", "default": 1.4, "min": 0.8, "step": 0.05, "unit": "s"}, {"id": "outAt", "type": "number", "label": "Box leaves (s; 99 = hold to clip end)", "default": 2.3, "min": 0, "step": 0.05, "unit": "s"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: price-bounce. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.pb-wrap{position:absolute;left:146px;top:260px;width:700px;}
+.pb-in{position:relative;width:100%;}
+.pb-card{position:relative;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);padding:24px 30px 30px;}
+.pb-title{font-family:'Bebas Neue',sans-serif;font-size:66px;line-height:.9;letter-spacing:2px;color:#0B0F12;height:60px;}
+.pb-field{position:relative;display:flex;align-items:center;margin-top:14px;height:106px;padding:0 22px 0 26px;border-radius:14px;background:#F4F6F8;border:3px solid rgba(11,15,18,.14);}
+.pb-text{flex:1;min-width:0;display:flex;align-items:center;font:700 50px Roboto,sans-serif;color:#0B0F12;white-space:nowrap;overflow:hidden;}
+.pb-c{display:inline-block;white-space:pre;}
+.pb-caret{display:inline-block;flex:none;width:4px;height:56px;margin-left:3px;border-radius:2px;background:#0B0F12;}
+.pb-ok{display:flex;align-items:center;justify-content:center;flex:none;width:62px;height:62px;border-radius:99px;background:#33D17A;}
+.pb-ok svg{display:block;width:40px;height:40px;}
+.pb-note{position:absolute;left:30px;top:100%;margin-top:14px;display:flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 9px;border-radius:99px;background:#FFFFFF;
+  box-shadow:0 12px 28px rgba(11,15,18,.30);font:700 25px Roboto,sans-serif;color:#0B0F12;white-space:nowrap;}
+.pb-nx{display:flex;align-items:center;justify-content:center;flex:none;width:32px;height:32px;border-radius:99px;background:#FF4D4D;}
+.pb-nx svg{display:block;width:22px;height:22px;}
+.pb-cur{position:absolute;left:0;top:0;width:54px;height:70px;}
+.pb-cur svg{display:block;width:54px;height:70px;overflow:visible;filter:drop-shadow(0 6px 8px rgba(11,15,18,.35));}
+.pb-tag{position:absolute;left:40px;top:58px;height:42px;line-height:42px;padding:0 14px;border-radius:10px;font:500 25px 'Roboto Mono',monospace;letter-spacing:2px;white-space:nowrap;box-shadow:0 6px 14px rgba(11,15,18,.30);}
+.pb-ai .pb-tag{background:#0B0F12;color:#FFFFFF;}
+.pb-you .pb-tag{background:#00BEFF;color:#0B0F12;}
+</style>
+<div id="root" data-composition-id="price-bounce" data-width="1080" data-height="1920">
+<div class="pb-wrap" data-layout-allow-overlap><div class="pb-in">
+<div class="pb-shake"><div class="pb-card">
+<div class="pb-title" data-var-text="label">PRICE</div>
+<div class="pb-field"><div class="pb-text"><span class="pb-ai-t" data-slot="ai"></span><span class="pb-you-t" data-slot="you"></span><span class="pb-caret"></span></div><div class="pb-ok"><svg viewBox="0 0 40 40"><path d="M9 21l7.5 7.5L31 13" fill="none" stroke="#0B0F12" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+</div>
+<div class="pb-note"><span class="pb-nx"><svg viewBox="0 0 40 40"><path d="M12 12l16 16M28 12L12 28" fill="none" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round"/></svg></span><span data-var-text="aiNote">AI can’t price this</span></div>
+</div>
+<div class="pb-cur pb-ai"><svg viewBox="0 0 46 60"><path d="M4 3 L4 47 L15.5 36.5 L23.5 55 L31.5 51.5 L23.5 33.5 L39 33 Z" fill="#0B0F12" stroke="#FFFFFF" stroke-width="3.2" stroke-linejoin="round"/></svg><span class="pb-tag">AI</span></div>
+<div class="pb-cur pb-you"><svg viewBox="0 0 46 60"><path d="M4 3 L4 47 L15.5 36.5 L23.5 55 L31.5 51.5 L23.5 33.5 L39 33 Z" fill="#0B0F12" stroke="#FFFFFF" stroke-width="3.2" stroke-linejoin="round"/></svg><span class="pb-tag">YOU</span></div>
+</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const D = {"label": "PRICE", "aiNote": "AI can\u2019t price this", "youText": "your price", "aiTry": "???", "top": 260, "centerX": 496, "scale": 1, "aiAt": 0.5, "youAt": 1.4, "outAt": 2.3};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null) ? D[k] : x; };
+const T = function(k){ const x = V(k); return (x === '' ) ? String(D[k]) : String(x); };
+const N = function(k){ const x = V(k); const n = Number(x); return (x === '' || !isFinite(n)) ? Number(D[k]) : n; };
+const Q = function(s){ return document.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+const wrap = Q('.pb-wrap'), inn = Q('.pb-in'), shake = Q('.pb-shake'), card = Q('.pb-card'), field = Q('.pb-field');
+const aiT = Q("[data-slot='ai']"), youT = Q("[data-slot='you']"), caret = Q('.pb-caret'), ok = Q('.pb-ok'), note = Q('.pb-note');
+const aiC = Q('.pb-ai'), youC = Q('.pb-you');
+const Wd = 700;
+wrap.style.top = N('top') + 'px'; wrap.style.left = (N('centerX') - Wd / 2) + 'px';
+gsap.set(wrap, { scale: N('scale'), transformOrigin: '50% 0%' });
+// one span per character (built once); no text is ever rewritten, characters are revealed / removed with tl.set
+const spans = function(el, s){ const out = []; if (el && !el.dataset.done) { el.dataset.done = '1';
+  for (const ch of String(s)) { const c = document.createElement('span'); c.className = 'pb-c'; c.textContent = ch; el.appendChild(c); out.push(c); } } return out; };
+// hard rule: this box never shows a figure. Any digit or currency sign falls back to the default text.
+const safe = function(k){ const x = T(k); return /[0-9$\u00a3\u20ac\u00a5]/.test(x) ? String(D[k]) : x; };
+const aiCh = spans(aiT, safe('aiTry')), youCh = spans(youT, safe('youText'));
+// long lines shrink to fit the field (deterministic, from the character count; Roboto 700 ~0.58 em a character)
+const longest = Math.max(aiCh.length, youCh.length);
+Q('.pb-text').style.fontSize = Math.max(28, Math.min(50, Math.floor(520 / (Math.max(1, longest) * 0.58)))) + 'px';
+
+const aiAt = Math.max(0.3, N('aiAt')), outAt = N('outAt');
+const AIX = 430, AIY = 152;                      // click point in the field (cursor tip), box-local px
+const typeA = aiAt + 0.1, stepA = 0.07, reject = typeA + aiCh.length * stepA + 0.06;
+const youAt = Math.max(reject + 0.5, N('youAt'));
+const typeY = youAt + 0.08, stepY = Math.min(0.05, 0.42 / Math.max(1, youCh.length)), typedY = typeY + youCh.length * stepY, win = typedY + 0.08;
+
+gsap.set(inn, { y: 40, opacity: 0 }); gsap.set([aiCh, youCh], { display: 'none' }); gsap.set(ok, { scale: 0, opacity: 0 });
+gsap.set(note, { opacity: 0, y: 10, scale: 0.8, transformOrigin: '0% 50%' });
+gsap.set(aiC, { x: 1010, y: 300, rotation: -6, opacity: 0 }); gsap.set(youC, { x: -200, y: 330, rotation: 6, opacity: 0 });
+tl.fromTo(inn, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.34, ease: 'power3.out', immediateRender: false }, 0);
+// caret blinks while the box waits (finite, deterministic)
+const blink = function(a, b){ for (let t = a; t + 0.3 < b - 0.04; t += 0.5) { tl.set(caret, { opacity: 0 }, t + 0.3); if (t + 0.5 < b) tl.set(caret, { opacity: 1 }, t + 0.5); } tl.set(caret, { opacity: 1 }, b); };
+blink(0.2, aiAt);
+
+// ---- AI: glides in on an arc from the right, clicks, types, gets bounced
+const aiIn = Math.max(0.05, aiAt - 0.42);
+tl.fromTo(aiC, { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, aiIn);
+tl.fromTo(aiC, { x: 1010 }, { x: AIX, duration: 0.42, ease: 'power3.out', immediateRender: false }, aiIn);
+tl.fromTo(aiC, { y: 300, rotation: -6 }, { y: AIY, rotation: 0, duration: 0.42, ease: 'power2.out', immediateRender: false }, aiIn);
+tl.fromTo(aiC, { scale: 1 }, { scale: 0.86, duration: 0.05, ease: 'power2.in', immediateRender: false }, aiAt);
+tl.fromTo(aiC, { scale: 0.86 }, { scale: 1, duration: 0.12, ease: 'back.out(3)', immediateRender: false }, aiAt + 0.05);
+tl.set(field, { borderColor: '#00BEFF', backgroundColor: '#FFFFFF' }, aiAt);
+aiCh.forEach(function(c, i){ tl.set(c, { display: 'inline-block' }, typeA + i * stepA);
+  tl.fromTo(c, { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.1, ease: 'back.out(3)', immediateRender: false }, typeA + i * stepA); });
+// rejected: red flash + shake, characters spat out, note pops, the cursor is knocked back out
+tl.set(field, { borderColor: '#FF4D4D', backgroundColor: '#FFE9E9' }, reject);
+tl.set(aiCh, { color: '#E5484D' }, reject);
+const sh = [-18, 15, -11, 7, -3, 0];
+sh.forEach(function(x, i){ tl.fromTo(shake, { x: i ? sh[i - 1] : 0 }, { x: x, duration: 0.055, ease: 'sine.inOut', immediateRender: false }, reject + i * 0.055); });
+tl.fromTo(aiCh, { y: 0, opacity: 1 }, { y: -30, opacity: 0, duration: 0.18, ease: 'power2.in', stagger: 0.04, immediateRender: false }, reject + 0.12);
+tl.set(aiCh, { display: 'none' }, reject + 0.12 + 0.18 + 0.04 * aiCh.length);
+tl.fromTo(note, { opacity: 0, y: 10, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.26, ease: 'back.out(2.2)', immediateRender: false }, reject + 0.05);
+tl.fromTo(aiC, { x: AIX, y: AIY, rotation: 0, opacity: 1 }, { x: AIX + 150, y: AIY + 110, rotation: 18, duration: 0.24, ease: 'power3.out', immediateRender: false }, reject + 0.02);
+tl.fromTo(aiC, { opacity: 1 }, { opacity: 0, duration: 0.16, immediateRender: false }, reject + 0.2);
+blink(reject + 0.3, youAt);
+
+// ---- YOU: glides in from the left, clicks, types the line, the box turns green with a check
+const youIn = youAt - 0.36;
+tl.fromTo(note, { opacity: 1, y: 0 }, { opacity: 0, y: 8, duration: 0.2, ease: 'power2.in', immediateRender: false }, youAt - 0.16);
+tl.set(field, { borderColor: 'rgba(11,15,18,.14)', backgroundColor: '#F4F6F8' }, reject + 0.45);
+tl.fromTo(youC, { opacity: 0 }, { opacity: 1, duration: 0.12, immediateRender: false }, youIn);
+tl.fromTo(youC, { x: -200 }, { x: AIX + 14, duration: 0.36, ease: 'power3.out', immediateRender: false }, youIn);
+tl.fromTo(youC, { y: 330, rotation: 6 }, { y: AIY, rotation: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, youIn);
+tl.fromTo(youC, { scale: 1 }, { scale: 0.86, duration: 0.05, ease: 'power2.in', immediateRender: false }, youAt);
+tl.fromTo(youC, { scale: 0.86 }, { scale: 1, duration: 0.12, ease: 'back.out(3)', immediateRender: false }, youAt + 0.05);
+tl.set(field, { borderColor: '#00BEFF', backgroundColor: '#FFFFFF' }, youAt);
+youCh.forEach(function(c, i){ tl.set(c, { display: 'inline-block' }, typeY + i * stepY); });
+tl.set(caret, { opacity: 0 }, win);
+tl.set(field, { borderColor: '#33D17A', backgroundColor: '#EAFBF1' }, win);
+tl.fromTo(ok, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(2.6)', immediateRender: false }, win);
+tl.fromTo(card, { scale: 1 }, { scale: 1.025, duration: 0.1, ease: 'power2.out', immediateRender: false }, win);
+tl.fromTo(card, { scale: 1.025 }, { scale: 1, duration: 0.26, ease: 'power2.inOut', immediateRender: false }, win + 0.1);
+tl.fromTo(youC, { x: AIX + 14, y: AIY, opacity: 1 }, { x: AIX + 60, y: AIY + 70, opacity: 0, duration: 0.34, ease: 'power2.in', immediateRender: false }, win + 0.12);
+if (outAt < 98) tl.fromTo(inn, { y: 0, opacity: 1 }, { y: -26, opacity: 0, duration: 0.26, ease: 'power2.in', immediateRender: false }, Math.max(outAt, win + 0.3));
+window.__timelines["price-bounce"] = tl;
+</script>
+</template>
+</body>
+</html>

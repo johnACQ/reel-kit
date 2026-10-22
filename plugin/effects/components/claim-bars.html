@@ -1,0 +1,73 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "labelA", "type": "string", "label": "Long accent bar label (the claim). No digits or %", "default": "What they said"}, {"id": "labelB", "type": "string", "label": "Short grey bar label (the proof). No digits or %", "default": "What they could back up"}, {"id": "ratio", "type": "number", "label": "Short bar length as a share of the long one (0.15-0.8). A shape, never shown as a number", "default": 0.35, "min": 0.15, "max": 0.8, "step": 0.01}, {"id": "shrinkAt", "type": "number", "label": "Long bar starts to deflate (s from clip start; lock to &#39;back up&#39;)", "default": 1.0, "min": 0.5, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Card top y (px). Waist-up framing 260", "default": 260, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Card centre x (px; 496 = centre of the safe zone)", "default": 496, "unit": "px"}, {"id": "scale", "type": "number", "label": "Size (1 = full; shrink only to fit tight footage)", "default": 1, "min": 0.5, "max": 1.2, "step": 0.01}, {"id": "outAt", "type": "number", "label": "Card leaves (s; 99 = hold to clip end)", "default": 1.95, "min": 0, "step": 0.05, "unit": "s"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: claim-bars. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.cb-wrap{position:absolute;left:136px;top:260px;width:720px;}
+.cb-in{position:relative;width:100%;}
+.cb-card{position:relative;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);padding:38px 40px 34px;}
+.cb-row{position:relative;}
+.cb-row + .cb-row{margin-top:34px;}
+.cb-track{position:relative;width:640px;height:88px;}
+.cb-bar{position:absolute;left:0;top:0;width:640px;height:88px;border-radius:14px;transform-origin:0% 50%;}
+.cb-a .cb-bar{background:#00BEFF;}
+.cb-b .cb-bar{background:#9AA4AD;}
+.cb-ghost{position:absolute;left:0;top:0;width:640px;height:88px;border-radius:14px;border:3px dashed rgba(11,15,18,.28);box-sizing:border-box;}
+.cb-lab{margin-top:14px;font:900 36px/1.15 Roboto,sans-serif;color:#0B0F12;white-space:nowrap;}
+</style>
+<div id="root" data-composition-id="claim-bars" data-width="1080" data-height="1920">
+<div class="cb-wrap"><div class="cb-in"><div class="cb-card"><div class="cb-row cb-a"><div class="cb-track"><div class="cb-ghost"></div><div class="cb-bar"></div></div><div class="cb-lab">What they said</div></div><div class="cb-row cb-b"><div class="cb-track"><div class="cb-bar"></div></div><div class="cb-lab">What they could back up</div></div></div></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const D = {"labelA": "What they said", "labelB": "What they could back up", "ratio": 0.35, "shrinkAt": 1.0, "top": 260, "centerX": 496, "scale": 1, "outAt": 1.95};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null) ? D[k] : x; };
+const T = function(k){ const x = V(k); return (x === '' ) ? String(D[k]) : String(x); };
+const N = function(k){ const x = V(k); const n = Number(x); return (x === '' || !isFinite(n)) ? Number(D[k]) : n; };
+const Q = function(s){ return document.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+const wrap = Q('.cb-wrap'), inn = Q('.cb-in');
+const barA = Q('.cb-a .cb-bar'), barB = Q('.cb-b .cb-bar'), ghost = Q('.cb-ghost');
+const labA = Q('.cb-a .cb-lab'), labB = Q('.cb-b .cb-lab');
+const W = 720, TRACK = 640;
+wrap.style.top = N('top') + 'px'; wrap.style.left = (N('centerX') - W / 2) + 'px';
+gsap.set(wrap, { scale: N('scale'), transformOrigin: '50% 0%' });
+
+// Hard rule: no numbers anywhere (the bars are a shape, never a measured ratio). A label with a digit, % or currency
+// sign falls back to its default. Long labels shrink to fit the track (Roboto 700 ~0.55 em a character).
+const NUMERIC = /[0-9%\p{Sc}]/u;
+const lab = function(k){ const x = T(k).trim(); return (x === '' || NUMERIC.test(x)) ? String(D[k]) : x; };
+[[labA, lab('labelA')], [labB, lab('labelB')]].forEach(function(p){ p[0].textContent = p[1];
+  p[0].style.fontSize = Math.max(22, Math.min(36, Math.floor(TRACK / (p[1].length * 0.56)))) + 'px'; });
+const ratio = Math.min(0.8, Math.max(0.15, N('ratio')));
+const wB = Math.round(TRACK * ratio);
+const sAt = Math.max(0.5, N('shrinkAt')), outAt = N('outAt');
+
+gsap.set(inn, { y: 40, opacity: 0 }); gsap.set([barA, barB], { width: 0 }); gsap.set([labA, labB], { opacity: 0, y: 10 });
+gsap.set(ghost, { opacity: 0 });
+tl.fromTo(inn, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.34, ease: 'power3.out', immediateRender: false }, 0);
+// both bars grow from the left: the claim first and long, the proof a beat later and short
+tl.fromTo(barA, { width: 0 }, { width: TRACK, duration: 0.5, ease: 'power3.out', immediateRender: false }, 0.12);
+tl.fromTo(labA, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0.24);
+tl.fromTo(barB, { width: 0 }, { width: wB, duration: 0.42, ease: 'power3.out', immediateRender: false }, 0.3);
+tl.fromTo(labB, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0.4);
+// the deflate: the long bar shrinks to the short one's length with an ease, squashing as the air goes out of it;
+// a dashed outline stays where the claim was, so the gap is still there to see
+tl.fromTo(ghost, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power1.out', immediateRender: false }, sAt + 0.08);
+tl.fromTo(barA, { width: TRACK }, { width: wB, duration: 0.62, ease: 'power3.inOut', immediateRender: false }, sAt);
+tl.fromTo(barA, { scaleY: 1 }, { scaleY: 0.78, duration: 0.24, ease: 'power2.out', immediateRender: false }, sAt + 0.06);
+tl.fromTo(barA, { scaleY: 0.78 }, { scaleY: 1, duration: 0.42, ease: 'back.out(3)', immediateRender: false }, sAt + 0.3);
+if (outAt < 98) tl.fromTo(inn, { y: 0, opacity: 1 }, { y: -26, opacity: 0, duration: 0.26, ease: 'power2.in', immediateRender: false }, Math.max(outAt, sAt + 0.75));
+window.__timelines["claim-bars"] = tl;
+</script>
+</template>
+</body>
+</html>

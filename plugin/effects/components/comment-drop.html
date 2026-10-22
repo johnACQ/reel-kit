@@ -1,0 +1,121 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "word", "type": "string", "label": "Comment keyword (only once its auto-DM is proven live)", "default": "WORD"}, {"id": "placeholder", "type": "string", "label": "Comment bar placeholder", "default": "Add a comment..."}, {"id": "postLabel", "type": "string", "label": "Post button label", "default": "Post"}, {"id": "user", "type": "string", "label": "Commenter shown on the posted row (generic, never a real person)", "default": "you"}, {"id": "timeLabel", "type": "string", "label": "Time label on the posted row", "default": "now"}, {"id": "typeStart", "type": "number", "label": "Typing starts (s from clip start)", "default": 0.6, "min": 0.3, "max": 5, "step": 0.05, "unit": "s"}, {"id": "postAt", "type": "number", "label": "Post tapped (s from clip start)", "default": 1.3, "min": 0.6, "max": 8, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the keyword box (px)", "default": 236, "min": 220, "max": 1200, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre (px)", "default": 496, "min": 330, "max": 660, "unit": "px"}, {"id": "size", "type": "number", "label": "Keyword size px (0 = auto from length)", "default": 0, "min": 0, "max": 220, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: comment-drop. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.mono{font-family:'Roboto Mono',monospace;}
+.ccard{position:relative;width:620px;height:92px;background:#FFFFFF;border-radius:22px;box-shadow:0 18px 44px rgba(11,15,18,.30);}
+.av{position:absolute;left:16px;top:12px;width:48px;height:48px;border-radius:50%;overflow:hidden;}
+.av svg{display:block;width:100%;height:100%;}
+.prow{position:absolute;left:78px;right:70px;top:15px;}
+.pmeta{font:500 21px/26px Roboto,sans-serif;color:#5B6670;white-space:nowrap;}
+.pmeta b{font-weight:700;color:#0B0F12;margin-right:10px;}
+.pword{font:700 30px/36px Roboto,sans-serif;color:#0B0F12;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.heart{position:absolute;right:22px;top:30px;width:32px;height:32px;}
+.heart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+.cd{position:absolute;left:calc(var(--centerX) * 1px - 330px);width:660px;top:calc(var(--top) * 1px);}
+.shk{display:flex;flex-direction:column;align-items:center;}
+.kw{background:#00BEFF;color:#0B0F12;font-family:'Bebas Neue',sans-serif;line-height:.8;padding:.17em .2em .05em;border-radius:16px;white-space:nowrap;box-shadow:0 20px 50px rgba(11,15,18,.32);}
+.cwrap{margin-top:12px;}
+.ccard.inp{height:72px;border-radius:36px;}
+.inrow{position:absolute;left:78px;right:12px;top:0;height:72px;display:flex;align-items:center;}
+.ctext{flex:1;font:500 27px Roboto,sans-serif;color:#0B0F12;white-space:nowrap;overflow:hidden;display:flex;align-items:center;}
+.ph{color:#6E7881;font-weight:400;}
+.typed span{display:none;}
+.caret{display:inline-block;width:3px;height:32px;background:#0B0F12;margin:0 2px 0 1px;border-radius:2px;flex:none;}
+.post{position:relative;height:50px;padding:0 22px;display:flex;align-items:center;}
+.pbg{position:absolute;inset:0;background:#00BEFF;border-radius:25px;}
+.plab{position:relative;font:700 24px Roboto,sans-serif;color:#848E97;}
+.tap{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;border:4px solid rgba(11,15,18,.45);box-sizing:border-box;}
+.cd .prow{opacity:0;}
+.cd .heart{opacity:0;}
+
+</style>
+<div id="root" data-composition-id="comment-drop" data-width="1080" data-height="1920">
+<div class="cd" data-tc="comment-drop"><div class="shk">
+<div class="kwrap"><div class="kw" data-var-text="word">WORD</div></div>
+<div class="cwrap"><div class="ccard inp"><div class="av"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="#E3E8EC"/><circle cx="24" cy="19" r="8.5" fill="#A3ADB6"/><path d="M8.6 41.6c2.6-7.6 8.6-11.6 15.4-11.6s12.8 4 15.4 11.6A23.9 23.9 0 0 1 24 48 23.9 23.9 0 0 1 8.6 41.6z" fill="#A3ADB6"/></svg></div>
+<div class="inrow"><div class="ctext"><span class="typed"></span><span class="caret"></span><span class="ph" data-var-text="placeholder">Add a comment...</span></div>
+<div class="post"><div class="pbg"></div><span class="plab" data-var-text="postLabel">Post</span><div class="tap"></div></div></div>
+<div class="prow"><div class="pmeta"><b data-var-text="user">you</b><span data-var-text="timeLabel">now</span></div>
+<div class="pword" data-var-text="word">WORD</div></div>
+<div class="heart"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="#5B6670" stroke-width="1.9"/></svg></div>
+</div></div>
+</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// The wrapper, not [data-composition-id=...]: a 2nd instance of the same component gets a renamed root.
+const R = document.querySelector("[data-tc='comment-drop']");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"word": "WORD", "placeholder": "Add a comment...", "postLabel": "Post", "user": "you", "timeLabel": "now", "typeStart": 0.6, "postAt": 1.3, "top": 236, "centerX": 496, "size": 0};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const B = function(k){ const x = V(k); return x === true || x === 'true' || x === 1 || x === '1'; };
+const rnd = function(i, s){ const x = Math.sin(i * 12.9898 + s * 78.233) * 43758.5453; return x - Math.floor(x); };
+
+const word = String(V('word'));
+const chars = Array.from(word);
+const n = Math.max(1, chars.length);
+let fs = N('size'); if (!(fs > 0)) fs = Math.min(160, Math.round(760 / (0.42 * n + 0.5)));
+const KW = Q('.kw'); KW.style.fontSize = fs + 'px';
+const kwH = Math.round(fs * 1.02); KW.style.height = kwH + 'px';
+const top = N('top');
+const SHK = Q('.shk'), CW = Q('.cwrap'), CARD = Q('.ccard'), INROW = Q('.inrow'), PH = Q('.ph'), CARET = Q('.caret');
+const PROWE = Q('.prow'), HEARTE = Q('.heart'), POST = Q('.post'), PBG = Q('.pbg'), PLAB = Q('.plab'), TAP = Q('.tap');
+const TY = Q('.typed');
+let T = QA('.typed span');
+if (!T.length) { chars.forEach(function(ch){ const s = document.createElement('span'); s.textContent = ch === ' ' ? '\u00A0' : ch; TY.appendChild(s); }); T = QA('.typed span'); }
+// initial states (outside the timeline)
+const startY = -(top + kwH + 120);
+gsap.set(KW, { y: startY, scaleX: 0.9, scaleY: 1.18, transformOrigin: '50% 100%' });
+gsap.set(CW, { y: 30, opacity: 0 });
+gsap.set(CARET, { opacity: 0 });
+gsap.set(PBG, { opacity: 0, scale: 0.6 });
+gsap.set(TAP, { opacity: 0, scale: 0.2 });
+gsap.set(PROWE, { opacity: 0, y: 10 });
+gsap.set(HEARTE, { opacity: 0 });
+// 1. slam: accelerate down stretched, squash on impact, elastic settle, tiny shake
+const hit = 0.2;
+tl.fromTo(KW, { y: startY }, { y: 0, duration: hit, ease: 'power3.in', immediateRender: false }, 0);
+tl.set(KW, { scaleX: 1.14, scaleY: 0.8 }, hit);
+tl.to(KW, { scaleX: 1, scaleY: 1, duration: 0.6, ease: 'elastic.out(1, 0.42)' }, hit + 0.02);
+[[-10, 0.035], [9, 0.04], [-6, 0.04], [4, 0.04], [-2, 0.04], [0, 0.05]].reduce(function(t, p){ tl.to(SHK, { x: p[0], duration: p[1], ease: 'sine.inOut' }, t); return t + p[1]; }, hit);
+tl.fromTo(SHK, { y: 0 }, { y: 7, duration: 0.05, ease: 'power2.out', immediateRender: false }, hit);
+tl.to(SHK, { y: 0, duration: 0.25, ease: 'back.out(3)' }, hit + 0.05);
+// 2. comment bar rises in under it
+tl.fromTo(CW, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.34, ease: 'power3.out', immediateRender: false }, hit + 0.05);
+// 3. type the word, one span per character
+const P = Math.max(N('postAt'), 0.5), T0 = Math.max(N('typeStart'), hit + 0.2);
+const dt = Math.min(0.085, Math.max(0.04, (P - 0.22 - T0) / n));
+[[hit + 0.36, 1], [hit + 0.56, 0], [hit + 0.74, 1]].forEach(function(p){ if (p[0] < T0) tl.set(CARET, { opacity: p[1] }, p[0]); });
+tl.set(CARET, { opacity: 1 }, T0);
+tl.set(PH, { display: 'none' }, T0);
+tl.to(PLAB, { color: '#0B0F12', duration: 0.15 }, T0);
+T.forEach(function(s, i){ tl.set(s, { display: 'inline' }, T0 + i * dt); });
+for (let t = T0 + n * dt + 0.16, on = false; t < P - 0.05; t += 0.18, on = !on) tl.set(CARET, { opacity: on ? 1 : 0 }, t);
+// 4. tap Post: press, cyan fill, ripple
+tl.to(POST, { scale: 0.88, duration: 0.07, ease: 'power2.out' }, P);
+tl.to(PBG, { opacity: 1, scale: 1, duration: 0.14, ease: 'power2.out' }, P);
+tl.to(POST, { scale: 1, duration: 0.24, ease: 'back.out(3)' }, P + 0.07);
+tl.fromTo(TAP, { opacity: 1, scale: 0.35 }, { opacity: 0, scale: 1.35, duration: 0.42, ease: 'power2.out', immediateRender: false }, P);
+// 5. posted: bar collapses into a posted row, keyword lifts off, row glides up into its place
+const C = P + 0.2;
+tl.set(CARET, { opacity: 0 }, C);
+tl.to(INROW, { opacity: 0, y: -10, duration: 0.1, ease: 'power2.in' }, C);
+tl.to(CARD, { height: 92, borderRadius: 22, duration: 0.3, ease: 'power3.inOut' }, C);
+tl.to(PROWE, { opacity: 1, y: 0, duration: 0.26, ease: 'power3.out' }, C + 0.1);
+tl.to(HEARTE, { opacity: 1, duration: 0.2 }, C + 0.16);
+tl.to(KW, { y: -(top + kwH + 60), scaleX: 0.94, scaleY: 1.12, duration: 0.3, ease: 'power3.in' }, C);
+tl.to(CW, { y: -(kwH + 12), duration: 0.46, ease: 'power3.inOut' }, C + 0.12);
+
+window.__timelines["comment-drop"] = tl;
+</script>
+</template>
+</body>
+</html>

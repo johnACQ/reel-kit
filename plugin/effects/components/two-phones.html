@@ -1,0 +1,166 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "leftLabel", "type": "string", "label": "Left label (the winner; floods accent when the plan lands)", "default": "YOU"}, {"id": "rightLabel", "type": "string", "label": "Right label", "default": "THE NEXT GUY"}, {"id": "docTitle", "type": "string", "label": "Document title in the notification", "default": "Written plan"}, {"id": "sentText", "type": "string", "label": "Tick label on the document", "default": "Sent"}, {"id": "appLabel", "type": "string", "label": "Notification app label (generic)", "default": "Messages"}, {"id": "timeLabel", "type": "string", "label": "Notification time label", "default": "now"}, {"id": "callerName", "type": "string", "label": "Caller on the ringing phone (generic, never a real name)", "default": "Customer"}, {"id": "callingText", "type": "string", "label": "Line under the caller (a trailing ... animates)", "default": "calling..."}, {"id": "clock", "type": "string", "label": "Lock-screen clock on the left phone (blank hides it)", "default": "9:41"}, {"id": "landAt", "type": "number", "label": "Notification lands with the ping (s from clip start; lock to the spoken word)", "default": 0.9, "min": 0.55, "max": 8, "step": 0.05, "unit": "s"}, {"id": "dur", "type": "number", "label": "Clip length s: rings until here, exits in the last 0.3 s (0 = no exit)", "default": 2.4, "min": 0, "max": 20, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the labels (px)", "default": 240, "min": 0, "max": 1400, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre of the pair (px; 496 = centre of the safe band)", "default": 496, "min": 300, "max": 780, "unit": "px"}, {"id": "scale", "type": "number", "label": "Scale (1 = phones 300 px wide; shrinks from the top centre)", "default": 1, "min": 0.4, "max": 1.2, "step": 0.01}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: two-phones. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_phone/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.tp-pos{position:absolute;left:calc(var(--centerX) * 1px - 332px);top:calc(var(--top) * 1px);width:664px;height:666px;transform:scale(var(--scale));transform-origin:50% 0;}
+.tp{position:absolute;inset:0;}
+.pw{position:absolute;top:0;width:300px;height:666px;}
+.pw.l{left:0;} .pw.r{left:364px;}
+.lw{position:absolute;left:0;right:0;top:0;height:52px;display:flex;justify-content:center;align-items:flex-start;}
+.lb{position:relative;height:50px;padding:0 18px;border-radius:10px;background:#FFFFFF;box-shadow:0 10px 26px rgba(11,15,18,.32);overflow:hidden;display:flex;align-items:center;}
+.lbf{position:absolute;inset:0;background:#00BEFF;}
+.lt{position:relative;font:400 42px/1 'Bebas Neue',sans-serif;letter-spacing:1px;color:#0B0F12;padding-top:5px;white-space:nowrap;}
+.ph{position:absolute;left:0;top:66px;width:300px;height:600px;border-radius:46px;background:#05080A;border:2px solid rgba(255,255,255,.16);padding:10px;box-sizing:border-box;box-shadow:0 28px 64px rgba(11,15,18,.48),0 0 0 1px rgba(0,0,0,.35);}
+.sb{position:absolute;width:4px;border-radius:2px;background:#1B2228;}
+.sb.a{left:-5px;top:118px;height:30px;} .sb.b{left:-5px;top:164px;height:52px;} .sb.c{left:-5px;top:226px;height:52px;} .sb.d{right:-5px;top:176px;height:80px;}
+.scr{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;}
+.isl{position:absolute;left:50%;top:10px;width:86px;height:25px;margin-left:-43px;border-radius:13px;background:#000;z-index:5;}
+.stat{position:absolute;right:20px;top:15px;z-index:5;line-height:0;}
+.hi{position:absolute;left:50%;bottom:8px;width:104px;height:5px;margin-left:-52px;border-radius:3px;background:rgba(255,255,255,.72);z-index:5;}
+.lock{background:radial-gradient(120% 60% at 18% 104%,rgba(0,190,255,.50) 0%,rgba(0,190,255,0) 62%),linear-gradient(172deg,#17384A 0%,#0E1A22 46%,#0B0F12 100%);}
+.wake{position:absolute;inset:0;background:#FFFFFF;z-index:2;}
+.clk{position:absolute;left:0;right:0;top:56px;text-align:center;font:700 76px/1 Roboto,sans-serif;letter-spacing:-1px;color:#FFFFFF;}
+.nt{position:absolute;left:10px;right:10px;top:164px;padding:12px 12px 13px;border-radius:24px;background:rgba(255,255,255,.96);box-shadow:0 12px 30px rgba(0,0,0,.40);z-index:3;}
+.pg{position:absolute;inset:-3px;border-radius:27px;border:3px solid #00BEFF;}
+.nh{display:flex;align-items:center;height:26px;}
+.ni{width:26px;height:26px;border-radius:7px;background:#00BEFF;display:flex;align-items:center;justify-content:center;flex:none;}
+.na{margin-left:9px;font:700 14px/1 Roboto,sans-serif;letter-spacing:.8px;text-transform:uppercase;color:#3A434B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nw{margin-left:auto;padding-left:8px;font:500 14px/1 Roboto,sans-serif;color:#5B6670;white-space:nowrap;}
+.nb{display:flex;align-items:center;margin-top:11px;padding:9px;border-radius:15px;background:#F1F4F6;}
+.dt{position:relative;flex:none;width:40px;height:52px;border-radius:6px;background:#FFFFFF;border:1px solid rgba(11,15,18,.14);overflow:hidden;}
+.dt b{position:absolute;left:0;right:0;top:0;height:9px;background:#00BEFF;}
+.dt i{position:absolute;left:7px;height:3px;border-radius:2px;background:#C9D0D6;}
+.di{margin-left:11px;min-width:0;flex:1;}
+.dn{font:700 23px/1.12 Roboto,sans-serif;color:#0B0F12;}
+.sp{display:inline-flex;align-items:center;margin-top:6px;height:28px;padding:0 11px 0 6px;border-radius:99px;background:#00BEFF;font:700 17px/1 Roboto,sans-serif;color:#0B0F12;}
+.sp svg{margin-right:4px;}
+.qk{position:absolute;bottom:30px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;z-index:2;}
+.qk.a{left:26px;} .qk.b{right:26px;}
+.call{background:linear-gradient(180deg,#33414C 0%,#1A232A 52%,#0B0F12 100%);}
+.cn{position:absolute;left:12px;right:12px;top:66px;text-align:center;font:500 36px/1.1 Roboto,sans-serif;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cl{position:absolute;left:0;right:0;top:114px;text-align:center;font:400 21px/1 Roboto,sans-serif;color:rgba(255,255,255,.76);white-space:nowrap;}
+.cdot{display:inline-block;width:.32em;text-align:left;}
+.cav{position:absolute;left:50%;top:212px;width:124px;height:124px;margin-left:-62px;}
+.rg{position:absolute;inset:0;border-radius:50%;border:4px solid rgba(255,255,255,.85);background:rgba(255,255,255,.06);}
+.avc{position:absolute;inset:0;border-radius:50%;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.35);}
+.avc svg{display:block;width:100%;height:100%;}
+.cb{position:absolute;top:454px;width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.cb.no{left:34px;background:#FF4D4D;} .cb.ok{right:34px;background:#30D158;}
+
+</style>
+<div id="root" data-composition-id="two-phones" data-width="1080" data-height="1920">
+<div class="tp-pos"><div class="tp" data-tc="two-phones">
+<div class="pw l">
+<div class="lw"><div class="lb you" data-layout-allow-overlap><i class="lbf"></i><span class="lt" data-layout-allow-overlap data-var-text="leftLabel">YOU</span></div></div>
+<div class="ph l"><i class="sb a"></i><i class="sb b"></i><i class="sb c"></i><i class="sb d"></i>
+<div class="scr lock"><div class="wake"></div>
+<div class="clk" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="clock">9:41</div>
+<div class="nt" data-layout-allow-overlap data-layout-allow-overflow><div class="pg" data-layout-allow-overlap></div>
+<div class="nh"><div class="ni"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 4C7 4 3 7.1 3 11c0 2.1 1.2 4 3.1 5.3L5.5 20l3.9-2.3c.8.2 1.7.3 2.6.3 5 0 9-3.1 9-7s-4-7-9-7z" fill="#0B0F12"/></svg></div><span class="na" data-var-text="appLabel">Messages</span><span class="nw" data-var-text="timeLabel">now</span></div>
+<div class="nb"><div class="dt"><b></b><i style="top:17px;width:24px"></i><i style="top:25px;width:20px"></i><i style="top:33px;width:24px"></i><i style="top:41px;width:14px"></i></div><div class="di"><div class="dn" data-var-text="docTitle">Written plan</div>
+<div class="sp"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#0B0F12" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-var-text="sentText">Sent</span></div></div></div>
+</div>
+<div class="qk a"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M8 2.5h8v3.2l-2 3V21a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V8.7l-2-3z" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="1.3" fill="#FFFFFF"/></svg></div><div class="qk b"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 7.5h3.2L9 5h6l1.8 2.5H20a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" fill="none" stroke="#FFFFFF" stroke-width="1.8"/></svg></div>
+<div class="isl"></div><div class="stat"><svg width="54" height="14" viewBox="0 0 54 14"><g fill="#FFFFFF"><rect x="0" y="9" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="7" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/></g><rect x="26" y="1" width="23" height="12" rx="3.5" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/><rect x="28.5" y="3.5" width="16" height="7" rx="1.8" fill="#FFFFFF"/><rect x="50.5" y="5" width="2" height="4" rx="1" fill="rgba(255,255,255,.6)"/></svg></div><div class="hi"></div></div></div>
+</div>
+<div class="pw r">
+<div class="lw"><div class="lb nxt"><span class="lt" data-var-text="rightLabel">THE NEXT GUY</span></div></div>
+<div class="ph r"><i class="sb a"></i><i class="sb b"></i><i class="sb c"></i><i class="sb d"></i>
+<div class="scr call">
+<div class="cn" data-var-text="callerName">Customer</div>
+<div class="cl"><span class="clt">calling</span><span class="cdot">.</span><span class="cdot">.</span><span class="cdot">.</span></div>
+<div class="cav" data-layout-allow-overlap><i class="rg" data-layout-allow-overlap></i><i class="rg" data-layout-allow-overlap></i><i class="rg" data-layout-allow-overlap></i><div class="avc"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="#56636E"/><circle cx="24" cy="19" r="8.5" fill="#A8B3BC"/><path d="M8.6 41.6c2.6-7.6 8.6-11.6 15.4-11.6s12.8 4 15.4 11.6A23.9 23.9 0 0 1 24 48 23.9 23.9 0 0 1 8.6 41.6z" fill="#A8B3BC"/></svg></div></div>
+<div class="cb no"><svg viewBox="0 0 24 24" width="34" height="34"><path fill="#FFFFFF" d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg></div><div class="cb ok"><svg viewBox="0 0 24 24" width="32" height="32"><path fill="#FFFFFF" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+<div class="isl"></div><div class="stat"><svg width="54" height="14" viewBox="0 0 54 14"><g fill="#FFFFFF"><rect x="0" y="9" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="7" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/></g><rect x="26" y="1" width="23" height="12" rx="3.5" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/><rect x="28.5" y="3.5" width="16" height="7" rx="1.8" fill="#FFFFFF"/><rect x="50.5" y="5" width="2" height="4" rx="1" fill="rgba(255,255,255,.6)"/></svg></div><div class="hi"></div></div></div>
+</div>
+</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// Plain class, never [data-composition-id=...]: a second mount of a component gets a renamed root, and the
+// runtime scopes document queries to each mount (round-one lesson 1).
+const R = document.querySelector(".tp");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"leftLabel": "YOU", "rightLabel": "THE NEXT GUY", "docTitle": "Written plan", "sentText": "Sent", "appLabel": "Messages", "timeLabel": "now", "callerName": "Customer", "callingText": "calling...", "clock": "9:41", "landAt": 0.9, "dur": 2.4, "top": 240, "centerX": 496, "scale": 1};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+
+const LP = Q('.pw.l'), RP = Q('.pw.r'), LPH = Q('.ph.l'), RPH = Q('.ph.r');
+const LBY = Q('.lb.you'), LBN = Q('.lb.nxt'), LBF = Q('.lbf');
+const NT = Q('.nt'), PG = Q('.pg'), SP = Q('.sp'), TK = Q('.sp path'), WK = Q('.wake');
+const RG = QA('.rg'), OK = Q('.cb.ok'), CLT = Q('.clt'), CDS = QA('.cdot');
+const L = Math.max(0.55, N('landAt'));
+const DUR = N('dur');
+const END = DUR > 0 ? Math.max(DUR, L + 0.9) : L + 1.6;   // ringing and the timeline run to here
+const OUT = DUR > 0 ? END - 0.3 : END;                     // exit starts here (dur 0 = no exit)
+// "calling..." -> base text + three dots that cycle (a line without trailing dots stays static)
+const ct = String(V('callingText'));
+const dotted = /(\.\.\.|…)\s*$/.test(ct);
+CLT.textContent = dotted ? ct.replace(/(\.\.\.|…)\s*$/, '') : ct;
+if (!dotted) CDS.forEach(function(d){ d.style.display = 'none'; });
+if (!String(V('clock')).trim()) Q('.clk').style.display = 'none';
+
+// initial states (outside the timeline)
+gsap.set([LP, RP], { y: 70, opacity: 0 });
+gsap.set([LPH, RPH], { transformOrigin: '50% 60%' });
+gsap.set([LBY, LBN], { y: 16, opacity: 0, scale: 0.9, transformOrigin: '50% 100%' });
+gsap.set(LBF, { scaleX: 0, transformOrigin: '0% 50%' });
+gsap.set(NT, { y: -360 });
+gsap.set(PG, { opacity: 0 });
+gsap.set(SP, { scale: 0, opacity: 0, transformOrigin: '0% 50%' });
+gsap.set(TK, { strokeDasharray: 24, strokeDashoffset: 24 });
+gsap.set(WK, { opacity: 0 });
+gsap.set(RG, { opacity: 0, scale: 1 });
+gsap.set(CDS, { opacity: 0 });
+
+// 1. both phones rise in, labels pop on top
+tl.fromTo(LP, { y: 70, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', immediateRender: false }, 0);
+tl.fromTo(RP, { y: 70, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', immediateRender: false }, 0.08);
+tl.fromTo(LBY, { y: 16, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.34, ease: 'back.out(2.2)', immediateRender: false }, 0.2);
+tl.fromTo(LBN, { y: 16, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.34, ease: 'back.out(2.2)', immediateRender: false }, 0.27);
+
+// 2. the right phone rings from the start to the end: ring pulse, buzz, accept bounce, dots cycling
+const R0 = 0.3, PER = 0.62;
+let k = 0;
+for (let t = R0; t < OUT - 0.05; t += PER, k++) {
+  tl.fromTo(RG[k % RG.length], { scale: 1, opacity: 0.9 }, { scale: 2.15, opacity: 0, duration: 1.1, ease: 'power2.out', immediateRender: false }, t);
+  tl.to(RPH, { keyframes: [
+    { x: -3, rotation: -1, duration: 0.035 }, { x: 3, rotation: 1, duration: 0.035 }, { x: -3, rotation: -1, duration: 0.035 },
+    { x: 3, rotation: 1, duration: 0.035 }, { x: -2, rotation: -0.5, duration: 0.035 }, { x: 0, rotation: 0, duration: 0.04 } ], ease: 'none' }, t);
+  tl.to(OK, { keyframes: [ { scale: 1.14, duration: 0.12, ease: 'power2.out' }, { scale: 1, duration: 0.28, ease: 'power2.inOut' } ] }, t);
+}
+for (let t = R0, c = 0; t < END; t += 0.36, c++) { const n = (c % 3) + 1; CDS.forEach(function(d, i){ tl.set(d, { opacity: i < n ? 1 : 0 }, t); }); }
+
+// 3. the left phone: notification drops in under the island, lands with a ping at landAt
+tl.fromTo(NT, { y: -360 }, { y: 0, duration: 0.46, ease: 'back.out(1.35)', immediateRender: false }, L - 0.32);
+tl.fromTo(PG, { scale: 1, opacity: 0.95 }, { scale: 1.16, opacity: 0, duration: 0.6, ease: 'power2.out', immediateRender: false }, L);
+tl.fromTo(WK, { opacity: 0 }, { opacity: 0.14, duration: 0.08, ease: 'power1.out', immediateRender: false }, L - 0.02);
+tl.to(WK, { opacity: 0, duration: 0.5, ease: 'power2.out' }, L + 0.06);
+tl.to(LPH, { scale: 1.03, duration: 0.09, ease: 'power2.out' }, L);
+tl.to(LPH, { scale: 1, duration: 0.34, ease: 'back.out(3)' }, L + 0.09);
+tl.fromTo(SP, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.32, ease: 'back.out(2.6)', immediateRender: false }, L + 0.16);
+tl.to(TK, { strokeDashoffset: 0, duration: 0.22, ease: 'power2.out' }, L + 0.26);
+// YOU floods cyan: you won the race
+tl.fromTo(LBF, { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: 'power3.out', immediateRender: false }, L + 0.04);
+tl.to(LBY, { scale: 1.12, duration: 0.1, ease: 'power2.out' }, L + 0.04);
+tl.to(LBY, { scale: 1, duration: 0.32, ease: 'back.out(3)' }, L + 0.14);
+
+// 4. exit
+if (DUR > 0) {
+  tl.to(LP, { y: -46, opacity: 0, duration: 0.28, ease: 'power2.in' }, OUT);
+  tl.to(RP, { y: -46, opacity: 0, duration: 0.28, ease: 'power2.in' }, OUT + 0.04);
+}
+tl.set({}, {}, END);
+
+window.__timelines["two-phones"] = tl;
+</script>
+</template>
+</body>
+</html>

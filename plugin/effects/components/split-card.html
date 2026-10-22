@@ -1,0 +1,100 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "kicker", "type": "string", "label": "Small mono kicker (blank = none)", "default": "THE SETUP"}, {"id": "line1", "type": "string", "label": "Line 1 (short, caps)", "default": "TRIPOD"}, {"id": "line2", "type": "string", "label": "Line 2", "default": "WAIST UP"}, {"id": "line3", "type": "string", "label": "Line 3 (blank = two lines)", "default": "GOOD LIGHT"}, {"id": "line4", "type": "string", "label": "Line 4 (blank = none)", "default": ""}, {"id": "line5", "type": "string", "label": "Line 5 (blank = none)", "default": ""}, {"id": "times", "type": "string", "label": "Seconds from clip start each line lands (lock to the words)", "default": "0.6,1.05,1.5"}, {"id": "marker", "type": "enum", "label": "Marker before each line", "default": "tick", "options": [{"value": "tick", "label": "Tick"}, {"value": "num", "label": "01 02 03"}, {"value": "dot", "label": "Dot"}, {"value": "none", "label": "None"}]}, {"id": "inAt", "type": "number", "label": "Card slides in (s from clip start; the recipe sets it to the end of the shrink)", "default": 0.3, "min": 0, "max": 5, "step": 0.01, "unit": "s"}, {"id": "dur", "type": "number", "label": "Clip length s: exits in the last 0.24 s (0 = no exit)", "default": 2.6, "min": 0, "max": 20, "step": 0.05, "unit": "s"}, {"id": "left", "type": "number", "label": "Card left edge (px)", "default": 506, "min": 0, "max": 900, "unit": "px"}, {"id": "top", "type": "number", "label": "Card top edge (px)", "default": 470, "min": 0, "max": 1400, "unit": "px"}, {"id": "width", "type": "number", "label": "Card width (px; keep left + width <= 920 for the IG rail)", "default": 414, "min": 240, "max": 848, "unit": "px"}, {"id": "size", "type": "number", "label": "Max line size (px; long lines shrink to fit, then wrap)", "default": 76, "min": 40, "max": 140, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: split-card. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_screen/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.sc{position:absolute;inset:0;}
+.sc-card{position:absolute;left:calc(var(--left) * 1px);top:calc(var(--top) * 1px);width:calc(var(--width) * 1px);padding:26px 28px 14px;background:#FFFFFF;
+  border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.sc-kick{font:500 22px/1 'Roboto Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:#5B6670;padding-bottom:16px;}
+.sc-row{position:relative;display:flex;align-items:center;gap:14px;padding:16px 0;}
+.sc-hr{position:absolute;left:0;right:0;top:0;height:2px;background:rgba(11,15,18,.10);}
+.sc-mk{position:relative;flex:none;width:46px;height:46px;border-radius:10px;background:#F4F6F8;box-shadow:inset 0 0 0 2px rgba(11,15,18,.14);display:flex;align-items:center;justify-content:center;}
+.sc-on{position:absolute;inset:0;border-radius:10px;background:#00BEFF;}
+.sc-mk svg,.sc-mk .n,.sc-mk .d{position:relative;}
+.sc-mk .n{font:400 32px/1 'Bebas Neue',sans-serif;color:#0B0F12;padding-top:4px;}
+.sc-mk .d{width:15px;height:15px;border-radius:50%;background:#0B0F12;}
+.sc-tx{flex:1;min-width:0;min-height:.92em;font-family:'Bebas Neue',sans-serif;font-weight:400;line-height:.92;letter-spacing:.5px;text-transform:uppercase;color:#0B0F12;padding-top:6px;overflow-wrap:break-word;}
+
+</style>
+<div id="root" data-composition-id="split-card" data-width="1080" data-height="1920">
+<div class="sc"><div class="sc-card"><div class="sc-kick" data-var-text="kicker">THE SETUP</div><div class="sc-row"><div class="sc-mk"><i class="sc-on"></i><svg viewBox="0 0 24 24" width="34" height="34"><path class="sc-tk" d="M5 12.5l4.6 4.6L19 7.6" fill="none" stroke="#0B0F12" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="n">01</span><i class="d"></i></div><div class="sc-tx" data-var-text="line1">TRIPOD</div></div><div class="sc-row"><div class="sc-hr"></div><div class="sc-mk"><i class="sc-on"></i><svg viewBox="0 0 24 24" width="34" height="34"><path class="sc-tk" d="M5 12.5l4.6 4.6L19 7.6" fill="none" stroke="#0B0F12" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="n">02</span><i class="d"></i></div><div class="sc-tx" data-var-text="line2">WAIST UP</div></div><div class="sc-row"><div class="sc-hr"></div><div class="sc-mk"><i class="sc-on"></i><svg viewBox="0 0 24 24" width="34" height="34"><path class="sc-tk" d="M5 12.5l4.6 4.6L19 7.6" fill="none" stroke="#0B0F12" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="n">03</span><i class="d"></i></div><div class="sc-tx" data-var-text="line3">GOOD LIGHT</div></div><div class="sc-row"><div class="sc-hr"></div><div class="sc-mk"><i class="sc-on"></i><svg viewBox="0 0 24 24" width="34" height="34"><path class="sc-tk" d="M5 12.5l4.6 4.6L19 7.6" fill="none" stroke="#0B0F12" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="n">04</span><i class="d"></i></div><div class="sc-tx" data-var-text="line4"></div></div><div class="sc-row"><div class="sc-hr"></div><div class="sc-mk"><i class="sc-on"></i><svg viewBox="0 0 24 24" width="34" height="34"><path class="sc-tk" d="M5 12.5l4.6 4.6L19 7.6" fill="none" stroke="#0B0F12" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="n">05</span><i class="d"></i></div><div class="sc-tx" data-var-text="line5"></div></div></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// Plain class, never [data-composition-id=...]: a second mount gets a renamed root and the runtime scopes
+// document queries to each mount (round-one lesson 1).
+const R = document.querySelector(".sc");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"kicker": "THE SETUP", "line1": "TRIPOD", "line2": "WAIST UP", "line3": "GOOD LIGHT", "line4": "", "line5": "", "times": "0.6,1.05,1.5", "marker": "tick", "inAt": 0.3, "dur": 2.6, "left": 506, "top": 470, "width": 414, "size": 76};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const RAW = function(k){ const x = VV[k]; return (x === undefined || x === null) ? D[k] : x; };   // '' stays ''
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const NUMS = function(s){ return String(s || '').split(',').map(function(x){ return String(x).trim(); })
+  .filter(function(x){ return x !== ''; }).map(Number).filter(function(x){ return isFinite(x); }); };
+
+const CARD = Q('.sc-card'), KICK = Q('.sc-kick'), ROWS = QA('.sc-row');
+const MK = String(V('marker'));
+const W = N('width'), SIZE = N('size');
+const IN = Math.max(0, N('inAt')), DUR = N('dur');
+if (!String(RAW('kicker')).trim()) KICK.style.display = 'none';
+// visible rows: line1 and line2 always, line3-line5 only when set
+const LIVE = [], LENS = [];
+ROWS.forEach(function(r, i){
+  const txt = String(i < 2 ? V('line' + (i + 1)) : RAW('line' + (i + 1))).trim();
+  if (!txt) { r.style.display = 'none'; return; }
+  const tk = r.querySelector('svg'), n = r.querySelector('.n'), d = r.querySelector('.d'), mk = r.querySelector('.sc-mk');
+  if (MK !== 'tick') tk.style.display = 'none';
+  if (MK !== 'num') n.style.display = 'none';
+  if (MK !== 'dot') d.style.display = 'none';
+  if (MK === 'none') mk.style.display = 'none';
+  LIVE.push(r); LENS.push(txt.length);
+});
+// fit: ONE size for every line (the longest decides); Bebas caps average ~0.40 em; down to 48 px, then lines may wrap
+const AVAIL = W - 56 - (MK === 'none' ? 0 : 60);
+const FS = Math.max(48, Math.min(SIZE, Math.floor(AVAIL / (Math.max(1, Math.max.apply(null, LENS.concat([1]))) * 0.40))));
+LIVE.forEach(function(r){ r.querySelector('.sc-tx').style.fontSize = FS + 'px'; });
+// first visible row never draws a divider above it
+LIVE.forEach(function(r, i){ const hr = r.querySelector('.sc-hr'); if (hr && i === 0) hr.style.display = 'none'; });
+let T = NUMS(V('times'));
+while (T.length < LIVE.length) T.push((T.length ? T[T.length - 1] : IN + 0.3) + 0.45);
+for (let i = 0; i < LIVE.length; i++) T[i] = Math.max(T[i], IN + 0.22 + i * 0.12, i ? T[i - 1] + 0.12 : 0);
+const LASTT = LIVE.length ? T[LIVE.length - 1] : IN;
+const END = DUR > 0 ? Math.max(DUR, LASTT + 0.6) : LASTT + 1.2;
+
+gsap.set(CARD, { x: 40, opacity: 0, scale: 0.97, transformOrigin: '0% 50%' });
+gsap.set(KICK, { opacity: 0, y: 8 });
+LIVE.forEach(function(r){
+  gsap.set(r.querySelector('.sc-tx'), { x: 28, opacity: 0 });
+  gsap.set(r.querySelector('.sc-on'), { scale: 0, transformOrigin: '50% 50%' });
+  gsap.set(r.querySelectorAll('.n, .d'), { opacity: 0 });
+  const p = r.querySelector('.sc-tk'); if (p) gsap.set(p, { strokeDasharray: 26, strokeDashoffset: 26 });
+});
+
+// 1. the card slides in beside the speaker
+tl.fromTo(CARD, { x: 40, opacity: 0, scale: 0.97 }, { x: 0, opacity: 1, scale: 1, duration: 0.38, ease: 'power3.out', immediateRender: false }, IN);
+tl.fromTo(KICK, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out', immediateRender: false }, IN + 0.1);
+// 2. the empty checklist arrives with the card (grey wells + dividers); each line lands on its word: the words
+//    slide in, the cyan fill pops into its well, the tick draws (or the number / dot appears)
+LIVE.forEach(function(r, i){
+  const t = T[i];
+  tl.fromTo(r.querySelector('.sc-tx'), { x: 28, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3, ease: 'power3.out', immediateRender: false }, t - 0.14);
+  tl.fromTo(r.querySelector('.sc-on'), { scale: 0 }, { scale: 1, duration: 0.34, ease: 'back.out(2.6)', immediateRender: false }, t - 0.1);
+  tl.fromTo(r.querySelectorAll('.n, .d'), { opacity: 0 }, { opacity: 1, duration: 0.16, ease: 'power1.out', immediateRender: false }, t - 0.02);
+  const p = r.querySelector('.sc-tk'); if (p && MK === 'tick') tl.fromTo(p, { strokeDashoffset: 26 }, { strokeDashoffset: 0, duration: 0.22, ease: 'power2.out', immediateRender: false }, t + 0.02);
+});
+// 3. exit before the footage grows back (dur 0 = none)
+if (DUR > 0) tl.to(CARD, { x: 30, opacity: 0, duration: 0.22, ease: 'power2.in' }, END - 0.24);
+tl.set({}, {}, END);
+
+window.__timelines["split-card"] = tl;
+</script>
+</template>
+</body>
+</html>

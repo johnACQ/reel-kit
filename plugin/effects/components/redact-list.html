@@ -1,0 +1,88 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "words", "type": "string", "label": "Words, separated by | (2-6). Each stays a blank bar until its time", "default": "RECORD|COPY|PROMPT|CHECK|POST"}, {"id": "times", "type": "string", "label": "Reveal times in s from clip start, comma separated, one per word (blank or past outAt = stays blank)", "default": ""}, {"id": "kicker", "type": "string", "label": "Small kicker above the rows (blank = none)", "default": ""}, {"id": "stagger", "type": "number", "label": "Gap between rows popping up (s)", "default": 0.07, "min": 0, "max": 0.5, "step": 0.01, "unit": "s"}, {"id": "outAt", "type": "number", "label": "Exit starts (s from clip start; 0 = hold to the cut)", "default": 1.8, "min": 0, "max": 60, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the first row (px from frame top)", "default": 236, "min": 220, "max": 1380, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre (px; 496 = centre of the safe band)", "default": 496, "min": 300, "max": 700, "unit": "px"}, {"id": "size", "type": "number", "label": "Word size px (rows are 1.18x tall)", "default": 60, "min": 36, "max": 110, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: redact-list. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.rl{position:absolute;inset:0;}
+.rl-k{position:absolute;font:500 22px/1 'Roboto Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:#0B0F12;background:#FFFFFF;border-radius:8px;padding:8px 12px 7px;box-shadow:0 10px 26px rgba(11,15,18,.22);}
+.rl-row{position:absolute;display:flex;align-items:center;gap:18px;}
+.rl-n{flex:none;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#00BEFF;color:#0B0F12;font-family:'Bebas Neue',sans-serif;box-shadow:0 10px 26px rgba(11,15,18,.22);}
+.rl-bar{position:relative;flex:none;border-radius:12px;background:#FFFFFF;box-shadow:0 14px 34px rgba(11,15,18,.24);overflow:hidden;}
+.rl-w{position:absolute;left:22px;top:0;bottom:0;display:flex;align-items:center;white-space:nowrap;font-family:'Bebas Neue',sans-serif;color:#0B0F12;padding-top:.08em;}
+
+</style>
+<div id="root" data-composition-id="redact-list" data-width="1080" data-height="1920">
+<div class="rl"><div class="rl-k" data-var-text="kicker"></div><div class="rl-row r0"><div class="rl-n">1</div><div class="rl-bar"><div class="rl-w"></div></div></div><div class="rl-row r1"><div class="rl-n">2</div><div class="rl-bar"><div class="rl-w"></div></div></div><div class="rl-row r2"><div class="rl-n">3</div><div class="rl-bar"><div class="rl-w"></div></div></div><div class="rl-row r3"><div class="rl-n">4</div><div class="rl-bar"><div class="rl-w"></div></div></div><div class="rl-row r4"><div class="rl-n">5</div><div class="rl-bar"><div class="rl-w"></div></div></div><div class="rl-row r5"><div class="rl-n">6</div><div class="rl-bar"><div class="rl-w"></div></div></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const D = {"words": "RECORD|COPY|PROMPT|CHECK|POST", "times": "", "kicker": "", "stagger": 0.07, "outAt": 1.8, "top": 236, "centerX": 496, "size": 60};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? (window.__hyperframes.getVariables() || {}) : {};
+const RAW = function(k){ return (VV[k] === undefined || VV[k] === null) ? D[k] : VV[k]; };
+const V = function(k){ const x = RAW(k); return String(x).trim() === '' ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const B = function(k){ const x = RAW(k); return x === true || x === 'true' || x === 1 || x === '1' || x === 'yes' || x === 'on'; };
+const Q = function(s){ return document.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+const CH = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u2019\u2018\u201c\u201d\u2026\u00b7\u2013\u00e9";
+const ADV = {"bebas":[160,210,336,412,400,589,417,188,276,276,422,400,188,270,188,389,400,400,400,400,400,400,400,400,400,400,188,188,400,400,400,363,696,401,404,383,406,363,344,391,420,192,265,414,344,538,427,400,386,400,403,372,364,402,382,557,406,394,362,276,389,276,400,300,500,401,404,383,406,363,344,391,420,192,265,414,344,538,427,400,386,400,403,372,364,402,382,557,406,394,362,276,500,276,400,188,188,336,336,500,188,300,363]};
+// width of a string in em, from the real font's advance table (unknown glyphs count as 0.5 em)
+const textW = function(str, f){ const t = ADV[f]; let w = 0; Array.from(String(str)).forEach(function(c){ const i = CH.indexOf(c); w += i < 0 ? 500 : t[i]; }); return w / 1000; };
+const top = N('top'), cx = N('centerX');
+const half = Math.max(160, Math.min(cx - 72, 920 - cx));  // symmetric half-width inside the 72 px side / 160 px rail safe zone
+
+const words = String(V('words')).split('|').map(function(w){ return w.trim(); }).filter(Boolean).slice(0, 6);
+const n = words.length;
+const ROWS = QA('.rl-row'), KICK = Q('.rl-k');
+const SIZE = N('size'), RH = Math.round(SIZE * 1.18), GAP = Math.round(SIZE * 0.2), NB = RH;
+const T = String(RAW('times') || '').split(',').map(function(x){ return x.trim() === '' ? NaN : Number(x); });
+const OUT = N('outAt');
+// bar width: the widest word + padding (every bar the same width while blank)
+const wmax = Math.max.apply(null, words.map(function(w){ return textW(w.toUpperCase(), 'bebas') * SIZE; }));
+const BW = Math.min(2 * half - NB - 18, Math.max(Math.round(wmax + 44), Math.round(SIZE * 5)));
+const ROWW = NB + 18 + BW, X0 = Math.round(cx - ROWW / 2);
+const kick = String(RAW('kicker') || '').trim();
+let y = top;
+if (kick) { KICK.style.left = X0 + 'px'; KICK.style.top = y + 'px'; y += 22 + 16 + 16; } else { KICK.style.display = 'none'; }
+ROWS.forEach(function(r, i){
+  if (i >= n) { r.style.display = 'none'; return; }
+  r.style.left = X0 + 'px'; r.style.top = (y + i * (RH + GAP)) + 'px';
+  const nb = r.querySelector('.rl-n'), bar = r.querySelector('.rl-bar'), w = r.querySelector('.rl-w');
+  nb.style.width = NB + 'px'; nb.style.height = RH + 'px'; nb.style.fontSize = Math.round(SIZE * 0.82) + 'px';
+  bar.style.width = BW + 'px'; bar.style.height = RH + 'px';
+  w.textContent = words[i].toUpperCase(); w.style.fontSize = SIZE + 'px';
+});
+const LIVE = ROWS.slice(0, n);
+gsap.set(KICK, { opacity: 0, y: 10 });
+LIVE.forEach(function(r){
+  gsap.set(r, { opacity: 0, scale: 0.7, transformOrigin: '0% 50%' });
+  gsap.set(r.querySelector('.rl-w'), { clipPath: 'inset(0% 100% 0% 0%)' });
+});
+// 1. every row pops up blank, top to bottom
+if (kick) tl.fromTo(KICK, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0.02);
+LIVE.forEach(function(r, i){
+  tl.fromTo(r, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.34, ease: 'back.out(2.2)', immediateRender: false }, 0.06 + i * N('stagger'));
+});
+// 2. each word appears only on its time: a left-to-right reveal inside its bar + a pulse on its number
+LIVE.forEach(function(r, i){
+  const t = T[i];
+  if (!isFinite(t) || (OUT > 0 && t >= OUT)) return;
+  tl.fromTo(r.querySelector('.rl-w'), { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.24, ease: 'power2.out', immediateRender: false }, t);
+  tl.fromTo(r.querySelector('.rl-n'), { scale: 1 }, { scale: 1.14, duration: 0.12, ease: 'power2.out', yoyo: true, repeat: 1, immediateRender: false }, t);
+});
+// 3. exit
+if (OUT > 0) {
+  LIVE.forEach(function(r, i){ tl.to(r, { opacity: 0, x: -24, duration: 0.22, ease: 'power2.in' }, OUT + i * 0.04); });
+  if (kick) tl.to(KICK, { opacity: 0, duration: 0.2 }, OUT);
+  tl.set({}, {}, OUT + n * 0.04 + 0.24);
+}
+
+window.__timelines["redact-list"] = tl;
+</script>
+</template>
+</body>
+</html>

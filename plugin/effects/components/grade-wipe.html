@@ -1,0 +1,87 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "beforeSrc", "type": "string", "label": "Raw-take mode: the raw clip path. Set it through the raw_wipe() host recipe, which draws the clip under this card (filters off, RAW / EDITED). Blank = recolour mode (the footage under it, filters below)", "default": ""}, {"id": "beforeFilter", "type": "string", "label": "BEFORE look (CSS filter, applied to the footage under it; recolour mode only)", "default": "saturate(.42) contrast(.74) brightness(1.1)"}, {"id": "afterFilter", "type": "string", "label": "AFTER look (CSS filter; recolour mode only, the EDITED side stays untouched)", "default": "contrast(1.12) saturate(1.12) brightness(1.04)"}, {"id": "beforeLabel", "type": "string", "label": "Left label (with beforeSrc set and this left at BEFORE, rawLabel shows instead)", "default": "BEFORE"}, {"id": "afterLabel", "type": "string", "label": "Right label (with beforeSrc set and this left at AFTER, editedLabel shows instead)", "default": "AFTER"}, {"id": "rawLabel", "type": "string", "label": "Left label in raw-take mode while beforeLabel is left at BEFORE", "default": "RAW"}, {"id": "editedLabel", "type": "string", "label": "Right label in raw-take mode while afterLabel is left at AFTER", "default": "EDITED"}, {"id": "handleY", "type": "number", "label": "Handle centre y (px; keep it off the face)", "default": 1340}, {"id": "inAt", "type": "number", "label": "Divider slides in (s from clip start)", "default": 0.0}, {"id": "sweepAt", "type": "number", "label": "Final sweep to AFTER starts (s)", "default": 1.05}, {"id": "sweepDur", "type": "number", "label": "Final sweep length (s)", "default": 0.5}, {"id": "releaseAt", "type": "number", "label": "AFTER fades back to the untouched footage (s; 99 = hold to clip end)", "default": 1.8}, {"id": "releaseDur", "type": "number", "label": "Release fade (s)", "default": 0.3}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: grade-wipe. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/BebasNeue-400.woff2') format('woff2');}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/InstrumentSerif-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.gw{position:absolute;inset:0;}
+.gw-pane{position:absolute;inset:0;}
+.gw-before{clip-path:inset(0 calc((100 - var(--gx)) * 1%) 0 0);}
+.gw-after{clip-path:inset(0 0 0 calc(var(--gx) * 1%));}
+.gw-line{position:absolute;top:0;bottom:0;left:calc(var(--gx) * 1%);width:0;}
+.gw-bar{position:absolute;top:0;bottom:0;left:-2px;width:4px;background:#FFFFFF;box-shadow:0 0 22px rgba(11,15,18,.45);}
+.gw-handle{position:absolute;left:-42px;top:1298px;width:84px;height:84px;border-radius:99px;background:#FFFFFF;
+  box-shadow:0 12px 34px rgba(11,15,18,.40);display:flex;align-items:center;justify-content:center;}
+.gw-handle svg{width:50px;height:50px;display:block;}
+.gw-lab{position:absolute;top:1318px;height:44px;line-height:44px;padding:0 16px;border-radius:10px;white-space:nowrap;
+  font:500 22px 'Roboto Mono',monospace;letter-spacing:3px;color:#0B0F12;box-shadow:0 10px 26px rgba(11,15,18,.30);}
+.gw-lab-b{right:62px;background:#FFFFFF;}
+.gw-lab-a{left:62px;background:#00BEFF;}
+.gw-tr{display:none;}
+</style>
+<div id="root" data-composition-id="grade-wipe" data-width="1080" data-height="1920">
+<div class="gw" data-fx="grade-wipe" style="--gx:100">
+<div class="gw-pane gw-before"></div>
+<div class="gw-pane gw-after"></div>
+<div class="gw-line"><div class="gw-bar"></div>
+<div class="gw-lab gw-lab-b"><span class="gw-tx" data-var-text="beforeLabel">BEFORE</span><span class="gw-tr" data-var-text="rawLabel">RAW</span></div>
+<div class="gw-lab gw-lab-a"><span class="gw-tx" data-var-text="afterLabel">AFTER</span><span class="gw-tr" data-var-text="editedLabel">EDITED</span></div>
+<div class="gw-handle"><svg viewBox="0 0 50 50"><path d="M20 15l-10 10 10 10M30 15l10 10-10 10" fill="none" stroke="#0B0F12" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const ent = document.querySelectorAll("[data-composition-id='grade-wipe'] .enter");
+if (ent.length) tl.fromTo(ent, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 0.04);
+const v = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const num = function(k, d){ const x = Number(v[k]); return (v[k] === undefined || v[k] === '' || !isFinite(x)) ? d : x; };
+const str = function(k, d){ return (v[k] === undefined || v[k] === null || String(v[k]) === '') ? d : String(v[k]); };
+
+const W = document.querySelector('[data-fx="grade-wipe"]');
+const q = function(s){ return W.querySelector(s); };
+const gw = W, before = q('.gw-before'), after = q('.gw-after'), line = q('.gw-line'), bar = q('.gw-bar');
+const handle = q('.gw-handle'), labB = q('.gw-lab-b'), labA = q('.gw-lab-a');
+before.style.webkitBackdropFilter = before.style.backdropFilter = str('beforeFilter', 'saturate(.42) contrast(.74) brightness(1.1)');
+after.style.webkitBackdropFilter = after.style.backdropFilter = str('afterFilter', 'contrast(1.12) saturate(1.12) brightness(1.04)');
+if (str('beforeSrc', '').trim() !== '') {   // raw-take mode (raw_wipe recipe draws the clip below): no filters, RAW / EDITED
+  before.style.webkitBackdropFilter = before.style.backdropFilter = 'none';
+  after.style.webkitBackdropFilter = after.style.backdropFilter = 'none';
+  // swap spans, not textContent: the runtime's data-var-text binding would write the label back over a script edit
+  [[labB, 'beforeLabel', 'BEFORE'], [labA, 'afterLabel', 'AFTER']].forEach(function(l){
+    if (str(l[1], l[2]) === l[2]) { l[0].querySelector('.gw-tx').style.display = 'none'; l[0].querySelector('.gw-tr').style.display = 'inline'; }
+  });
+}
+const hy = num('handleY', 1340); handle.style.top = (hy - 42) + 'px'; labB.style.top = labA.style.top = (hy - 22) + 'px';
+const inAt = num('inAt', 0), sweepDur = num('sweepDur', .5), relDur = num('releaseDur', .3);
+const sweepAt = Math.max(num('sweepAt', 1.05), inAt + .6), relAt = num('releaseAt', 1.8);
+gsap.set(gw, { '--gx': 100 }); gsap.set(before, { opacity: 0 }); gsap.set(after, { opacity: 1 });
+gsap.set([bar, handle, labB, labA], { opacity: 0 });
+tl.fromTo(before, { opacity: 0 }, { opacity: 1, duration: .14, ease: 'power1.out', immediateRender: false }, inAt);
+tl.fromTo(bar, { opacity: 0 }, { opacity: 1, duration: .1, immediateRender: false }, inAt);
+tl.fromTo(gw, { '--gx': 100 }, { '--gx': 50, duration: .55, ease: 'power3.out', immediateRender: false }, inAt + .02);
+tl.fromTo(handle, { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, duration: .34, ease: 'back.out(2.2)', immediateRender: false }, inAt + .2);
+tl.fromTo(labB, { x: 26, opacity: 0 }, { x: 0, opacity: 1, duration: .28, ease: 'power3.out', immediateRender: false }, inAt + .32);
+tl.fromTo(labA, { x: -26, opacity: 0 }, { x: 0, opacity: 1, duration: .28, ease: 'power3.out', immediateRender: false }, inAt + .36);
+let gx = 50;
+if (sweepAt - inAt >= 1.02) {   // a small scrub while the labels read, only when there is room for it
+  tl.fromTo(gw, { '--gx': 50 }, { '--gx': 57, duration: .22, ease: 'sine.inOut', immediateRender: false }, inAt + .6);
+  tl.fromTo(gw, { '--gx': 57 }, { '--gx': 46, duration: .24, ease: 'sine.inOut', immediateRender: false }, inAt + .82);
+  gx = 46;
+}
+tl.fromTo([labB, labA], { opacity: 1 }, { opacity: 0, duration: .14, immediateRender: false }, sweepAt);
+tl.fromTo(gw, { '--gx': gx }, { '--gx': 0, duration: sweepDur, ease: 'power2.inOut', immediateRender: false }, sweepAt);
+tl.fromTo(handle, { scale: 1, opacity: 1 }, { scale: .6, opacity: 0, duration: .16, immediateRender: false }, sweepAt + sweepDur - .18);
+tl.fromTo(bar, { opacity: 1 }, { opacity: 0, duration: .12, immediateRender: false }, sweepAt + sweepDur - .1);
+if (relAt < 98) tl.fromTo(after, { opacity: 1 }, { opacity: 0, duration: relDur, ease: 'sine.inOut', immediateRender: false }, relAt);
+window.__timelines["grade-wipe"] = tl;
+</script>
+</template>
+</body>
+</html>

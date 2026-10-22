@@ -1,0 +1,73 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "title", "type": "string", "label": "Title chip", "default": "SAMPLE \u00b7 Storyboard"}, {"id": "img1", "type": "string", "label": "Thumbnail 1 (compositions/assets/...)", "default": "compositions/assets/fx_ui/shot_1.svg"}, {"id": "img2", "type": "string", "label": "Thumbnail 2 (compositions/assets/...)", "default": "compositions/assets/fx_ui/shot_2.svg"}, {"id": "img3", "type": "string", "label": "Thumbnail 3 (compositions/assets/...)", "default": "compositions/assets/fx_ui/shot_3.svg"}, {"id": "img4", "type": "string", "label": "Thumbnail 4 (compositions/assets/...)", "default": "compositions/assets/fx_ui/shot_4.svg"}, {"id": "img5", "type": "string", "label": "Thumbnail 5 (compositions/assets/...)", "default": "compositions/assets/fx_ui/shot_5.svg"}, {"id": "label1", "type": "string", "label": "Label 1", "default": "01 \u00b7 HOOK"}, {"id": "label2", "type": "string", "label": "Label 2", "default": "02 \u00b7 PROBLEM"}, {"id": "label3", "type": "string", "label": "Label 3", "default": "03 \u00b7 STEP"}, {"id": "label4", "type": "string", "label": "Label 4", "default": "04 \u00b7 PROOF"}, {"id": "label5", "type": "string", "label": "Label 5", "default": "05 \u00b7 CTA"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: storyboard-deck. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.chip{position:absolute;left:101px;top:1106px;display:flex;align-items:center;gap:10px;height:44px;padding:0 18px 0 14px;border-radius:99px;background:#FFFFFF;box-shadow:0 12px 30px rgba(11,15,18,.28);font:700 22px Roboto,sans-serif;color:#0B0F12;white-space:nowrap;}
+.sq{width:14px;height:14px;border-radius:4px;background:#00BEFF;}
+.sb{position:absolute;width:142px;padding:7px 7px 0;border-radius:12px;background:#FFFFFF;box-shadow:0 18px 40px rgba(11,15,18,.40),0 2px 6px rgba(11,15,18,.18);}
+.sb img{display:block;width:128px;height:228px;object-fit:cover;border-radius:7px;}
+.sl{height:28px;margin:4px 0 5px;border-radius:7px;background:#FFFFFF;font:500 15px/28px 'Roboto Mono',monospace;letter-spacing:.5px;color:#0B0F12;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+</style>
+<div id="root" data-composition-id="storyboard-deck" data-width="1080" data-height="1920">
+<div class="chip"><span class="sq"></span><span data-var-text="title">SAMPLE · Storyboard</span></div>
+<div class="sb" data-layout-allow-overlap data-layout-allow-occlusion data-i="0" style="left:101px;top:1178px;z-index:1"><img data-var-src="img1" src="compositions/assets/fx_ui/shot_1.svg" alt="" /><div class="sl" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="label1">01 · HOOK</div></div>
+<div class="sb" data-layout-allow-overlap data-layout-allow-occlusion data-i="1" style="left:263px;top:1171px;z-index:2"><img data-var-src="img2" src="compositions/assets/fx_ui/shot_2.svg" alt="" /><div class="sl" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="label2">02 · PROBLEM</div></div>
+<div class="sb" data-layout-allow-overlap data-layout-allow-occlusion data-i="2" style="left:425px;top:1168px;z-index:3"><img data-var-src="img3" src="compositions/assets/fx_ui/shot_3.svg" alt="" /><div class="sl" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="label3">03 · STEP</div></div>
+<div class="sb" data-layout-allow-overlap data-layout-allow-occlusion data-i="3" style="left:587px;top:1171px;z-index:2"><img data-var-src="img4" src="compositions/assets/fx_ui/shot_4.svg" alt="" /><div class="sl" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="label4">04 · PROOF</div></div>
+<div class="sb" data-layout-allow-overlap data-layout-allow-occlusion data-i="4" style="left:749px;top:1178px;z-index:1"><img data-var-src="img5" src="compositions/assets/fx_ui/shot_5.svg" alt="" /><div class="sl" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="label5">05 · CTA</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// fallback to the (mount-scoped) document: when a component is mounted twice the runtime renames the root, so the id selector finds nothing
+const R = document.querySelector("[data-composition-id='storyboard-deck']") || document;
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"title": "SAMPLE \u00b7 Storyboard", "img1": "compositions/assets/fx_ui/shot_1.svg", "img2": "compositions/assets/fx_ui/shot_2.svg", "img3": "compositions/assets/fx_ui/shot_3.svg", "img4": "compositions/assets/fx_ui/shot_4.svg", "img5": "compositions/assets/fx_ui/shot_5.svg", "label1": "01 \u00b7 HOOK", "label2": "02 \u00b7 PROBLEM", "label3": "03 \u00b7 STEP", "label4": "04 \u00b7 PROOF", "label5": "05 \u00b7 CTA"};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ return (VV[k] === undefined || VV[k] === null || VV[k] === '') ? D[k] : VV[k]; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const cards = QA('.sb'), chip = Q('.chip');
+const C = [172, 334, 496, 658, 820], ROT = [-7, -3.5, 0, 3.5, 7], SR = [-5, 4, -1.5, 6, 2], ARC = [10, 3, 0, 3, 10];
+const dx = function(i){ return 496 - C[i]; };
+// Initial: a tight deck below its final row.
+cards.forEach(function(c, i){ gsap.set(c, { x: dx(i), y: 150 - ARC[i], rotation: SR[i], scale: 0.9, opacity: 0, transformOrigin: '50% 100%' }); });
+gsap.set(chip, { opacity: 0, y: 18 });
+
+// Deck rises.
+cards.forEach(function(c, i){
+  tl.fromTo(c, { x: dx(i), y: 150 - ARC[i], rotation: SR[i], scale: 0.9, opacity: 0 }, { y: 6 - ARC[i], opacity: 1, scale: 0.94, duration: 0.3, ease: 'power3.out', immediateRender: false }, 0.02 * Math.abs(i - 2));
+});
+// Fan out from the centre, staggered.
+const order = [2, 1, 3, 0, 4];
+order.forEach(function(i, k){
+  tl.to(cards[i], { x: 0, y: 0, rotation: ROT[i], scale: 1, duration: 0.48, ease: 'back.out(1.35)' }, 0.22 + k * 0.045);
+});
+tl.fromTo(chip, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out', immediateRender: false }, 0.3);
+// Wave: each card lifts in turn, left to right.
+cards.forEach(function(c, i){
+  const lab = c.querySelector('.sl');
+  const w0 = 0.76 + i * 0.065;
+  tl.to(c, { y: -16, duration: 0.15, ease: 'power2.out' }, w0);
+  tl.to(lab, { backgroundColor: '#00BEFF', duration: 0.06, ease: 'none' }, w0);
+  tl.to(c, { y: 0, duration: 0.2, ease: 'power2.inOut' }, w0 + 0.15);
+  if (i < cards.length - 1) tl.to(lab, { backgroundColor: '#FFFFFF', duration: 0.08, ease: 'none' }, w0 + 0.09);
+});
+// Collapse back into the deck, then the deck drops away.
+[0, 4, 1, 3, 2].forEach(function(i, k){
+  tl.to(cards[i], { x: dx(i), y: 6 - ARC[i], rotation: SR[i], scale: 0.94, duration: 0.28, ease: 'power3.in' }, 1.4 + k * 0.03);
+});
+tl.to(chip, { opacity: 0, y: 14, duration: 0.2, ease: 'power2.in' }, 1.42);
+tl.to(cards, { y: function(i){ return 120 - ARC[i]; }, opacity: 0, scale: 0.88, duration: 0.24, ease: 'power2.in' }, 1.74);
+tl.set({}, {}, 1.98);
+window.__timelines["storyboard-deck"] = tl;
+</script>
+</template>
+</body>
+</html>

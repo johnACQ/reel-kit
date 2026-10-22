@@ -1,0 +1,55 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "label", "type": "string", "label": "Label chip (accent fill, blank = none)", "default": "PROMPT"}, {"id": "prompt", "type": "string", "label": "Prompt text (the REAL one; newlines kept). Only the first `lines` lines show", "default": "SAMPLE prompt text. Replace with the real prompt from the guide."}, {"id": "chip", "type": "string", "label": "Accent chip under the text (blank = none), e.g. COMMENT PROMPT FOR THE FULL ONE", "default": ""}, {"id": "lines", "type": "number", "label": "Lines shown; the last one fades out", "default": 5, "min": 2, "max": 8, "step": 1}, {"id": "size", "type": "number", "label": "Prompt type size px (40-44 reads at phone size)", "default": 40, "min": 28, "max": 56, "unit": "px"}, {"id": "top", "type": "number", "label": "Card top edge (px)", "default": 236, "min": 0, "max": 1400, "unit": "px"}, {"id": "reveal", "type": "number", "label": "Top-to-bottom text reveal length (s)", "default": 0.55, "min": 0.1, "max": 2, "step": 0.05, "unit": "s"}, {"id": "dur", "type": "number", "label": "Clip length s: exits in the last 0.3 s (0 = no exit)", "default": 3.0, "min": 0, "max": 20, "step": 0.05, "unit": "s"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: prompt-card. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.card{position:absolute;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);}
+.mono{font-family:'Roboto Mono',monospace;}
+.fill{background:#00BEFF;color:#0B0F12;border-radius:10px;padding:0 .18em;}
+.pc{position:absolute;left:72px;top:calc(var(--top) * 1px);width:848px;padding:28px 36px 30px;background:#0B0F12;border:1px solid rgba(255,255,255,.08);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.34);}
+.pc-lab{display:inline-block;font:500 22px/1 'Roboto Mono',monospace;letter-spacing:2px;padding:7px 12px 6px;margin-bottom:20px;background:#00BEFF;color:#0B0F12;border-radius:8px;}
+.pc-clip{position:relative;}
+.pc-txt{font-family:'Roboto Mono',monospace;font-weight:400;line-height:1.32;color:#C9D4DC;white-space:pre-wrap;overflow-wrap:break-word;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 1.45em),rgba(0,0,0,.08) 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 1.45em),rgba(0,0,0,.08) 100%);}
+.pc-chip{display:inline-block;margin-top:22px;font:900 30px/1 Roboto,sans-serif;letter-spacing:.5px;padding:14px 20px 13px;background:#00BEFF;color:#0B0F12;border-radius:10px;}
+</style>
+<div id="root" data-composition-id="prompt-card" data-width="1080" data-height="1920">
+<div class="pc"><div class="pc-lab" data-var-text="label">PROMPT</div><div class="pc-clip"><div class="pc-txt" data-var-text="prompt" data-layout-allow-overflow data-layout-allow-overlap>SAMPLE prompt text. Replace with the real prompt from the guide.</div></div><div><div class="pc-chip" data-var-text="chip" data-layout-allow-overlap></div></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// fallback to the (mount-scoped) document: when a component is mounted twice the runtime renames the root, so the id selector finds nothing
+const R = document.querySelector("[data-composition-id='prompt-card']") || document;
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"label": "PROMPT", "prompt": "SAMPLE prompt text. Replace with the real prompt from the guide.", "chip": "", "lines": 5, "size": 40, "top": 236, "reveal": 0.55, "dur": 3.0};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ return (VV[k] === undefined || VV[k] === null || VV[k] === '') ? D[k] : VV[k]; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const card = Q('.pc'), lab = Q('.pc-lab'), clip = Q('.pc-clip'), txt = Q('.pc-txt'), chip = Q('.pc-chip');
+const SIZE = N('size'), LINES = Math.max(2, Math.round(N('lines')));
+const DUR = N('dur'), REV = Math.max(0.1, N('reveal'));
+txt.style.fontSize = SIZE + 'px';
+txt.style.maxHeight = (LINES * SIZE * 1.32) + 'px';
+if (!String(V('label')).trim()) lab.style.display = 'none';
+const HASCHIP = !!String(VV.chip === undefined || VV.chip === null ? D.chip : VV.chip).trim();
+if (!HASCHIP) chip.style.display = 'none';
+
+gsap.set(card, { opacity: 0, y: -28, scale: 0.97, transformOrigin: '50% 0%' });
+gsap.set(clip, { clipPath: 'inset(0% 0% 100% 0%)' });
+gsap.set(chip, { opacity: 0, scale: 0.7, transformOrigin: '0% 50%' });
+
+// 1. the card drops in; 2. the prompt reveals top to bottom; 3. the chip pops; 4. exit
+tl.fromTo(card, { opacity: 0, y: -28, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.34, ease: 'power3.out', immediateRender: false }, 0);
+tl.fromTo(clip, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: REV, ease: 'power1.inOut', immediateRender: false }, 0.12);
+if (HASCHIP) tl.fromTo(chip, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.32, ease: 'back.out(2.2)', immediateRender: false }, 0.12 + REV + 0.05);
+if (DUR > 0) tl.to(card, { opacity: 0, y: -18, duration: 0.26, ease: 'power2.in' }, Math.max(0.6, DUR - 0.3));
+tl.set({}, {}, DUR > 0 ? DUR : 0.12 + REV + 0.5);
+window.__timelines["prompt-card"] = tl;
+</script>
+</template>
+</body>
+</html>

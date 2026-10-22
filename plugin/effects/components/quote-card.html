@@ -1,0 +1,102 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "quote", "type": "string", "label": "Quote (verbatim as spoken; no quote marks needed)", "default": "SAMPLE quote. Use a real one, word for word."}, {"id": "attribution", "type": "string", "label": "Attribution chip (who, where; never a private person&#39;s name). Blank = no chip", "default": "Who said it, where"}, {"id": "font", "type": "enum", "label": "Quote font", "default": "Instrument Serif", "options": [{"value": "Instrument Serif", "label": "Instrument Serif"}, {"value": "Roboto", "label": "Roboto"}]}, {"id": "lineGap", "type": "number", "label": "Gap between line reveals (s)", "default": 0.15, "min": 0.05, "max": 1, "step": 0.01, "unit": "s"}, {"id": "outAt", "type": "number", "label": "Exit starts (s from clip start; 0 = hold to the cut)", "default": 2.2, "min": 0, "max": 20, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the card (px; the open mark hangs ~half its height above)", "default": 300, "min": 240, "max": 1300, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre (px)", "default": 496, "min": 300, "max": 700, "unit": "px"}, {"id": "width", "type": "number", "label": "Max card width px (clamped to the safe band; the card shrink-wraps the lines)", "default": 840, "min": 480, "max": 848, "unit": "px"}, {"id": "size", "type": "number", "label": "Quote size px (0 = auto: biggest in 3 lines, max 72; long quotes take 4-5 lines before going under 48)", "default": 0, "min": 0, "max": 120, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: quote-card. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" />
+<style>
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_footage/fonts/InstrumentSerif-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.qc{position:absolute;left:0;top:0;}
+.qc-card{position:relative;background:#FFFFFF;border:1px solid rgba(11,15,18,.10);border-radius:18px;box-shadow:0 24px 60px rgba(11,15,18,.28);box-sizing:border-box;padding:56px 52px 40px;}
+.qc-mark{position:absolute;display:block;overflow:visible;}
+.qc-mark path{fill:#00BEFF;}
+.qc-q{position:relative;color:#0B0F12;}
+.qc-l{display:block;overflow:hidden;white-space:nowrap;padding-bottom:.16em;margin-bottom:-.16em;}
+.qc-l span{display:block;}
+.qc.serif .qc-q{font-family:'Instrument Serif',serif;font-weight:400;line-height:1.12;letter-spacing:-.003em;}
+.qc.rob .qc-q{font-family:Roboto,sans-serif;font-weight:500;line-height:1.2;letter-spacing:-.01em;}
+.qc-chip{display:inline-flex;align-items:center;margin-top:26px;background:#F4F6F8;border-radius:99px;padding:10px 22px 10px 16px;font:500 26px/1.15 Roboto,sans-serif;color:#0B0F12;white-space:nowrap;}
+.qc-dot{display:block;width:12px;height:12px;border-radius:50%;background:#00BEFF;margin-right:12px;flex:none;}
+
+</style>
+<div id="root" data-composition-id="quote-card" data-width="1080" data-height="1920">
+<div class="qc serif"><div class="qc-card"><svg class="qc-mark qc-open" viewBox="0 0 260 228" aria-hidden="true"><path d="M54 227.8Q29 227.8 14.5 209.8Q0 191.8 0 160.8Q0 114.8 20.5 76.8Q41 38.8 87 5.8Q99 -3.2 106 1.8Q110 4.8 110 10.3Q110 15.8 103 20.8Q69 49.8 59.5 65.3Q50 80.8 50 97.8Q50 115.8 58 125.3Q66 134.8 76 141.3Q86 147.8 94 156.8Q102 165.8 102 183.8Q102 201.8 89.5 214.8Q77 227.8 54 227.8ZM204 227.8Q179 227.8 164.5 209.8Q150 191.8 150 160.8Q150 114.8 170.5 76.8Q191 38.8 237 5.8Q249 -3.2 256 1.8Q260 4.8 260 10.3Q260 15.8 253 20.8Q219 49.8 209.5 65.3Q200 80.8 200 97.8Q200 115.8 208 125.3Q216 134.8 226 141.3Q236 147.8 244 156.8Q252 165.8 252 183.8Q252 201.8 239.5 214.8Q227 227.8 204 227.8Z"/></svg><div class="qc-q"></div><div class="qc-chip"><i class="qc-dot"></i><span class="qc-att">Who said it, where</span></div><svg class="qc-mark qc-close" viewBox="0 0 260 228" aria-hidden="true"><path d="M23 222Q11 231 4 226Q0 223 0 217.5Q0 212 7 207Q41 178 50.5 160.5Q60 143 60 130Q60 112 52 102.5Q44 93 34 86.5Q24 80 16 71Q8 62 8 44Q8 26 21 13Q34 0 56 0Q81 0 95.5 18Q110 36 110 67Q110 113 90 151Q70 189 23 222ZM173 222Q161 231 154 226Q150 223 150 217.5Q150 212 157 207Q191 178 200.5 160.5Q210 143 210 130Q210 112 202 102.5Q194 93 184 86.5Q174 80 166 71Q158 62 158 44Q158 26 171 13Q184 0 206 0Q231 0 245.5 18Q260 36 260 67Q260 113 240 151Q220 189 173 222Z"/></svg></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const D = {"quote": "SAMPLE quote. Use a real one, word for word.", "attribution": "Who said it, where", "font": "Instrument Serif", "lineGap": 0.15, "outAt": 2.2, "top": 300, "centerX": 496, "width": 840, "size": 0};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? (window.__hyperframes.getVariables() || {}) : {};
+const RAW = function(k){ return (VV[k] === undefined || VV[k] === null) ? D[k] : VV[k]; };
+const V = function(k){ const x = RAW(k); return String(x).trim() === '' ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const B = function(k){ const x = RAW(k); return x === true || x === 'true' || x === 1 || x === '1' || x === 'yes' || x === 'on'; };
+const Q = function(s){ return document.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+const CH = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u2019\u2018\u201c\u201d\u2026\u00b7\u2013\u00e9";
+const ADV = {"serif":[170,237,371,635,417,590,579,233,340,340,444,531,217,430,213,258,460,249,404,371,393,382,404,364,433,402,213,217,531,531,531,317,660,457,478,480,530,453,408,521,546,249,249,496,413,665,540,540,466,540,513,407,461,536,457,651,546,477,427,325,258,325,433,376,354,399,443,339,457,355,288,402,470,223,215,451,220,704,470,408,444,442,318,308,259,454,393,597,385,401,353,318,252,318,531,166,166,316,316,533,105,510,355],"roboto700":[249,271,318,592,574,739,658,161,350,351,454,545,246,394,290,371,574,574,574,574,574,574,574,574,574,574,282,263,510,574,516,498,896,672,638,654,650,562,549,682,706,292,559,636,541,875,706,689,645,689,641,616,620,659,653,875,635,619,607,277,421,277,438,445,330,535,562,521,563,540,358,571,560,265,260,534,265,866,561,564,562,564,366,514,338,560,506,734,509,503,509,330,252,330,648,229,233,403,407,741,302,630,540]};
+// width of a string in em, from the real font's advance table (unknown glyphs count as 0.5 em)
+const textW = function(str, f){ const t = ADV[f]; let w = 0; Array.from(String(str)).forEach(function(c){ const i = CH.indexOf(c); w += i < 0 ? 500 : t[i]; }); return w / 1000; };
+const top = N('top'), cx = N('centerX');
+const half = Math.max(160, Math.min(cx - 72, 920 - cx));  // symmetric half-width inside the 72 px side / 160 px rail safe zone
+
+const quote = String(V('quote')).trim();
+const att = String(RAW('attribution') === undefined ? '' : RAW('attribution')).trim();
+const rob = /roboto/i.test(String(V('font')));
+const F = rob ? 'roboto700' : 'serif';
+const width = Math.round(Math.max(480, Math.min(half * 2, N('width'))));
+const TW = width - 104;                                                         // text width inside the 52 px side padding
+const words = quote.split(/\s+/).filter(Boolean);
+const brk = function(f, maxW){ const out = []; let cur = ''; words.forEach(function(w){ const t = cur ? cur + ' ' + w : w; if (!cur || textW(t, F) * f * 1.02 <= maxW) cur = t; else { out.push(cur); cur = w; } }); if (cur) out.push(cur); return out; };
+let fs = N('size') > 0 ? N('size') : 0;
+// biggest size that fits in 3 lines; a long quote may take 4-5 lines rather than drop below 48 px
+if (!fs) { [3, 4, 5].forEach(function(ml){ if (fs) return; for (let f = 72; f >= 48; f -= 2) { if (brk(f, TW).length <= ml) { fs = f; break; } } }); if (!fs) fs = 44; }
+fs = Math.round(fs);
+// balance: the narrowest measure that keeps the same line count, so no line ends on a lone word
+let lines = brk(fs, TW);
+if (lines.length > 1) { let lo = TW * 0.45, hi = TW; for (let k = 0; k < 16; k++) { const mid = (lo + hi) / 2; if (brk(fs, mid).length <= lines.length) hi = mid; else lo = mid; } lines = brk(fs, hi); }
+const QW = Q('.qc'), CARD = Q('.qc-card'), QQ = Q('.qc-q'), CHIP = Q('.qc-chip'), OPEN = Q('.qc-open'), CLOSE = Q('.qc-close');
+QW.className = 'qc ' + (rob ? 'rob' : 'serif');
+QW.style.top = Math.round(top) + 'px';
+// shrink-wrap the card to the balanced lines (and the chip), centred on centerX
+const lineW = Math.max.apply(null, lines.map(function(t){ return textW(t, F) * fs * 1.02; }));
+const chipW = att ? textW(att, 'roboto700') * 26 + 62 : 0;
+const cardW = Math.round(Math.min(width, Math.max(420, lineW + 110, chipW + 104)));
+QW.style.left = Math.round(cx - cardW / 2) + 'px';
+CARD.style.width = cardW + 'px';
+QQ.style.fontSize = fs + 'px';
+// quote marks scale with the type: the open mark hangs over the top edge, the close mark over the bottom edge
+const mw = Math.round(Math.max(84, Math.min(132, fs * 1.75))), mh = Math.round(mw * 228 / 260);
+OPEN.style.width = mw + 'px'; OPEN.style.height = mh + 'px'; OPEN.style.left = '40px'; OPEN.style.top = Math.round(-mh * 0.52) + 'px';
+const cw = Math.round(mw * 0.78), chh = Math.round(cw * 228 / 260);
+CLOSE.style.width = cw + 'px'; CLOSE.style.height = chh + 'px'; CLOSE.style.right = '40px'; CLOSE.style.bottom = Math.round(-chh * 0.46) + 'px';
+CARD.style.paddingTop = Math.round(mh * 0.48 + 18) + 'px';
+QQ.textContent = '';
+const LS = [];
+lines.forEach(function(t){ const d = document.createElement('div'); d.className = 'qc-l'; d.setAttribute('data-layout-allow-overflow', ''); const s = document.createElement('span'); s.textContent = t; d.appendChild(s); QQ.appendChild(d); LS.push(s); });
+Q('.qc-att').textContent = att;
+if (!att) CHIP.style.display = 'none';
+// timeline
+const GAPL = Math.max(0.05, N('lineGap'));
+gsap.set(CARD, { y: 70, opacity: 0, scale: 0.96, transformOrigin: '50% 100%' });
+gsap.set(OPEN, { scale: 0, rotation: -18, transformOrigin: '50% 60%' });
+gsap.set(CLOSE, { scale: 0, rotation: 18, transformOrigin: '50% 40%' });
+gsap.set(LS, { yPercent: 120, opacity: 0 });
+gsap.set(CHIP, { x: -18, opacity: 0 });
+tl.fromTo(CARD, { opacity: 0 }, { opacity: 1, duration: 0.08, ease: 'none', immediateRender: false }, 0);  // short, so no ghost-white frames
+tl.fromTo(CARD, { y: 70, scale: 0.96 }, { y: 0, scale: 1, duration: 0.5, ease: 'power3.out', immediateRender: false }, 0);
+tl.fromTo(OPEN, { scale: 0, rotation: -18 }, { scale: 1, rotation: 0, duration: 0.46, ease: 'back.out(2.4)', immediateRender: false }, 0.06);
+LS.forEach(function(s, i){ const t = 0.12 + i * GAPL;
+  tl.fromTo(s, { yPercent: 120 }, { yPercent: 0, duration: 0.5, ease: 'power3.out', immediateRender: false }, t);
+  tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: 0.16, ease: 'none', immediateRender: false }, t + 0.03); });
+const lastL = 0.12 + (LS.length - 1) * GAPL;
+tl.fromTo(CLOSE, { scale: 0, rotation: 18 }, { scale: 1, rotation: 0, duration: 0.42, ease: 'back.out(2.4)', immediateRender: false }, lastL + 0.16);
+if (att) tl.fromTo(CHIP, { x: -18, opacity: 0 }, { x: 0, opacity: 1, duration: 0.36, ease: 'power3.out', immediateRender: false }, lastL + 0.2);
+const out = N('outAt');
+if (out > 0) { tl.to(CARD, { y: 50, scale: 0.92, duration: 0.2, ease: 'power3.in' }, out); tl.to(CARD, { opacity: 0, duration: 0.08, ease: 'none' }, out + 0.12); }
+
+window.__timelines["quote-card"] = tl;
+</script>
+</template>
+</body>
+</html>

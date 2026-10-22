@@ -1,0 +1,116 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "title", "type": "string", "label": "Header", "default": "IN THIS VIDEO"}, {"id": "items", "type": "string", "label": "Items, separated by | or new lines (3-20)", "default": "SAMPLE hook|Step one|Step two|Step three|Wrap up"}, {"id": "times", "type": "string", "label": "Advance times in s from clip start, comma separated, one fewer than items (blank or missing = spread evenly to dur)", "default": ""}, {"id": "dur", "type": "number", "label": "Clip length s (only used to spread missing times)", "default": 10, "min": 1, "max": 180, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the card (px)", "default": 236, "min": 220, "max": 1300, "unit": "px"}, {"id": "width", "type": "number", "label": "Card width px (max ~260)", "default": 256, "min": 200, "max": 300, "unit": "px"}, {"id": "rows", "type": "number", "label": "Visible rows (0 = auto: all up to 9 items, else a 7-row window that scrolls)", "default": 0, "min": 0, "max": 20}, {"id": "size", "type": "number", "label": "Item text px (0 = auto from visible rows)", "default": 0, "min": 0, "max": 30, "unit": "px"}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: chapter-tracker. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" />
+<style>
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.mono{font-family:'Roboto Mono',monospace;}
+.ct{position:absolute;right:160px;top:calc(var(--top) * 1px);width:calc(var(--width) * 1px);background:#FFFFFF;border-radius:16px;box-shadow:0 18px 44px rgba(11,15,18,.30);padding:14px 12px 12px;box-sizing:border-box;}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 4px;height:26px;}
+.ttl{font:500 15px/26px 'Roboto Mono',monospace;letter-spacing:1.2px;color:#5B6670;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ctr{display:flex;align-items:center;font:500 16px/26px 'Roboto Mono',monospace;color:#5B6670;white-space:nowrap;flex:none;margin-left:8px;}
+.cwin{position:relative;display:block;height:24px;overflow:hidden;background:#00BEFF;border-radius:6px;margin-right:6px;}
+.cstrip b{position:absolute;left:5px;top:0;height:24px;font:500 16px/24px 'Roboto Mono',monospace;color:#0B0F12;}
+.prog{height:3px;background:rgba(11,15,18,.10);border-radius:2px;margin:10px 4px 8px;overflow:hidden;}
+.pfill{height:100%;background:#00BEFF;}
+.win{position:relative;overflow:hidden;}
+.list{position:absolute;left:0;right:0;top:0;}
+.bar{position:absolute;left:0;right:0;top:0;background:#00BEFF;border-radius:9px;}
+.row{position:absolute;left:0;right:0;display:flex;align-items:center;padding:0 10px;box-sizing:border-box;white-space:nowrap;}
+.ix{font-family:'Roboto Mono',monospace;font-weight:500;color:#5B6670;margin-right:9px;flex:none;}
+.nm{font-family:Roboto,sans-serif;font-weight:500;color:#0B0F12;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+
+</style>
+<div id="root" data-composition-id="chapter-tracker" data-width="1080" data-height="1920">
+<div class="ct" data-tc="chapter-tracker"><div class="hdr"><span class="ttl" data-var-text="title">IN THIS VIDEO</span><span class="ctr"><span class="cwin"><span class="cstrip"></span></span><span class="tot"></span></span></div>
+<div class="prog"><div class="pfill"></div></div>
+<div class="win"><div class="list"><div class="bar"></div></div></div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// The wrapper, not [data-composition-id=...]: a 2nd instance of the same component gets a renamed root.
+const R = document.querySelector("[data-tc='chapter-tracker']");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"title": "IN THIS VIDEO", "items": "SAMPLE hook|Step one|Step two|Step three|Wrap up", "times": "", "dur": 10, "top": 236, "width": 256, "rows": 0, "size": 0};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+const B = function(k){ const x = V(k); return x === true || x === 'true' || x === 1 || x === '1'; };
+const rnd = function(i, s){ const x = Math.sin(i * 12.9898 + s * 78.233) * 43758.5453; return x - Math.floor(x); };
+
+const items = String(V('items')).split(/\n|\|/).map(function(s){ return s.trim(); }).filter(Boolean);
+if (!items.length) items.push('SAMPLE item');
+const n = items.length;
+const pad = function(x){ return (x < 10 ? '0' : '') + x; };
+let vis = Math.round(N('rows')); if (!(vis > 0)) vis = n <= 9 ? n : 7; vis = Math.max(1, Math.min(n, vis));
+let fs = N('size'); if (!(fs > 0)) fs = vis <= 5 ? 23 : vis <= 7 ? 21 : vis <= 9 ? 19 : vis <= 13 ? 17 : 15;
+const rowH = Math.round(fs * 1.7), ixFs = Math.round(fs * 0.7);
+const LIST = Q('.list'), BAR = Q('.bar'), WIN = Q('.win'), CT = R;
+WIN.style.height = (vis * rowH) + 'px';
+BAR.style.height = rowH + 'px';
+Q('.tot').textContent = '/ ' + pad(n);
+// shrink a long name to fit its row (estimated Roboto 700 advance), ellipsis only as a last resort
+const inner = N('width') - 24 - 20 - (String(pad(n)).length * 0.6 * ixFs + 9) - 2;
+const estW = function(t, f){ let w = 0; Array.from(t).forEach(function(c){ w += c === ' ' ? 0.25 : /[A-Z]/.test(c) ? 0.64 : /[mwMW]/.test(c) ? 0.85 : /[iljtfr.,']/.test(c) ? 0.3 : 0.55; }); return w * f * 1.04; };
+let rows = QA('.row');
+if (!rows.length) {
+  items.forEach(function(name, i){ const r = document.createElement('div'); r.className = 'row';
+    r.style.top = (i * rowH) + 'px'; r.style.height = rowH + 'px';
+    const ix = document.createElement('span'); ix.className = 'ix'; ix.textContent = pad(i + 1); ix.style.fontSize = ixFs + 'px';
+    const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = name;
+    const w = estW(name, fs); nm.style.fontSize = (w > inner ? Math.max(Math.round(fs * 0.72), Math.floor(fs * inner / w)) : fs) + 'px';
+    r.appendChild(ix); r.appendChild(nm); LIST.appendChild(r); });
+  const ST = Q('.cstrip');
+  for (let i = 1; i <= n; i++) { const b = document.createElement('b'); b.textContent = pad(i); ST.appendChild(b); }
+  Q('.cwin').style.width = Math.round(String(pad(n)).length * 9.6 + 10) + 'px';
+  rows = QA('.row');
+}
+const names = QA('.row .nm'), ixs = QA('.row .ix'), digs = QA('.cstrip b'), PF = Q('.pfill'), DONE = '#6B7580';
+// advance times: given list first, the rest spread evenly to dur
+const dur = Math.max(1, N('dur'));
+const given = String(V('times')).split(',').map(function(s){ return s.trim(); }).filter(function(s){ return s !== ''; }).map(Number).filter(function(x){ return isFinite(x); });
+const ts = given.slice(0, n - 1);
+if (ts.length < n - 1) { const base = ts.length ? ts[ts.length - 1] : 0.6, left = (n - 1) - ts.length, step = (dur - base) / (left + 1);
+  for (let j = 1; j <= left; j++) ts.push(base + step * j); }
+// window: the current item sits mid-window; rows outside it are faded out, never clipped
+const offFor = function(k){ return Math.max(0, Math.min(n - vis, k - Math.floor((vis - 1) / 2))); };
+const rowOp = function(i, off){ return (i < off || i >= off + vis) ? 0 : 1; };
+// initial states
+gsap.set(CT, { opacity: 0, x: 44 });
+gsap.set([BAR, PF], { scaleX: 0, transformOrigin: '0% 50%' });
+gsap.set(rows, { opacity: 0, x: 14 });
+gsap.set(digs, { opacity: 0 }); gsap.set(digs[0], { opacity: 1 });
+gsap.set(names[0], { fontWeight: 700 });
+gsap.set(ixs[0], { color: '#0B0F12' });
+// in
+tl.fromTo(CT, { opacity: 0, x: 44 }, { opacity: 1, x: 0, duration: 0.42, ease: 'power3.out', immediateRender: false }, 0.04);
+rows.slice(0, vis).forEach(function(r, i){ tl.fromTo(r, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.3, ease: 'power2.out', immediateRender: false }, 0.16 + i * 0.03); });
+tl.fromTo(BAR, { scaleX: 0 }, { scaleX: 1, duration: 0.34, ease: 'power3.out', immediateRender: false }, 0.3);
+tl.fromTo(PF, { scaleX: 0 }, { scaleX: 1 / n, duration: 0.4, ease: 'power3.out', immediateRender: false }, 0.3);
+// advances
+let prevOff = 0;
+for (let k = 1; k < n; k++) {
+  const T = Math.max(ts[k - 1], 0.7 + k * 0.05), off = offFor(k);
+  tl.to(BAR, { y: k * rowH, duration: 0.36, ease: 'power3.inOut' }, T);
+  if (off !== prevOff) tl.to(LIST, { y: -off * rowH, duration: 0.36, ease: 'power3.inOut' }, T);
+  rows.forEach(function(r, i){ const a = rowOp(i, prevOff), b = rowOp(i, off);
+    if (a !== b) tl.to(r, { opacity: b, x: 0, duration: 0.3, ease: 'power1.out' }, T); });
+  // finished = grey (still 4.7:1 on white), current = bold ink on the bar
+  tl.to([names[k - 1], ixs[k - 1]], { color: DONE, duration: 0.3, ease: 'power1.out' }, T);
+  tl.set(names[k - 1], { fontWeight: 500 }, T + 0.14);
+  tl.set(names[k], { fontWeight: 700 }, T + 0.14);
+  tl.set(ixs[k], { color: '#0B0F12' }, T + 0.14);
+  tl.to(digs[k - 1], { y: -22, opacity: 0, duration: 0.26, ease: 'power2.in' }, T);
+  tl.fromTo(digs[k], { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: 'power3.out', immediateRender: false }, T + 0.12);
+  tl.to(PF, { scaleX: (k + 1) / n, duration: 0.42, ease: 'power3.inOut' }, T);
+  prevOff = off;
+}
+
+window.__timelines["chapter-tracker"] = tl;
+</script>
+</template>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!doctype html>
+<html data-composition-variables='[{"id": "phoneLabel", "type": "string", "label": "Label over the phone (whose phone it is)", "default": "CUSTOMER"}, {"id": "youLabel", "type": "string", "label": "Label on the accent tile (one word)", "default": "YOU"}, {"id": "clock", "type": "string", "label": "Lock-screen clock (blank hides it)", "default": "9:41"}, {"id": "count", "type": "number", "label": "Contractor tiles in the jam (3-5; the accent YOU tile is always one of them)", "default": 4, "min": 3, "max": 5, "step": 1}, {"id": "jamAt", "type": "number", "label": "All tiles slam into the phone (s from clip start; lock to the spoken word)", "default": 0.8, "min": 0.7, "max": 8, "step": 0.05, "unit": "s"}, {"id": "dur", "type": "number", "label": "Clip length s: they keep shoving until here, exit in the last 0.28 s (0 = no exit)", "default": 2.2, "min": 0, "max": 20, "step": 0.05, "unit": "s"}, {"id": "top", "type": "number", "label": "Top edge of the CUSTOMER label (px); the piece is 544 px tall at scale 1", "default": 240, "min": 0, "max": 1400, "unit": "px"}, {"id": "centerX", "type": "number", "label": "Horizontal centre of the phone (px; 496 = centre of the safe band)", "default": 496, "min": 300, "max": 780, "unit": "px"}, {"id": "scale", "type": "number", "label": "Scale (1 = phone 240 px wide, tiles 156 px; shrinks from the top centre)", "default": 1, "min": 0.4, "max": 1.2, "step": 0.01}]'>
+<head><meta charset="UTF-8" /><!-- reel-kit effect: phone-race. Colours and fonts come from scripts/rebrand.mjs. --></head>
+<body>
+<template>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;500&display=swap" />
+<style>
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:block;src:url('compositions/assets/fx_race/fonts/BebasNeue-400.woff2') format('woff2');}
+#root{position:absolute;inset:0;width:100%;height:100%;font-family:Roboto,Arial,sans-serif;color:#0B0F12;}
+.pr-pos{position:absolute;left:calc(var(--centerX) * 1px - 380px);top:calc(var(--top) * 1px);width:760px;height:544px;transform:scale(var(--scale));transform-origin:50% 0;}
+.rc{position:absolute;inset:0;}
+.pw{position:absolute;left:260px;top:0;width:240px;height:544px;z-index:1;}
+.lw{position:absolute;left:-60px;right:-60px;top:0;height:54px;display:flex;justify-content:center;align-items:flex-start;}
+.lb{position:relative;height:54px;padding:0 20px;border-radius:10px;background:#FFFFFF;box-shadow:0 10px 26px rgba(11,15,18,.32);display:flex;align-items:center;}
+.lt{font:400 48px/1 'Bebas Neue',sans-serif;letter-spacing:1.5px;color:#0B0F12;padding-top:5px;white-space:nowrap;}
+.ph{position:absolute;left:0;top:64px;width:240px;height:480px;border-radius:38px;background:#05080A;border:2px solid rgba(255,255,255,.16);padding:8px;box-sizing:border-box;box-shadow:0 26px 60px rgba(11,15,18,.48),0 0 0 1px rgba(0,0,0,.35);}
+.sb{position:absolute;width:3px;border-radius:2px;background:#1B2228;}
+.sb.a{left:-4px;top:94px;height:24px;} .sb.b{left:-4px;top:131px;height:42px;} .sb.c{left:-4px;top:181px;height:42px;} .sb.d{right:-4px;top:141px;height:64px;}
+.scr{position:relative;width:100%;height:100%;border-radius:30px;overflow:hidden;}
+.lock{background:radial-gradient(120% 60% at 18% 104%,rgba(0,190,255,.50) 0%,rgba(0,190,255,0) 62%),linear-gradient(172deg,#17384A 0%,#0E1A22 46%,#0B0F12 100%);}
+.wake{position:absolute;inset:0;background:#FFFFFF;z-index:2;}
+.isl{position:absolute;left:50%;top:8px;width:70px;height:20px;margin-left:-35px;border-radius:10px;background:#000;z-index:5;}
+.stat{position:absolute;right:16px;top:12px;z-index:5;line-height:0;}
+.hi{position:absolute;left:50%;bottom:7px;width:84px;height:4px;margin-left:-42px;border-radius:2px;background:rgba(255,255,255,.72);z-index:5;}
+.clk{position:absolute;left:0;right:0;top:46px;text-align:center;font:700 58px/1 Roboto,sans-serif;letter-spacing:-1px;color:#FFFFFF;}
+.nf{position:absolute;left:9px;right:9px;height:52px;border-radius:17px;background:rgba(255,255,255,.95);box-shadow:0 8px 20px rgba(0,0,0,.38);z-index:3;}
+.nic{position:absolute;left:9px;top:9px;width:34px;height:34px;border-radius:9px;background:#E6EBEF;color:#E6EBEF;display:flex;align-items:center;justify-content:center;}
+.nic svg{width:24px;height:24px;display:block;}
+.nb1{position:absolute;left:53px;top:15px;width:104px;height:9px;border-radius:5px;background:#BFC7CE;}
+.nb2{position:absolute;left:53px;top:30px;width:70px;height:8px;border-radius:4px;background:#DCE1E5;}
+.tm{position:absolute;width:156px;height:156px;}
+.tj{position:absolute;inset:0;}
+.tb{position:absolute;inset:0;border-radius:34px;background:#FFFFFF;color:#FFFFFF;border:1px solid rgba(11,15,18,.08);box-shadow:0 18px 40px rgba(11,15,18,.38);display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;}
+.tb.you{background:#00BEFF;color:#00BEFF;border-color:rgba(11,15,18,.12);}
+.gl{width:92px;height:92px;margin-top:-6px;}
+.gl svg{display:block;width:100%;height:100%;}
+.skw{height:34px;display:flex;align-items:center;}
+.sk{width:62px;height:12px;border-radius:6px;background:#D3D9DE;}
+.yl{height:34px;font:400 46px/34px 'Bebas Neue',sans-serif;letter-spacing:1.5px;color:#0B0F12;padding-top:5px;white-space:nowrap;}
+.sl{position:absolute;height:8px;border-radius:4px;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(11,15,18,.30);}
+.ik{position:absolute;width:0;height:0;z-index:6;}
+.ikw{position:absolute;left:0;top:0;width:0;height:0;}
+.iki{position:absolute;left:0;top:-3.5px;width:34px;height:7px;border-radius:4px;background:#FFFFFF;box-shadow:0 2px 8px rgba(11,15,18,.45);transform-origin:0 50%;}
+
+</style>
+<div id="root" data-composition-id="phone-race" data-width="1080" data-height="1920">
+<div class="pr-pos"><div class="rc" data-tc="phone-race">
+<div class="pw">
+<div class="lw"><div class="lb"><span class="lt" data-var-text="phoneLabel">CUSTOMER</span></div></div>
+<div class="ph"><i class="sb a"></i><i class="sb b"></i><i class="sb c"></i><i class="sb d"></i>
+<div class="scr lock"><div class="wake"></div>
+<div class="clk" data-layout-allow-overlap data-layout-allow-occlusion data-var-text="clock">9:41</div>
+<div class="nf n0" style="top:124px" data-layout-allow-overlap><div class="nic"><svg viewBox="0 0 64 64"><path d="M9.5 42.5C9.5 27.6 19.6 15.5 32 15.5s22.5 12.1 22.5 27z" fill="#0B0F12"/><path d="M27.6 16.1c1.3-.4 2.8-.6 4.4-.6s3.1.2 4.4.6V33a4.4 4.4 0 0 1-8.8 0z" fill="currentColor" fill-opacity=".38"/><path d="M17.8 23.6c-2.8 3.6-4.5 8.2-4.9 13.4" fill="none" stroke="currentColor" stroke-opacity=".38" stroke-width="2.6" stroke-linecap="round"/><rect x="4.5" y="41" width="55" height="8.5" rx="4.25" fill="#0B0F12"/></svg></div><i class="nb1"></i><i class="nb2"></i></div><div class="nf n1" style="top:184px" data-layout-allow-overlap><div class="nic"><svg viewBox="0 0 64 64"><rect x="9" y="11.5" width="29" height="2.6" rx="1.3" fill="#0B0F12"/><rect x="12" y="13" width="2.4" height="5" fill="#0B0F12"/><rect x="33" y="13" width="2.4" height="5" fill="#0B0F12"/><path d="M3.5 21a3.5 3.5 0 0 1 3.5-3.5h33a3.5 3.5 0 0 1 3.5 3.5v3h8.3a3 3 0 0 1 2.4 1.2l5.9 7.8a3 3 0 0 1 .6 1.8V44a3 3 0 0 1-3 3H6.5a3 3 0 0 1-3-3z" fill="#0B0F12"/><path d="M46.5 28.5h5.2l4.8 6.3h-10z" fill="currentColor"/><rect x="8" y="30" width="31" height="3.2" rx="1.6" fill="currentColor" fill-opacity=".45"/><circle cx="17" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="17" cy="47.5" r="2.6" fill="currentColor"/><circle cx="47" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="47" cy="47.5" r="2.6" fill="currentColor"/></svg></div><i class="nb1"></i><i class="nb2"></i></div><div class="nf n2" style="top:244px" data-layout-allow-overlap><div class="nic"><svg viewBox="0 0 64 64"><path d="M9.5 42.5C9.5 27.6 19.6 15.5 32 15.5s22.5 12.1 22.5 27z" fill="#0B0F12"/><path d="M27.6 16.1c1.3-.4 2.8-.6 4.4-.6s3.1.2 4.4.6V33a4.4 4.4 0 0 1-8.8 0z" fill="currentColor" fill-opacity=".38"/><path d="M17.8 23.6c-2.8 3.6-4.5 8.2-4.9 13.4" fill="none" stroke="currentColor" stroke-opacity=".38" stroke-width="2.6" stroke-linecap="round"/><rect x="4.5" y="41" width="55" height="8.5" rx="4.25" fill="#0B0F12"/></svg></div><i class="nb1"></i><i class="nb2"></i></div><div class="nf n3" style="top:304px" data-layout-allow-overlap><div class="nic"><svg viewBox="0 0 64 64"><rect x="9" y="11.5" width="29" height="2.6" rx="1.3" fill="#0B0F12"/><rect x="12" y="13" width="2.4" height="5" fill="#0B0F12"/><rect x="33" y="13" width="2.4" height="5" fill="#0B0F12"/><path d="M3.5 21a3.5 3.5 0 0 1 3.5-3.5h33a3.5 3.5 0 0 1 3.5 3.5v3h8.3a3 3 0 0 1 2.4 1.2l5.9 7.8a3 3 0 0 1 .6 1.8V44a3 3 0 0 1-3 3H6.5a3 3 0 0 1-3-3z" fill="#0B0F12"/><path d="M46.5 28.5h5.2l4.8 6.3h-10z" fill="currentColor"/><rect x="8" y="30" width="31" height="3.2" rx="1.6" fill="currentColor" fill-opacity=".45"/><circle cx="17" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="17" cy="47.5" r="2.6" fill="currentColor"/><circle cx="47" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="47" cy="47.5" r="2.6" fill="currentColor"/></svg></div><i class="nb1"></i><i class="nb2"></i></div><div class="nf n4" style="top:364px" data-layout-allow-overlap><div class="nic"><svg viewBox="0 0 64 64"><path d="M9.5 42.5C9.5 27.6 19.6 15.5 32 15.5s22.5 12.1 22.5 27z" fill="#0B0F12"/><path d="M27.6 16.1c1.3-.4 2.8-.6 4.4-.6s3.1.2 4.4.6V33a4.4 4.4 0 0 1-8.8 0z" fill="currentColor" fill-opacity=".38"/><path d="M17.8 23.6c-2.8 3.6-4.5 8.2-4.9 13.4" fill="none" stroke="currentColor" stroke-opacity=".38" stroke-width="2.6" stroke-linecap="round"/><rect x="4.5" y="41" width="55" height="8.5" rx="4.25" fill="#0B0F12"/></svg></div><i class="nb1"></i><i class="nb2"></i></div>
+<div class="isl"></div><div class="stat"><svg width="44" height="11" viewBox="0 0 54 14"><g fill="#FFFFFF"><rect x="0" y="9" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="7" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/></g><rect x="26" y="1" width="23" height="12" rx="3.5" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/><rect x="28.5" y="3.5" width="16" height="7" rx="1.8" fill="#FFFFFF"/><rect x="50.5" y="5" width="2" height="4" rx="1" fill="rgba(255,255,255,.6)"/></svg></div><div class="hi"></div></div></div>
+</div>
+<div class="tm t0" data-layout-allow-overlap data-layout-allow-overflow><i class="sl" style="top:30px;right:166px;width:96px" data-layout-allow-overlap></i><i class="sl" style="top:74px;right:166px;width:150px" data-layout-allow-overlap></i><i class="sl" style="top:118px;right:166px;width:74px" data-layout-allow-overlap></i><div class="tj"><div class="tb"><div class="gl"><svg viewBox="0 0 64 64"><path d="M9.5 42.5C9.5 27.6 19.6 15.5 32 15.5s22.5 12.1 22.5 27z" fill="#0B0F12"/><path d="M27.6 16.1c1.3-.4 2.8-.6 4.4-.6s3.1.2 4.4.6V33a4.4 4.4 0 0 1-8.8 0z" fill="currentColor" fill-opacity=".38"/><path d="M17.8 23.6c-2.8 3.6-4.5 8.2-4.9 13.4" fill="none" stroke="currentColor" stroke-opacity=".38" stroke-width="2.6" stroke-linecap="round"/><rect x="4.5" y="41" width="55" height="8.5" rx="4.25" fill="#0B0F12"/></svg></div><div class="skw"><i class="sk"></i></div></div></div><div class="ik" style="left:116px;top:6px" data-layout-allow-overlap><div class="ikw" style="transform:rotate(-140deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-90deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-40deg)"><i class="iki"></i></div></div></div><div class="tm t1" data-layout-allow-overlap data-layout-allow-overflow><i class="sl" style="top:30px;left:166px;width:96px" data-layout-allow-overlap></i><i class="sl" style="top:74px;left:166px;width:150px" data-layout-allow-overlap></i><i class="sl" style="top:118px;left:166px;width:74px" data-layout-allow-overlap></i><div class="tj"><div class="tb"><div class="gl"><svg viewBox="0 0 64 64"><rect x="9" y="11.5" width="29" height="2.6" rx="1.3" fill="#0B0F12"/><rect x="12" y="13" width="2.4" height="5" fill="#0B0F12"/><rect x="33" y="13" width="2.4" height="5" fill="#0B0F12"/><path d="M3.5 21a3.5 3.5 0 0 1 3.5-3.5h33a3.5 3.5 0 0 1 3.5 3.5v3h8.3a3 3 0 0 1 2.4 1.2l5.9 7.8a3 3 0 0 1 .6 1.8V44a3 3 0 0 1-3 3H6.5a3 3 0 0 1-3-3z" fill="#0B0F12"/><path d="M46.5 28.5h5.2l4.8 6.3h-10z" fill="currentColor"/><rect x="8" y="30" width="31" height="3.2" rx="1.6" fill="currentColor" fill-opacity=".45"/><circle cx="17" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="17" cy="47.5" r="2.6" fill="currentColor"/><circle cx="47" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="47" cy="47.5" r="2.6" fill="currentColor"/></svg></div><div class="skw"><i class="sk"></i></div></div></div><div class="ik" style="left:40px;top:6px" data-layout-allow-overlap><div class="ikw" style="transform:rotate(-140deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-90deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-40deg)"><i class="iki"></i></div></div></div><div class="tm t2" data-layout-allow-overlap data-layout-allow-overflow><i class="sl" style="top:30px;right:166px;width:96px" data-layout-allow-overlap></i><i class="sl" style="top:74px;right:166px;width:150px" data-layout-allow-overlap></i><i class="sl" style="top:118px;right:166px;width:74px" data-layout-allow-overlap></i><div class="tj"><div class="tb you"><div class="gl"><svg viewBox="0 0 64 64"><path d="M9.5 42.5C9.5 27.6 19.6 15.5 32 15.5s22.5 12.1 22.5 27z" fill="#0B0F12"/><path d="M27.6 16.1c1.3-.4 2.8-.6 4.4-.6s3.1.2 4.4.6V33a4.4 4.4 0 0 1-8.8 0z" fill="currentColor" fill-opacity=".38"/><path d="M17.8 23.6c-2.8 3.6-4.5 8.2-4.9 13.4" fill="none" stroke="currentColor" stroke-opacity=".38" stroke-width="2.6" stroke-linecap="round"/><rect x="4.5" y="41" width="55" height="8.5" rx="4.25" fill="#0B0F12"/></svg></div><div class="yl" data-var-text="youLabel">YOU</div></div></div><div class="ik" style="left:116px;top:6px" data-layout-allow-overlap><div class="ikw" style="transform:rotate(-140deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-90deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-40deg)"><i class="iki"></i></div></div></div><div class="tm t3" data-layout-allow-overlap data-layout-allow-overflow><i class="sl" style="top:30px;left:166px;width:96px" data-layout-allow-overlap></i><i class="sl" style="top:74px;left:166px;width:150px" data-layout-allow-overlap></i><i class="sl" style="top:118px;left:166px;width:74px" data-layout-allow-overlap></i><div class="tj"><div class="tb"><div class="gl"><svg viewBox="0 0 64 64"><rect x="9" y="11.5" width="29" height="2.6" rx="1.3" fill="#0B0F12"/><rect x="12" y="13" width="2.4" height="5" fill="#0B0F12"/><rect x="33" y="13" width="2.4" height="5" fill="#0B0F12"/><path d="M3.5 21a3.5 3.5 0 0 1 3.5-3.5h33a3.5 3.5 0 0 1 3.5 3.5v3h8.3a3 3 0 0 1 2.4 1.2l5.9 7.8a3 3 0 0 1 .6 1.8V44a3 3 0 0 1-3 3H6.5a3 3 0 0 1-3-3z" fill="#0B0F12"/><path d="M46.5 28.5h5.2l4.8 6.3h-10z" fill="currentColor"/><rect x="8" y="30" width="31" height="3.2" rx="1.6" fill="currentColor" fill-opacity=".45"/><circle cx="17" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="17" cy="47.5" r="2.6" fill="currentColor"/><circle cx="47" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="47" cy="47.5" r="2.6" fill="currentColor"/></svg></div><div class="skw"><i class="sk"></i></div></div></div><div class="ik" style="left:40px;top:6px" data-layout-allow-overlap><div class="ikw" style="transform:rotate(-140deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-90deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-40deg)"><i class="iki"></i></div></div></div><div class="tm t4" data-layout-allow-overlap data-layout-allow-overflow><i class="sl" style="top:30px;right:166px;width:96px" data-layout-allow-overlap></i><i class="sl" style="top:74px;right:166px;width:150px" data-layout-allow-overlap></i><i class="sl" style="top:118px;right:166px;width:74px" data-layout-allow-overlap></i><div class="tj"><div class="tb"><div class="gl"><svg viewBox="0 0 64 64"><rect x="9" y="11.5" width="29" height="2.6" rx="1.3" fill="#0B0F12"/><rect x="12" y="13" width="2.4" height="5" fill="#0B0F12"/><rect x="33" y="13" width="2.4" height="5" fill="#0B0F12"/><path d="M3.5 21a3.5 3.5 0 0 1 3.5-3.5h33a3.5 3.5 0 0 1 3.5 3.5v3h8.3a3 3 0 0 1 2.4 1.2l5.9 7.8a3 3 0 0 1 .6 1.8V44a3 3 0 0 1-3 3H6.5a3 3 0 0 1-3-3z" fill="#0B0F12"/><path d="M46.5 28.5h5.2l4.8 6.3h-10z" fill="currentColor"/><rect x="8" y="30" width="31" height="3.2" rx="1.6" fill="currentColor" fill-opacity=".45"/><circle cx="17" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="17" cy="47.5" r="2.6" fill="currentColor"/><circle cx="47" cy="47.5" r="7.6" fill="#0B0F12" stroke="currentColor" stroke-width="3"/><circle cx="47" cy="47.5" r="2.6" fill="currentColor"/></svg></div><div class="skw"><i class="sk"></i></div></div></div><div class="ik" style="left:116px;top:6px" data-layout-allow-overlap><div class="ikw" style="transform:rotate(-140deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-90deg)"><i class="iki"></i></div><div class="ikw" style="transform:rotate(-40deg)"><i class="iki"></i></div></div></div>
+</div></div>
+</div>
+<script>
+const tl = gsap.timeline({ paused: true });
+// Plain class, never [data-composition-id=...]: a second mount of a component gets a renamed root, and the
+// runtime scopes document queries to each mount (round-one lesson 1).
+const R = document.querySelector(".rc");
+const Q = function(s){ return R.querySelector(s); };
+const QA = function(s){ return Array.prototype.slice.call(R.querySelectorAll(s)); };
+const D = {"phoneLabel": "CUSTOMER", "youLabel": "YOU", "clock": "9:41", "count": 4, "jamAt": 0.8, "dur": 2.2, "top": 240, "centerX": 496, "scale": 1};
+const VV = (window.__hyperframes && window.__hyperframes.getVariables) ? window.__hyperframes.getVariables() : {};
+const V = function(k){ const x = VV[k]; return (x === undefined || x === null || x === '') ? D[k] : x; };
+const N = function(k){ const x = Number(V(k)); return isFinite(x) ? x : Number(D[k]); };
+
+const SL = [{"name":"L1","side":-1,"x":144,"cy":204,"r":-7,"r0":-17,"dy0":-46,"off":-0.05,"z":3,"glyph":"hat"},{"name":"R1","side":1,"x":460,"cy":232,"r":6,"r0":18,"dy0":-30,"off":0.0,"z":3,"glyph":"van"},{"name":"L2","side":-1,"x":150,"cy":350,"r":4,"r0":13,"dy0":38,"off":-0.02,"z":4,"glyph":"hat"},{"name":"R2","side":1,"x":454,"cy":382,"r":-5,"r0":-15,"dy0":44,"off":0.04,"z":4,"glyph":"van"},{"name":"L3","side":-1,"x":32,"cy":278,"r":9,"r0":20,"dy0":-20,"off":0.13,"z":2,"glyph":"van"}], YOU = 2, TS = 156, BW = 760, LBH = 64, PH = 480;
+const PWR = Q('.pw'), PHN = Q('.ph'), LB = Q('.lb'), WK = Q('.wake');
+const TM = QA('.tm'), TJ = QA('.tj'), TB = QA('.tb'), NF = QA('.nf');
+const C = Math.round(Math.min(5, Math.max(3, N('count'))));
+const J = Math.max(0.7, N('jamAt'));
+const DUR = N('dur');
+const END = DUR > 0 ? Math.max(DUR, J + 1.0) : J + 1.6;   // the shoving runs to here
+const OUT = DUR > 0 ? END - 0.28 : END;                    // exit starts here (dur 0 = no exit)
+const SC = Math.max(0.2, N('scale')), CX = N('centerX');
+if (!String(V('clock')).trim()) Q('.clk').style.display = 'none';
+
+// slots: count 3 = L1, R1 (centred), L2;  4 = + R2;  5 = + L3 (a second row that shoves into the left pair)
+const S = SL.map(function(s){ return Object.assign({}, s); });
+if (C === 3) { S[1].cy = LBH + 228; S[1].off = 0.03; }
+TM.forEach(function(m, i){
+  if (i >= C) { m.style.display = 'none'; return; }
+  m.style.left = S[i].x + 'px'; m.style.top = (S[i].cy - TS / 2) + 'px'; m.style.zIndex = S[i].z;
+});
+NF.forEach(function(n, k){ if (k >= C) n.style.display = 'none'; });
+
+// each tile starts fully off its frame edge whatever centerX / scale say (box px = screen px / scale)
+const startDX = function(s){
+  const left = CX + (s.x - BW / 2) * SC;                      // final screen x of the tile's left edge
+  const need = s.side < 0 ? (left + TS * SC) / SC + 40 : (1080 - left) / SC + 40;
+  return s.side * Math.max(need, 560);
+};
+
+// initial states (outside the timeline)
+gsap.set(PWR, { y: 60, opacity: 0 });
+gsap.set(LB, { y: 14, scale: 0.9, opacity: 0, transformOrigin: '50% 100%' });
+gsap.set(PHN, { transformOrigin: '50% 55%' });
+gsap.set(WK, { opacity: 0 });
+gsap.set(NF, { y: -26, opacity: 0, scale: 0.92, transformOrigin: '50% 0%' });
+const ARR = [];
+for (let i = 0; i < C; i++) {
+  const s = S[i], dx = startDX(s);
+  s.dx = dx; s.ta = J + s.off; s.trav = Math.min(0.62, Math.max(0.42, Math.abs(dx) / 1300));
+  gsap.set(TM[i], { x: dx, y: s.dy0, rotation: s.r0 });
+  gsap.set(TJ[i], { x: 0, rotation: 0 });
+  gsap.set(TB[i], { scaleX: 1, scaleY: 1, transformOrigin: (s.side < 0 ? '100%' : '0%') + ' 50%' });
+  gsap.set(TM[i].querySelectorAll('.sl'), { scaleX: 0, opacity: 0, transformOrigin: (s.side < 0 ? '100%' : '0%') + ' 50%' });
+  gsap.set(TM[i].querySelectorAll('.iki'), { x: 6, scaleX: 0.2, opacity: 0 });
+  ARR.push(i);
+}
+ARR.sort(function(a, b){ return S[a].ta - S[b].ta; });
+
+// 1. the phone rises in, CUSTOMER pops on top
+tl.fromTo(PWR, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.46, ease: 'power3.out', immediateRender: false }, 0);
+tl.fromTo(LB, { y: 14, scale: 0.9, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.34, ease: 'back.out(2.2)', immediateRender: false }, 0.14);
+
+// 2. the race: every tile flies in flat out from its edge, stretched, speed lines trailing, and slams in at jamAt
+for (let i = 0; i < C; i++) {
+  const s = S[i], t0 = s.ta - s.trav, inward = -s.side, lines = TM[i].querySelectorAll('.sl'), ticks = TM[i].querySelectorAll('.iki');
+  tl.fromTo(TM[i], { x: s.dx }, { x: inward * 12, duration: s.trav, ease: 'none', immediateRender: false }, t0);
+  tl.fromTo(TM[i], { y: s.dy0 }, { y: 0, duration: s.trav, ease: 'power1.out', immediateRender: false }, t0);
+  tl.fromTo(TM[i], { rotation: s.r0 }, { rotation: s.r, duration: s.trav + 0.18, ease: 'power2.out', immediateRender: false }, t0);
+  tl.fromTo(TB[i], { scaleX: 1, scaleY: 1 }, { scaleX: 1.1, scaleY: 0.93, duration: 0.16, ease: 'power2.out', immediateRender: false }, t0);
+  tl.fromTo(lines, { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.16, ease: 'power2.out', stagger: 0.03, immediateRender: false }, t0 + 0.02);
+  tl.to(lines, { scaleX: 0, opacity: 0, duration: 0.08, ease: 'power2.in' }, s.ta - 0.06);
+  // impact: squash against the phone, rebound, settle pressed onto its edge
+  tl.to(TB[i], { scaleX: 0.84, scaleY: 1.1, duration: 0.05, ease: 'power2.out' }, s.ta);
+  tl.to(TB[i], { scaleX: 1, scaleY: 1, duration: 0.42, ease: 'elastic.out(1, 0.45)' }, s.ta + 0.05);
+  tl.to(TM[i], { keyframes: [ { x: s.side * 10, duration: 0.13, ease: 'power2.out' }, { x: 0, duration: 0.2, ease: 'power2.inOut' } ] }, s.ta);
+  tl.fromTo(ticks, { x: 6, scaleX: 0.2, opacity: 1 }, { x: 24, scaleX: 1, opacity: 0, duration: 0.3, ease: 'power2.out', immediateRender: false }, s.ta);
+}
+// the second row (count 5) hits the jam late and shoves the left pair harder onto the phone
+if (C === 5) {
+  const t5 = S[4].ta;
+  [0, 2].forEach(function(i){ tl.to(TJ[i], { keyframes: [ { x: 11, duration: 0.07, ease: 'power2.out' }, { x: 5, duration: 0.22, ease: 'power2.inOut' } ] }, t5 + 0.01); });
+}
+
+// 3. the phone takes the hit: squeeze, shake, screen wakes, one identical notification per tile in arrival order
+const T1 = S[ARR[0]].ta;
+tl.to(PHN, { keyframes: [ { scaleX: 0.95, scaleY: 1.02, duration: 0.06, ease: 'power2.out' }, { scaleX: 1, scaleY: 1, duration: 0.4, ease: 'elastic.out(1, 0.5)' } ] }, T1 + 0.01);
+tl.to(PHN, { keyframes: [ { x: -5, rotation: -1.2, duration: 0.04 }, { x: 5, rotation: 1.2, duration: 0.04 }, { x: -4, rotation: -0.8, duration: 0.04 },
+  { x: 3, rotation: 0.6, duration: 0.04 }, { x: 0, rotation: 0, duration: 0.05 } ], ease: 'none' }, T1 + 0.02);
+tl.to(LB, { keyframes: [ { y: -8, duration: 0.08, ease: 'power2.out' }, { y: 0, duration: 0.3, ease: 'back.out(3)' } ] }, T1 + 0.02);
+tl.fromTo(WK, { opacity: 0 }, { opacity: 0.16, duration: 0.06, ease: 'power1.out', immediateRender: false }, T1);
+tl.to(WK, { opacity: 0, duration: 0.45, ease: 'power2.out' }, T1 + 0.06);
+ARR.forEach(function(i, k){
+  tl.fromTo(NF[k], { y: -26, opacity: 0, scale: 0.92 }, { y: 0, opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(2)', immediateRender: false }, S[i].ta + 0.03 + k * 0.035);
+});
+
+// 4. nobody gets in: they keep shoving (finite yoyo wiggles, own period each), the phone keeps buzzing
+const J0 = Math.max.apply(null, ARR.map(function(i){ return S[i].ta; })) + 0.4;
+const PER = [0.21, 0.25, 0.23, 0.27, 0.19];
+for (let i = 0; i < C; i++) {
+  const s = S[i], inward = -s.side, base = (C === 5 && (i === 0 || i === 2)) ? 5 : 0, p = PER[i], t = J0 + i * 0.03;
+  const n = Math.floor((OUT - t) / p);
+  if (n >= 1) {
+    tl.fromTo(TJ[i], { x: base }, { x: base + inward * 7, duration: p, ease: 'sine.inOut', repeat: n - 1, yoyo: true, immediateRender: false }, t);
+    tl.fromTo(TJ[i], { rotation: 0 }, { rotation: (i % 2 ? -1 : 1) * 2.2, duration: p * 1.3, ease: 'sine.inOut', repeat: Math.max(0, Math.floor((OUT - t) / (p * 1.3)) - 1), yoyo: true, immediateRender: false }, t);
+  }
+}
+for (let t = J0 + 0.08; t < OUT - 0.2; t += 0.5) {
+  tl.to(PHN, { keyframes: [ { x: -3, rotation: -0.6, duration: 0.035 }, { x: 3, rotation: 0.6, duration: 0.035 }, { x: -2, rotation: -0.4, duration: 0.035 },
+    { x: 0, rotation: 0, duration: 0.04 } ], ease: 'none' }, t);
+}
+
+// 5. exit (goes up, never down over the face)
+if (DUR > 0) tl.to(R, { y: -46, opacity: 0, duration: 0.28, ease: 'power2.in' }, OUT);
+tl.set({}, {}, END);
+
+window.__timelines["phone-race"] = tl;
+</script>
+</template>
+</body>
+</html>

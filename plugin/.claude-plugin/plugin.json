@@ -1,0 +1,8 @@
+{
+  "name": "reel-kit",
+  "version": "1.0.0",
+  "description": "Claude edits your talking-head reels with HyperFrames: cuts, captions, cards and 38 effects in your colours. You OK a beat sheet before anything renders.",
+  "author": { "name": "John Milne" },
+  "license": "MIT",
+  "keywords": ["video", "reels", "hyperframes", "captions", "editing"]
+}
