@@ -56,7 +56,7 @@ Then:
 
 Ask: "Want to practise on a raw take before you film your own?"
 
-If yes, download it into `practice/take.mp4`:
+If yes, copy `${CLAUDE_PLUGIN_ROOT}/practice/BRIEF.md` into `practice/BRIEF.md`, then download the take into `practice/take.mp4`:
 
 ```
 curl -L --fail -o practice/take.mp4 https://github.com/johnACQ/reel-kit/releases/download/v1.0.0/practice-take.mp4

@@ -8,12 +8,14 @@ description: Edit a talking-head reel with HyperFrames. Transcribes the take, cu
 ## Before anything
 
 1. Read `CLAUDE.md`, `EDITING-STYLE.md`, `frame.md` and `brand.json` in the Reels folder. No `brand.json`? Run the reel-kit `setup` skill first.
-2. Load the HyperFrames skills before you write any composition HTML: the `hyperframes` entry skill, then `hyperframes-core` for the composition rules and `hyperframes-cli` for commands. If they aren't installed, stop and run `setup`.
+2. Load the HyperFrames skills before you write any composition HTML: the `hyperframes` entry skill (it carries the composition rules and their references), then `hyperframes-cli` for commands. If they aren't installed, stop and run `setup`.
 3. The effects library is in `${CLAUDE_PLUGIN_ROOT}/effects/`:
    - `CATALOG.md`: what each effect shows, its variables, how to mount it.
    - `PICKER.md`: which effect fits which kind of line, and why.
    - `recipes/`: effects that move the footage itself (zooms, word behind the head, raw-to-edited wipe).
 4. Checks in detail: `${CLAUDE_SKILL_DIR}/checks.md`.
+5. If the reel's folder has a `BRIEF.md`, read it first. It answers the usual questions (names, what goes on screen, lines to keep or cut).
+6. Write any helper scripts in Node, which is already installed for HyperFrames. Don't assume Python is there. Keep every working file inside the reel's `edit/` folder, never in a temp folder elsewhere.
 
 Tell them up front: the first full run takes about half an hour. Notes after that rebuild in a couple of minutes.
 
@@ -70,7 +72,10 @@ Show it and ask one question: "OK to build, or changes?" Do not render until the
 1. Project: `HYPERFRAMES_SKIP_SKILLS=1 npx hyperframes init build --example blank --resolution portrait --non-interactive` inside the reel folder, then copy `edit/aroll.mp4` into `build/assets/`. The switch stops init copying the HyperFrames skills into their personal skills folder on every reel (the plugin already has them). Init also writes its own `CLAUDE.md` into `build/`: that's HyperFrames' file, leave it.
 2. Effects: `node "${CLAUDE_PLUGIN_ROOT}/scripts/rebrand.mjs" --brand ../brand.json --out build/compositions`. That copies the effects in their colours. Never symlink them: the bundler reads a symlinked folder as empty.
 3. Mount each beat as a clip exactly as `CATALOG.md` shows (`data-composition-src`, `data-start`, `data-duration`, `data-track-index`, `data-variable-values`). Give every clip a stable `id`.
-4. Captions: one captions clip across the talk, with the words and their times moved onto the cut timeline. Three or four words at a time, bottom third (y 1280 to 1470 at 1080 x 1920), the word being said highlighted. If the chin drops into that band, reframe the shot lower. Never move the text up over the face.
+4. Captions: one captions clip across the talk, with the words and their times moved onto the cut timeline. Three or four words at a time, bottom third (y 1280 to 1470 at 1080 x 1920), the word being said highlighted. Never move the text up over the face.
+   - If the mouth or chin sits in that band (common on a tight selfie), lift the face instead: punch in on the a-roll anchored at the bottom (`transform-origin: 50% 100%`). Each point rises by (1920 minus its y) times (scale minus 1), so a mouth at y 1300 needs about `scale(1.12)` to clear 1230. Check a still.
+   - If that crops too much off the top of the head, move the sharp shot up instead and fill the gap underneath with a blurred, darkened copy of the same footage on the track below.
+   - Note the reframe in the beat sheet. Never break the caption rule without asking.
 5. Effects that move the footage are host recipes in `recipes/`, not components. For a word behind the head, cut them out of the FINAL a-roll: `npx hyperframes remove-background assets/aroll.mp4 -o assets/subject.webm --quality best`.
 6. Text cards never say a word before they say it. Use the reveal timing each card offers.
 7. `npx hyperframes check` must pass before you render.
